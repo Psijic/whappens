@@ -2,9 +2,8 @@ package com.psvoid.whappens
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -14,7 +13,6 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.map.ClusteringViewModel
 import com.psvoid.whappens.model.ClusterMarker
-import org.json.JSONException
 
 open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
@@ -27,21 +25,15 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         isRestore = savedInstanceState != null
-        mViewModel = ViewModelProviders.of(this).get(ClusteringViewModel::class.java)
-
+        mViewModel = ViewModelProvider(this).get(ClusteringViewModel::class.java)
 
         setUpMap()
         checkRestore()
     }
 
     private fun checkRestore() {
-        if (!isRestore) {
-            try {
-                mViewModel.readItems(resources)
-            } catch (e: JSONException) {
-                Toast.makeText(this, "Problem reading list of markers.", Toast.LENGTH_LONG).show()
-            }
-        }
+        if (!isRestore)
+            mViewModel.readItems(resources)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -69,7 +61,7 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
         mViewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
-        mClusterManager = ClusterManager(this, map)
+        mClusterManager = ClusterManager(this, map, markerManager)
         mClusterManager.setAlgorithm(mViewModel.algorithm)
         map.setOnCameraIdleListener(mClusterManager)
     }

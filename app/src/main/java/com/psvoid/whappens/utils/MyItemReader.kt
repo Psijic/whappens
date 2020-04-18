@@ -16,6 +16,7 @@
 
 package com.psvoid.whappens.utils
 
+import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.psvoid.whappens.model.ClusterMarker
 import org.json.JSONArray
@@ -41,19 +42,23 @@ class MyItemReader {
         val json = Scanner(inputStream)
             .useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next()
         val array = JSONArray(json)
-        for (i in 0 until array.length()) {
-            var title: String? = null
-            var snippet: String? = null
-            val `object` = array.getJSONObject(i)
-            val lat = `object`.getDouble("lat")
-            val lng = `object`.getDouble("lng")
-            if (!`object`.isNull("title")) {
-                title = `object`.getString("title")
+        try {
+            for (i in 0 until array.length()) {
+                var title: String? = null
+                var snippet: String? = null
+                val `object` = array.getJSONObject(i)
+                val lat = `object`.getDouble("lat")
+                val lng = `object`.getDouble("lng")
+                if (!`object`.isNull("title")) {
+                    title = `object`.getString("title")
+                }
+                if (!`object`.isNull("snippet")) {
+                    snippet = `object`.getString("snippet")
+                }
+                items.add(ClusterMarker(LatLng(lat, lng), title, snippet))
             }
-            if (!`object`.isNull("snippet")) {
-                snippet = `object`.getString("snippet")
-            }
-            items.add(ClusterMarker(LatLng(lat, lng), title, snippet))
+        } catch (e: JSONException) {
+            Log.e("ClusteringViewModel", "Error reading list of markers.", e)
         }
         return items
     }
