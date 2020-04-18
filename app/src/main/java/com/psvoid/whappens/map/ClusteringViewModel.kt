@@ -22,7 +22,6 @@ import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.utils.MyItemReader
-import org.json.JSONException
 
 class ClusteringViewModel : ViewModel() {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
@@ -32,11 +31,11 @@ class ClusteringViewModel : ViewModel() {
         val items = MyItemReader().read(inputStream)
         algorithm.lock()
         try {
-                for (item in items) {
-                    val position = item.position
-                    val offsetItem = ClusterMarker(LatLng(position.latitude, position.longitude), item.title, item.snippet)
-                    algorithm.addItem(offsetItem)
-                }
+            for (item in items) {
+                val position = item.position
+                val offsetItem = ClusterMarker(LatLng(position.latitude, position.longitude), item.title, item.snippet)
+                algorithm.addItem(offsetItem)
+            }
         } finally {
             algorithm.unlock()
         }
