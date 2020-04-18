@@ -27,11 +27,11 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         isRestore = savedInstanceState != null
         mViewModel = ViewModelProvider(this).get(ClusteringViewModel::class.java)
 
-        setUpMap()
-        checkRestore()
+        setupMap()
+        setupRestore()
     }
 
-    private fun checkRestore() {
+    private fun setupRestore() {
         if (!isRestore)
             mViewModel.readItems(resources)
     }
@@ -66,7 +66,7 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         map.setOnCameraIdleListener(mClusterManager)
     }
 
-    private fun setUpMap() {
+    private fun setupMap() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
