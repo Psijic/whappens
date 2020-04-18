@@ -18,6 +18,7 @@ package com.psvoid.whappens.model
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
+import kotlinx.serialization.Serializable
 
 /**
  * A data class that implements the [ClusterItem] interface so it can be clustered.
@@ -26,11 +27,12 @@ import com.google.maps.android.clustering.ClusterItem
  *  (https://youtrack.jetbrains.com/issue/KT-6653?_ga=2.30406975.1494223917.1585591891-1137021041.1573759593)
  *  so we must name our fields differently and then pass them to the ClusterItem methods.
  */
-data class ClusterMarker(val latLng: LatLng, val myTitle: String?, val mySnippet: String?) : ClusterItem {
+@Serializable
+data class ClusterMarker(val lat: Double, val lng: Double, val myTitle: String?, val mySnippet: String?) : ClusterItem {
 
 //    constructor(lat: Double, lng: Double, title: String?, snippet: String?): this (LatLng())
 
-    override fun getPosition() = latLng
+    override fun getPosition() = LatLng(lat, lng)
     override fun getTitle() = myTitle
     override fun getSnippet() = mySnippet
 }

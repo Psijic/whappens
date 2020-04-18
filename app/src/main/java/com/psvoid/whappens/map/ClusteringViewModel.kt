@@ -24,7 +24,7 @@ import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.utils.MyItemReader
 
 class ClusteringViewModel : ViewModel() {
-    val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
+    val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)//metrics.widthPixels, metrics.heightPixels
 
     fun readItems(resources: Resources) {
         val inputStream = resources.openRawResource(R.raw.radar_search)
@@ -33,7 +33,7 @@ class ClusteringViewModel : ViewModel() {
         try {
             for (item in items) {
                 val position = item.position
-                val offsetItem = ClusterMarker(LatLng(position.latitude, position.longitude), item.title, item.snippet)
+                val offsetItem = ClusterMarker(position.latitude, position.longitude, item.title, item.snippet)
                 algorithm.addItem(offsetItem)
             }
         } finally {

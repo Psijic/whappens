@@ -19,6 +19,10 @@ package com.psvoid.whappens.utils
 import android.util.Log
 import com.google.android.gms.maps.model.LatLng
 import com.psvoid.whappens.model.ClusterMarker
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
 import org.json.JSONArray
 import org.json.JSONException
 import java.io.InputStream
@@ -32,15 +36,13 @@ class MyItemReader {
     /**
      * Returns a list of cluster items read from the provided [inputStream]
      */
-    @Throws(JSONException::class)
     fun read(inputStream: InputStream): List<ClusterMarker> {
         // This matches only once in whole input so Scanner.next returns whole InputStream as a
         // String. http://stackoverflow.com/a/5445161/2183804
         val REGEX_INPUT_BOUNDARY_BEGINNING = "\\A"
 
         val items = mutableListOf<ClusterMarker>()
-        val json = Scanner(inputStream)
-            .useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next()
+        val json = Scanner(inputStream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next()
         val array = JSONArray(json)
         try {
             for (i in 0 until array.length()) {
@@ -55,11 +57,31 @@ class MyItemReader {
                 if (!`object`.isNull("snippet")) {
                     snippet = `object`.getString("snippet")
                 }
-                items.add(ClusterMarker(LatLng(lat, lng), title, snippet))
+                items.add(ClusterMarker(lat, lng, title, snippet))
             }
         } catch (e: JSONException) {
-            Log.e("ClusteringViewModel", "Error reading list of markers.", e)
+            Log.e("MyItemReader", "Error reading list of markers.", e)
         }
         return items
+    }
+
+    @Serializable
+    data class Data(val a: Int, val b: String = "42")
+
+    fun main() {
+        // Json also has .Default configuration which provides more reasonable settings,
+        // but is subject to change in future versions
+        val json = Json(JsonConfiguration.Stable)
+        // serializing objects
+        val jsonData = json.stringify(Data.serializer(), Data(42))
+        // serializing lists
+//    val jsonList = json.stringify(Data.serializer().list, listOf(Data(42)))
+        val jsonList = json.stringify(Data.serializer().list, listOf(Data(42)))
+        println(jsonData) // {"a": 42, "b": "42"}
+        println(jsonList) // [{"a": 42, "b": "42"}]
+
+        // parsing data back
+        val obj = json.parse(Data.serializer(), """{"a":42}""") // b is optional since it has default value
+        println(obj) // Data(a=42, b="42")
     }
 }
