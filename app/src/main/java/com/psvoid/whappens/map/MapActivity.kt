@@ -1,4 +1,4 @@
-package com.psvoid.whappens
+package com.psvoid.whappens.map
 
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -11,7 +11,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
-import com.psvoid.whappens.map.ClusteringViewModel
+import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 
 open class MapActivity : FragmentActivity(), OnMapReadyCallback {

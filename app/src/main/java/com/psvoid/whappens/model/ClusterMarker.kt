@@ -1,23 +1,8 @@
-/*
- * Copyright 2020 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.psvoid.whappens.model
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -28,11 +13,17 @@ import kotlinx.serialization.Serializable
  *  so we must name our fields differently and then pass them to the ClusterItem methods.
  */
 @Serializable
-data class ClusterMarker(val lat: Double, val lng: Double, val myTitle: String?, val mySnippet: String?) : ClusterItem {
-
-//    constructor(lat: Double, lng: Double, title: String?, snippet: String?): this (LatLng())
+data class ClusterMarker(
+    val lat: Double,
+    val lng: Double,
+    @SerialName("title")
+    val _title: String = "",
+    @SerialName("snippet")
+    val _snippet: String = "",
+    val image: String = ""
+) : ClusterItem {
 
     override fun getPosition() = LatLng(lat, lng)
-    override fun getTitle() = myTitle
-    override fun getSnippet() = mySnippet
+    override fun getTitle() = _title
+    override fun getSnippet() = _snippet
 }

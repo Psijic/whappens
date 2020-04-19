@@ -1,6 +1,7 @@
 package com.psvoid.whappens
 
 import android.os.Bundle
+import com.psvoid.whappens.map.MapActivity
 
 class MainActivity : MapActivity() {
 
