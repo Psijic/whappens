@@ -1,9 +1,11 @@
 package com.psvoid.whappens.model
 
 import com.google.firebase.database.IgnoreExtraProperties
+import kotlinx.serialization.Serializable
 import java.util.*
 
-@IgnoreExtraProperties
+//@IgnoreExtraProperties
+//@Serializable
 data class StreetEvent(
     val name: String,
     val type: String,
@@ -13,7 +15,7 @@ data class StreetEvent(
     val images: List<EventImage>,
     val dateTime: Date,
     val price: Price,
-    val classifications: Classification,
+    val classification: Classification,
     val place: Place
 )
 
@@ -22,18 +24,14 @@ data class Place(
     val country: String,
     val countryCode: String,
     val address: String,
-    val location: Coordinates,
+    val latitude: Double,
+    val longitude: Double,
     val externalLinks: Links
 )
 
 data class Links(
     val name: String,
     val urls: List<String>
-)
-
-data class Coordinates(
-    val lat: Double,
-    val lng: Double
 )
 
 data class Classification(

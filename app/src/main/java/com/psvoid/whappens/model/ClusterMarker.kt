@@ -4,6 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.random.Random
 
 /**
  * A data class that implements the [ClusterItem] interface so it can be clustered.
@@ -13,7 +14,7 @@ import kotlinx.serialization.Serializable
  *  so we must name our fields differently and then pass them to the ClusterItem methods.
  */
 @Serializable
-data class ClusterMarker(
+data class ClusterMarker1(
     val lat: Double,
     val lng: Double,
     @SerialName("title")
@@ -26,4 +27,22 @@ data class ClusterMarker(
     override fun getPosition() = LatLng(lat, lng)
     override fun getTitle() = name
     override fun getSnippet() = description
+}
+
+@Serializable
+data class ClusterMarker(
+    val name: String,
+    val type: String,
+    val id: String,
+    val url: String,
+    val locale: String,
+//        val images: List<EventImage>,
+    val dateTime: String = "",
+    val latitude: Double = Random.nextDouble( 51.38494009999999, 51.6723432),
+    val longitude: Double = Random.nextDouble(-0.3514683, 0.148271)
+) : ClusterItem {
+
+    override fun getPosition() = LatLng(latitude, longitude)
+    override fun getTitle() = name
+    override fun getSnippet() = type
 }

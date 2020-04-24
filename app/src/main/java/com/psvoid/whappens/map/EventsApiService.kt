@@ -36,7 +36,7 @@ interface EventsApiService {
      * Returns a Coroutine [Deferred] [List] of [StreetEvent] which can be fetched with await() if in a Coroutine scope.
      * The @GET annotation indicates that endpoint will be requested with the GET HTTP method
      */
-    @GET("directory.json")
+    @GET("events.json")
     fun getEvents():
     // The Coroutine Call Adapter allows us to return a Deferred, a Job with a result
 //            Deferred<List<StreetEvent>>

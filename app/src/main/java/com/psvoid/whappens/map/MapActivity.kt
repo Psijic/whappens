@@ -75,7 +75,7 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     }
 
     /**
-     * Run the demo-specific code.
+     * Run the code.
      */
     protected fun start() {
 
@@ -84,7 +84,6 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
 //        val start = LatLng(37.42, -122.20)
 //        map.addMarker(MarkerOptions().position(start).title("Marker Start"))
 //        map.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 15f))
-
 
 
 }

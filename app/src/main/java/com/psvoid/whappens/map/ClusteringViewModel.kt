@@ -19,7 +19,7 @@ class ClusteringViewModel : ViewModel() {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)//metrics.widthPixels, metrics.heightPixels
 
     fun readItems(resources: Resources) {
-        val inputStream = resources.openRawResource(R.raw.cluster_items)
+        val inputStream = resources.openRawResource(R.raw.mock_london)
         val items = HelperItemReader().readSerializable(inputStream)
 //        algorithm.lock()
 //        try {
