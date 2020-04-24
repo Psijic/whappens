@@ -1,8 +1,16 @@
 package com.psvoid.whappens.map
 
 import android.content.res.Resources
+import android.graphics.Bitmap
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
+import com.google.maps.android.clustering.view.DefaultClusterRenderer
+import com.google.maps.android.ui.IconGenerator
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.utils.HelperItemReader
@@ -25,4 +33,7 @@ class ClusteringViewModel : ViewModel() {
 //        algorithm.unlock()
 //        }
     }
+
+
+
 }

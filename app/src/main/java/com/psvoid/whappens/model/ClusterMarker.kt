@@ -17,13 +17,13 @@ data class ClusterMarker(
     val lat: Double,
     val lng: Double,
     @SerialName("title")
-    val _title: String = "",
+    val name: String = "",
     @SerialName("snippet")
-    val _snippet: String = "",
+    val description: String = "",
     val image: String = ""
 ) : ClusterItem {
 
     override fun getPosition() = LatLng(lat, lng)
-    override fun getTitle() = _title
-    override fun getSnippet() = _snippet
+    override fun getTitle() = name
+    override fun getSnippet() = description
 }

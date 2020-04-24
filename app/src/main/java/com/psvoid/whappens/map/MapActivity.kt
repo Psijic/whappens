@@ -13,27 +13,28 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.network.Config
 
 open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
     private var isRestore = false
 
-    private lateinit var mClusterManager: ClusterManager<ClusterMarker>
-    private lateinit var mViewModel: ClusteringViewModel
+    private lateinit var clusterManager: ClusterManager<ClusterMarker>
+    private lateinit var viewModel: ClusteringViewModel
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         isRestore = savedInstanceState != null
-        mViewModel = ViewModelProvider(this).get(ClusteringViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(ClusteringViewModel::class.java)
 
         setupMap()
         setupRestore()
     }
 
     private fun setupRestore() {
-        if (!isRestore)
-            mViewModel.readItems(resources)
+        if (!isRestore) // first run
+            viewModel.readItems(resources)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -60,10 +61,12 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private fun addClusters(map: GoogleMap, markerManager: MarkerManager) {
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
-        mViewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
-        mClusterManager = ClusterManager(this, map, markerManager)
-        mClusterManager.setAlgorithm(mViewModel.algorithm)
-        map.setOnCameraIdleListener(mClusterManager)
+        viewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
+        clusterManager = ClusterManager(this, map, markerManager)
+        clusterManager.setAlgorithm(viewModel.algorithm)
+        if (Config.showMarkerImages)
+            clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
+        map.setOnCameraIdleListener(clusterManager)
     }
 
     private fun setupMap() {
@@ -81,5 +84,7 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
 //        val start = LatLng(37.42, -122.20)
 //        map.addMarker(MarkerOptions().position(start).title("Marker Start"))
 //        map.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 15f))
+
+
 
 }
