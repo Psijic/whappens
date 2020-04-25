@@ -1,0 +1,678 @@
+{
+  "last_item": null,
+  "total_items": "2432",
+  "first_item": null,
+  "page_number": "1",
+  "page_size": "10",
+  "page_items": null,
+  "search_time": "0.092",
+  "page_count": "244",
+  "events": {
+    "event": [
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5148679",
+        "groups": null,
+        "url": "http://london.eventful.com/events/wine-and-cheese-tasting-friday-once-month-london-/E0-001-129447809-9?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-129447809-9",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.1757196",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-06-26 19:00:00",
+        "tz_id": null,
+        "description": " LONDON WINE AND CHEESE EVENING WITH 8 WINES ON FRIDAY EVENINGS ONLY £45 A HEAD Why does Goat’s cheese go well with Sauvignon, or Roquefort with dessert wines? find out at the London Wine and Cheese evening on Friday in the City. Suitable for anyone from beginner to enthusiast, the tasting will feature 8 fine wines and 4 matched cheeses, and will run from 7.00-9.00pm at the delightful French Bistro Côte Brasserie, with excellent French cheeses Topics: 8 Wines and 4 cheeses matched to the wines How to taste wine – The way the experts do Old World vs New World styles The major styles of wine, with fine wines from around the world Blind tastings to test your new knowledge The Gascon Paradox! Food pairing with Côte’s delightful cheese As well as any other topics you want to ask about (as long as they are wine-related). Treat yourself to an evening in the company of Cote Brasserie’s excellent French cheeses and 8 fine wines, or ask for an open dated voucher as a gift. Your presenter Gilbert is a fully qualified WSET (Wine and Spirit Education Trust) tutor, but he likes to have as much fun with wine as possible, so the evening is not academic, but presented in an informal and humorous style. You’ll leave with a smile on your face, plus you will know a lot more about wine than when you started! Place:  The Cork & Bottle Wine Bar, 27 Spring Street, London W2 1JA​ The legendary Cork & Bottle Wine Bar in Leicester Square have created a modern take on the original venue&#39;s quirky surroundings, a minute&#39;s walk from Paddington station. The workshop will take place in their delightful wine cellar, adorned with wine related pictures Times: 19.00 to 21.00  Dates: Friday 28th February 2020 Friday 24th April 2020 Friday 26th June 2020 To enroll please call 07957 898215 or email gilbert@winfieldwines.co.uk. ",
+        "modified": "2019-08-14 19:46:12",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "Wine and Cheese Tasting Friday once a month in London",
+        "venue_address": "27 Spring Street",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Food &amp; Wine",
+              "id": "food"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/044/656/434-5.jpeg_/wine-and-cheese-tasting-friday-once-month-london-34.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/044/656/434-5.jpeg_/wine-and-cheese-tasting-friday-once-month-london-34.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-08-14 19:13:14",
+        "venue_id": "V0-001-014623639-9",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "The Cork & Bottle Wine Bar",
+        "venue_url": "http://london.eventful.com/venues/the-cork-bottle-wine-bar-/V0-001-014623639-9?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": "E20 2ST",
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5432961",
+        "groups": null,
+        "url": "http://london.eventful.com/events/prudential-ridelondon-100-2020-maggies-charity-p-/E0-001-129312780-6?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-129312780-6",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.0165517",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-08-16 05:45:00",
+        "tz_id": null,
+        "description": " The Prudential Ride London-Surrey 100 is an exciting 100 mile cycling challenge through the closed roads of London and the beautiful Surrey Hills. Registration fee: £30 Fundraising target: £600 What support will you receive?  By joining team Maggie&#39;s you will receive continued support to help you smash your £600 fundraising target, invited to visit your local Maggie&#39;s Centre and sent your very own high performance cycling jersey along with iron on letters. How your fundraising will help £140 supports our exercise classes to help build and maintain strength and confidence whilst living with Cancer. £50 means someone just diagnosed with cancer can receive immediate advice and support from a Cancer Support Specialist. £40 could help someone diagnosed with cancer focus on their treatment and less on the struggle of supporting their family with our expert benefits advisors  If you have any questions please call us on 0300 123 1801 or email events@maggiescentres.org . ",
+        "modified": "2019-08-09 18:15:22",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "Prudential RideLondon 100 2020 - Maggie's charity place",
+        "venue_address": "Westfield Avenue",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Fundraising &amp; Charity",
+              "id": "fundraisers"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/044/630/213-4.jpeg_/prudential-ridelondon-100-2020-maggies-charity-pl-13.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/044/630/213-4.jpeg_/prudential-ridelondon-100-2020-maggies-charity-pl-13.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-08-09 12:38:51",
+        "venue_id": "V0-001-005007856-4",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Queen Elizabeth Olympic Park",
+        "venue_url": "http://london.eventful.com/venues/queen-elizabeth-olympic-park-/V0-001-005007856-4?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5901379",
+        "groups": null,
+        "url": "http://london.eventful.com/events/drug-and-alcohol-2-assessment-/E0-001-131191297-7?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-131191297-7",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.228914",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-06-10 16:00:00",
+        "tz_id": null,
+        "description": " Academic Lead: Professor Carmel Clancy  ",
+        "modified": "2019-10-03 23:51:34",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "Drug and Alcohol 2: Assessment",
+        "venue_address": "The Burroughs",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Other &amp; Miscellaneous",
+              "id": "other"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/045/223/881-2.jpeg_/drug-and-alcohol-2-assessment-81.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/045/223/881-2.jpeg_/drug-and-alcohol-2-assessment-81.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-10-03 23:51:34",
+        "venue_id": "V0-001-013125802-3",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "HG19, Middlesex University London",
+        "venue_url": "http://london.eventful.com/venues/hg19-middlesex-university-london-/V0-001-013125802-3?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5423285",
+        "groups": null,
+        "url": "http://london.eventful.com/events/rrsa-achieving-bronze-london-/E0-001-130744725-4?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-130744725-4",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.0092703",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-07-01 10:00:00",
+        "tz_id": null,
+        "description": " This course is an introduction the Award and to the UN Convention on the Rights of the Child.   If your school has recently registered for the Award then you will find this course is particularly well suited to your needs. The aim of this course is to arm you with strategies to involve and inform all members of your school community and work quickly and effectively towards the first stage of the Award, Bronze: Rights Committed.   Objectives of the day:   1.To know and understand the context and status of the UN Convention on the Rights of the Child 2.To be empowered to talk about and promote rights with adults and children 3.To understand the process of becoming a Rights Respecting School 4.To identify initial actions to get your school to the first stage of the Award, Bronze: Rights Committed ",
+        "modified": "2019-09-19 11:51:42",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "RRSA Achieving Bronze, London",
+        "venue_address": "1 Westfield Avenue , Stratford",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Other &amp; Miscellaneous",
+              "id": "other"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/045/116/240-6.jpeg_/rrsa-achieving-bronze-london-40.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/045/116/240-6.jpeg_/rrsa-achieving-bronze-london-40.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-09-19 11:51:42",
+        "venue_id": "V0-001-014657518-2",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Unicef UK",
+        "venue_url": "http://london.eventful.com/venues/unicef-uk-/V0-001-014657518-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5423285",
+        "groups": null,
+        "url": "http://london.eventful.com/events/rrsa-achieving-silver-london-/E0-001-130744535-3?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-130744535-3",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.0092703",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-06-10 10:00:00",
+        "tz_id": null,
+        "description": " Explore ways of developing an ethos of mutual respect for rights through rights-based agreements, consider participation rights, and discover practical ways to meet the RRSA standards to be ready for your Silver: Rights Aware accreditation.   Achieving Silver courses builds on the work done in Achieving Bronze.  This course is designed for RRSA leaders from schools who have started their journey towards the second stage of the Rights Respecting Schools Award, Silver: Rights Aware, and are familiar with the RRSA. Your school will have ideally achieved the first stage of the Award, Bronze: Rights Committed.   Objectives of the day:   1.Deepen your understanding of the ethos of a Rights Respecting School 2.Review and develop your plans 3.Develop your knowledge and understanding of global citizenship and sustainable development 4.Prepare for the next steps towards Silver ",
+        "modified": "2019-09-19 11:46:22",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "RRSA Achieving Silver, London",
+        "venue_address": "1 Westfield Avenue , Stratford",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Other &amp; Miscellaneous",
+              "id": "other"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/045/116/152-2.jpeg_/rrsa-achieving-silver-london-52.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/045/116/152-2.jpeg_/rrsa-achieving-silver-london-52.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-09-19 11:46:22",
+        "venue_id": "V0-001-014657518-2",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Unicef UK",
+        "venue_url": "http://london.eventful.com/venues/unicef-uk-/V0-001-014657518-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5423285",
+        "groups": null,
+        "url": "http://london.eventful.com/events/rrsa-101-ideas-teach-rights-london-/E0-001-130744367-4?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-130744367-4",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.0092703",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-06-11 10:00:00",
+        "tz_id": null,
+        "description": " If you’re looking for practical ideas on how to implement the Rights Respecting Schools Award in your school, then this is the course for you. You’ll leave with 101 activities and ideas to use in class with pupils, at staff meetings or INSET sessions, and to help engage parents.   Who should attend?   Any teacher or support staff member from a school already familiar with the RRSA standards and process, which is working towards or has just achieved the second stage of the Award, Silver: Rights Aware. ",
+        "modified": "2019-09-19 11:42:22",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "RRSA 101 Ideas to Teach About Rights, London",
+        "venue_address": "1 Westfield Avenue , Stratford",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Other &amp; Miscellaneous",
+              "id": "other"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/045/116/090-3.jpeg_/rrsa-101-ideas-teach-rights-london-90.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/045/116/090-3.jpeg_/rrsa-101-ideas-teach-rights-london-90.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-09-19 11:42:22",
+        "venue_id": "V0-001-014657518-2",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Unicef UK",
+        "venue_url": "http://london.eventful.com/venues/unicef-uk-/V0-001-014657518-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5423285",
+        "groups": null,
+        "url": "http://london.eventful.com/events/rrsa-achieving-gold-london-/E0-001-130744580-3?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-130744580-3",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.0092703",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-05-12 10:00:00",
+        "tz_id": null,
+        "description": " This course aims to deepen understanding of rights respecting values and global citizenship and explore examples of good practice across the four standards. It is ideal for strategic leads in schools that have achieved the second stage of the Award, Silver: Rights Aware, and are working towards the final stage of the Award, Gold: Rights Respecting. It would be most beneficial to have two representatives from each school. ",
+        "modified": "2019-09-19 11:47:51",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "RRSA Achieving Gold, London",
+        "venue_address": "1 Westfield Avenue , Stratford",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Other &amp; Miscellaneous",
+              "id": "other"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/045/116/176-2.jpeg_/rrsa-achieving-gold-london-76.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/045/116/176-2.jpeg_/rrsa-achieving-gold-london-76.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-09-19 11:47:51",
+        "venue_id": "V0-001-014657518-2",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Unicef UK",
+        "venue_url": "http://london.eventful.com/venues/unicef-uk-/V0-001-014657518-2?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.5130997",
+        "groups": null,
+        "url": "http://london.eventful.com/events/lifetime-membership-club-/E0-001-124850264-5?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-124850264-5",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.0945379",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-08-25 19:00:00",
+        "tz_id": null,
+        "description": " Come join our Prestige Club today for fabulous benefits and rewards. Here is the link for the meetup page you need to join and rsvp to the event you are going to go too: https://www.meetup.com/I-WANTED-TO-DO-THAT-THIS-WEEKEND-J/ IGNORE THE DATES THIS IS ONLY FOR EVENTBRITE PURPOSE! Being a member of Netparty - Networking With A Twist Membership Club will make you a part of the inner circle, where you will be offered various privileges attached to the membership. Being a privileged member you will also be offered special promotions designed only for the Prestige Club members. With your Membership Card you can come to all of for Free as long as you have your Card with you, but if you forget your Card OR/ you lose it you will be refused entry and have to buy a new card as no replacement cards will be issued for free! / Or charged same price as other members pay per event. ",
+        "modified": "2019-08-16 08:05:37",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "LIFETIME Membership Club",
+        "venue_address": "17 Watling Street",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Film",
+              "id": "movies_film"
+            },
+            {
+              "name": "Business &amp; Networking",
+              "id": "business"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/043/178/345-0.jpeg_/lifetime-membership-club-45.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/043/178/345-0.jpeg_/lifetime-membership-club-45.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-03-25 06:28:40",
+        "venue_id": "V0-001-014513888-7",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Popworld Watling Street",
+        "venue_url": "http://london.eventful.com/venues/popworld-watling-street-/V0-001-014513888-7?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0004",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.501",
+        "groups": null,
+        "url": "http://london.eventful.com/events/fset-coach-development-session-motivational-inter-/E0-001-129118935-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-129118935-2",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.124",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-07-15 13:00:00",
+        "tz_id": null,
+        "description": " These 1.5 hour workshops introduce a coaching tool , and discuss when during coaching it can be used and give you the chance to practice it. ",
+        "modified": "2019-08-01 10:13:16",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "FSET Coach development session: Motivational interviewing",
+        "venue_address": "South West Wing",
+        "geocode_type": "City Based GeoCodes",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": null,
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Other &amp; Miscellaneous",
+              "id": "other"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/044/576/557-6.jpeg_/fset-coach-development-session-motivational-interv-57.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "http://d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/044/576/557-6.jpeg_/fset-coach-development-session-motivational-interv-57.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-08-01 10:13:16",
+        "venue_id": "V0-001-014597402-1",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "Bush House",
+        "venue_url": "http://london.eventful.com/venues/bush-house-/V0-001-014597402-1?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      },
+      {
+        "watching_count": null,
+        "olson_path": "Europe/London",
+        "calendar_count": null,
+        "popularity": "0047",
+        "comment_count": null,
+        "region_abbr": "London",
+        "postal_code": null,
+        "going_count": null,
+        "all_day": "0",
+        "latitude": "51.513833",
+        "groups": null,
+        "url": "http://london.eventful.com/events/tuesday-burger-deal-/E0-001-128262729-4@2020042812?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+        "id": "E0-001-128262729-4@2020042812",
+        "privacy": "1",
+        "city_name": "London",
+        "link_count": null,
+        "longitude": "-0.301882",
+        "country_name": "United Kingdom",
+        "country_abbr": "GBR",
+        "region_name": "Greater London",
+        "start_time": "2020-04-28 12:00:00",
+        "tz_id": null,
+        "description": " Every Tuesday you can grab any two of our brand new burger range as part of our Buy One Get One Free offer! ",
+        "modified": "2019-06-28 14:00:17",
+        "venue_display": "1",
+        "tz_country": null,
+        "performers": null,
+        "price": null,
+        "title": "Tuesday Burger Deal",
+        "venue_address": "43 the broadway",
+        "geocode_type": "EVDB Geocoder",
+        "tz_olson_path": "Europe/London",
+        "free": null,
+        "recur_string": "on various days",
+        "calendars": null,
+        "owner": "evdb",
+        "going": null,
+        "country_abbr2": "GB",
+        "categories": {
+          "category": [
+            {
+              "name": "Food &amp; Wine",
+              "id": "food"
+            }
+          ]
+        },
+        "image": {
+          "block250": {
+            "width": "250",
+            "url": "//d1marr3m5x4iac.cloudfront.net/images/block250/I0-001/044/323/959-0.jpeg_/tuesday-burger-deal-59.jpeg",
+            "height": "250"
+          },
+          "thumb": {
+            "width": "48",
+            "url": "//d1marr3m5x4iac.cloudfront.net/images/thumb/I0-001/044/323/959-0.jpeg_/tuesday-burger-deal-59.jpeg",
+            "height": "48"
+          }
+        },
+        "created": "2019-06-28 01:48:43",
+        "venue_id": "V0-001-014339141-9",
+        "tz_city": null,
+        "stop_time": null,
+        "venue_name": "The North Star",
+        "venue_url": "http://london.eventful.com/venues/the-north-star-/V0-001-014339141-9?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+      }
+    ]
+  }
+}

@@ -34,6 +34,7 @@ data class Links(
     val urls: List<String>
 )
 
+@Serializable
 data class Classification(
     val primary: Boolean,
     val family: Boolean,
@@ -44,6 +45,7 @@ data class Classification(
     val subType: IdName
 )
 
+@Serializable
 data class IdName(
     val id: String,
     val name: String
@@ -55,10 +57,9 @@ data class Price(
     val currency: String
 )
 
+@Serializable
 data class EventImage(
-    val ratio: String,
     val url: String,
-    val width: Int,
-    val height: Int,
-    val fallback: Boolean
+    val width: String,
+    val height: String
 )
