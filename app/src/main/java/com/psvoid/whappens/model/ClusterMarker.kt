@@ -5,10 +5,7 @@ import com.google.maps.android.clustering.ClusterItem
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * A data class that implements the [ClusterItem] interface so it can be clustered.
- */
-
+/** A data class that implements the [ClusterItem] interface so it can be clustered. */
 @Serializable
 data class ClusterMarker(
     @SerialName("title")

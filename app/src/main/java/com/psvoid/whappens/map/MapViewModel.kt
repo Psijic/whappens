@@ -38,7 +38,7 @@ class MapViewModel : ViewModel() {
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     init {
-        getEvents(EventsApiFilter.ALL)
+//        getEvents(EventsApiFilter.ALL)
     }
 
     /**
@@ -47,7 +47,7 @@ class MapViewModel : ViewModel() {
      * returns a coroutine Deferred, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
-    private fun getEvents(filter: EventsApiFilter) {
+    fun getEvents(filter: EventsApiFilter) {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
             try {

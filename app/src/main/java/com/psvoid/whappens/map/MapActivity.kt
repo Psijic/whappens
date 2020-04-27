@@ -37,6 +37,7 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private fun setupRestore() {
         if (!isRestore) { // first run
 //            viewModel.readItems(resources)
+            viewModel.getEvents(EventsApiFilter.ALL)
         }
     }
 
