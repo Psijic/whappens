@@ -3,6 +3,7 @@ package com.psvoid.whappens.map
 import android.os.Bundle
 import android.util.DisplayMetrics
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -14,6 +15,7 @@ import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.network.Config
+import com.psvoid.whappens.network.LoadingStatus
 
 open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
@@ -30,7 +32,16 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         setupMap()
-//        setupRestore()
+        setupBinds()
+        setupRestore()
+    }
+
+    private fun setupBinds() {
+        viewModel.clusterStatus.observe(this, Observer {
+            if (LoadingStatus.DONE == it) {
+                clusterManager.cluster()
+            }
+        })
     }
 
     private fun setupRestore() {
@@ -80,12 +91,13 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
     /** Run the code. */
     private fun start() {
-        setupRestore()
-    }
-
+//        setupRestore()
 //        val start = LatLng(37.42, -122.20)
 //        map.addMarker(MarkerOptions().position(start).title("Marker Start"))
 //        map.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 15f))
+    }
+
+
 
 
 }

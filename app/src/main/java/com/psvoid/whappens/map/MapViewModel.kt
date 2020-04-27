@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.datatransport.runtime.logging.Logging
-import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
@@ -32,7 +31,9 @@ class MapViewModel : ViewModel() {
     }
 
     // The internal MutableLiveData that stores the status of the most recent request
-    private val _status = MutableLiveData<LoadingStatus>()
+    private val _clusterStatus = MutableLiveData<LoadingStatus>()
+    val clusterStatus: LiveData<LoadingStatus>
+        get() = _clusterStatus
 
     // Create a Coroutine scope using a job to be able to cancel when needed
     private val viewModelJob = Job()
@@ -53,15 +54,14 @@ class MapViewModel : ViewModel() {
     fun getEventsAsync(filter: EventsApiFilter) {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
-            _status.value = LoadingStatus.LOADING
+            _clusterStatus.value = LoadingStatus.LOADING
             try {
                 // this will run on a thread managed by Retrofit
                 val listResult = EventsApi.retrofitService.getEventsAsync()
-                _status.value = LoadingStatus.DONE
                 addClusterItems(listResult.events.event)
             } catch (e: Exception) {
                 Logging.e("MapViewModel", "Error loading events", e)
-                _status.value = LoadingStatus.ERROR
+                _clusterStatus.value = LoadingStatus.ERROR
             }
         }
     }
@@ -69,6 +69,7 @@ class MapViewModel : ViewModel() {
     private fun addClusterItems(items: List<ClusterMarker>) {
 //        algorithm.lock()
         algorithm.addItems(items)
+        _clusterStatus.value = LoadingStatus.DONE
 //        algorithm.unlock()
 //        clusterManager.cluster()
     }
