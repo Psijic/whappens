@@ -1,7 +1,6 @@
 package com.psvoid.whappens.network
 
-class Config {
-    companion object {
-        const val showMarkerImages = true
-    }
+object Config {
+    const val showMarkerImages = true
+    const val logs = true
 }
