@@ -4,16 +4,20 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.maps.android.clustering.ClusterItem
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.model.StreetEvent
+import com.psvoid.whappens.model.adapters.Eve
 import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.utils.HelperItemReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 enum class EventsApiFilter(val value: String) { THEATRE("theatre"), MUSIC("music"), ALL("all") }
 
@@ -21,12 +25,11 @@ class MapViewModel : ViewModel() {
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
-    fun readItems(resources: Resources) {
-        val inputStream = resources.openRawResource(R.raw.mock_london_even)
+    /* Read local JSON file */
+    fun readResourceJson(resources: Resources) {
+        val inputStream = resources.openRawResource(R.raw.event1)
         val items = HelperItemReader().readSerializable(inputStream)
-//        algorithm.lock()
-        algorithm.addItems(items)
-//        algorithm.unlock()
+        addClusterItems(items)
     }
 
     // The internal MutableLiveData String that stores the most recent response
@@ -78,17 +81,24 @@ class MapViewModel : ViewModel() {
     private fun getEvents(filter: EventsApiFilter) {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
-            var getEventsDeferred = EventsApi.retrofitService.getEvents()
+//            val getEventsDeferred = EventsApi.retrofitService.getEventsAsync()
             try {
 //                _status.value = EventsApiStatus.LOADING
                 // this will run on a thread managed by Retrofit
-                val listResult = getEventsDeferred.await()
+                val listResult = EventsApi.retrofitService.getEventsAsync()
 //                _status.value = EventsApiStatus.DONE
-                _response.value = "Success: ${listResult.size} Mars properties retrieved"
+                _response.value = "Success: events retrieved"
+                addClusterItems(listResult.events.event)
             } catch (e: Exception) {
                 _response.value = "Failure: ${e.message}"
             }
         }
+    }
+
+    private fun addClusterItems(items: List<ClusterMarker>) {
+        algorithm.lock()
+        algorithm.addItems(items)
+        algorithm.unlock()
     }
 
     /**
@@ -102,21 +112,21 @@ class MapViewModel : ViewModel() {
 
 }
 
-data class MarsProperty(
-    val id: String,
-    // used to map img_src from the JSON to imgSrcUrl in our class
-//    @Json(name = "img_src") val imgSrcUrl: String,
-    val type: String,
-    val price: Double
-)
-
-//@Serializable
 //data class MarsProperty(
 //    val id: String,
 //    // used to map img_src from the JSON to imgSrcUrl in our class
-//    @SerialName("img_src") val imgSrcUrl: String,
+//    @Json(name = "img_src") val imgSrcUrl: String,
 //    val type: String,
-//    val price: Double)
+//    val price: Double
+//)
+
+@Serializable
+data class MarsProperty(
+    val id: String,
+    // used to map img_src from the JSON to imgSrcUrl in our class
+    @SerialName("img_src") val imgSrcUrl: String,
+    val type: String,
+    val price: Double)
 
 
 

@@ -5,6 +5,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.psvoid.whappens.map.MarsProperty
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.model.StreetEvent
+import com.psvoid.whappens.model.adapters.Eve
 //import com.squareup.moshi.Moshi
 //import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.Deferred
@@ -24,7 +25,7 @@ private const val BASE_URL = "https://api.eventful.com/json/events/" //"https://
 private val contentType: MediaType = MediaType.get("application/json")
 
 //private val contentType = MediaType("application/json")
-val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
+private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
 
 /**
  * Build the Moshi object that Retrofit will be using, making sure to add the Kotlin adapter for full Kotlin compatibility.
@@ -35,7 +36,6 @@ val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenien
 
 private val logging: Interceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS);
 private val httpClient =  OkHttpClient.Builder().addInterceptor(logging).build()
-
 
 /**
  * Use the Retrofit builder to build a retrofit object using a Moshi converter with our Moshi object.
@@ -49,7 +49,7 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 /**
- * A public interface that exposes the [getEvents] method
+ * A public interface that exposes the [getEventsAsync] method
  */
 interface EventsApiService {
     /**
@@ -58,11 +58,8 @@ interface EventsApiService {
      */
     @GET("search?app_key=hFc7MXpW2X4ZnCqr&location=london&page_size=10&include=categories,subcategories,popularity,price&date=Future&image_sizes=thumb,block250")
 //    @GET("realestate?size=450&gg=543")
-    fun getEvents():
+    suspend fun getEventsAsync(): Eve.Events
     // The Coroutine Call Adapter allows us to return a Deferred, a Job with a result
-            Deferred<List<ClusterMarker>>
-//            Deferred<List<MarsProperty>>
-//            Deferred<List<Any>>
 }
 
 /**

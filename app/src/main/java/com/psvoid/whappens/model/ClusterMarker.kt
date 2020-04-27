@@ -17,7 +17,7 @@ data class ClusterMarker(
     val url: String,
     val locale: String = "en",
     @SerialName("image")
-    val images: Images,
+    val images: Images?,
     @SerialName("start_time")
     val dateTime: String,
     val latitude: Double,
