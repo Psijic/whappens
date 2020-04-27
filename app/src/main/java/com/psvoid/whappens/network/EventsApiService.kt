@@ -13,6 +13,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
 
+enum class LoadingStatus { LOADING, ERROR, DONE }
+
 /** A public interface that exposes the [getEventsAsync] method */
 interface EventsApiService {
     /**

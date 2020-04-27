@@ -21,7 +21,6 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
 
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
 
-    //    private lateinit var viewModel: ClusteringViewModel
     private lateinit var viewModel: MapViewModel
 
     public override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,20 +30,21 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         setupMap()
-        setupRestore()
+//        setupRestore()
     }
 
     private fun setupRestore() {
         if (!isRestore) { // first run
 //            viewModel.readItems(resources)
-            viewModel.getEvents(EventsApiFilter.ALL)
+            viewModel.getEventsAsync(EventsApiFilter.ALL)
         }
     }
 
     override fun onMapReady(map: GoogleMap) {
         this.map = map
-        if (!isRestore)
+        if (!isRestore) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
+        }
         showMapLayers()
         start()
     }
@@ -78,11 +78,9 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
     }
 
-    /**
-     * Run the code.
-     */
-    protected fun start() {
-
+    /** Run the code. */
+    private fun start() {
+        setupRestore()
     }
 
 //        val start = LatLng(37.42, -122.20)

@@ -4,11 +4,14 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.datatransport.runtime.logging.Logging
+import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.model.StreetEvent
 import com.psvoid.whappens.network.EventsApi
+import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,11 +31,11 @@ class MapViewModel : ViewModel() {
         addClusterItems(items)
     }
 
-    // The internal MutableLiveData String that stores the most recent response
-    private val _response = MutableLiveData<String>()
+    // The internal MutableLiveData that stores the status of the most recent request
+    private val _status = MutableLiveData<LoadingStatus>()
 
     // Create a Coroutine scope using a job to be able to cancel when needed
-    private var viewModelJob = Job()
+    private val viewModelJob = Job()
 
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -47,26 +50,27 @@ class MapViewModel : ViewModel() {
      * returns a coroutine Deferred, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
-    fun getEvents(filter: EventsApiFilter) {
+    fun getEventsAsync(filter: EventsApiFilter) {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
+            _status.value = LoadingStatus.LOADING
             try {
-//                _status.value = EventsApiStatus.LOADING
                 // this will run on a thread managed by Retrofit
                 val listResult = EventsApi.retrofitService.getEventsAsync()
-//                _status.value = EventsApiStatus.DONE
-                _response.value = "Success: events retrieved"
+                _status.value = LoadingStatus.DONE
                 addClusterItems(listResult.events.event)
             } catch (e: Exception) {
-                _response.value = "Failure: ${e.message}"
+                Logging.e("MapViewModel", "Error loading events", e)
+                _status.value = LoadingStatus.ERROR
             }
         }
     }
 
     private fun addClusterItems(items: List<ClusterMarker>) {
-        algorithm.lock()
+//        algorithm.lock()
         algorithm.addItems(items)
-        algorithm.unlock()
+//        algorithm.unlock()
+//        clusterManager.cluster()
     }
 
     /** When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the Retrofit service to stop. */
