@@ -20,21 +20,24 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
     private var isRestore = false
 
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
-    private lateinit var viewModel: ClusteringViewModel
+
+    //    private lateinit var viewModel: ClusteringViewModel
+    private lateinit var viewModel: MapViewModel
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         isRestore = savedInstanceState != null
-        viewModel = ViewModelProvider(this).get(ClusteringViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         setupMap()
         setupRestore()
     }
 
     private fun setupRestore() {
-        if (!isRestore) // first run
-            viewModel.readItems(resources)
+        if (!isRestore) { // first run
+//            viewModel.readItems(resources)
+        }
     }
 
     override fun onMapReady(map: GoogleMap) {

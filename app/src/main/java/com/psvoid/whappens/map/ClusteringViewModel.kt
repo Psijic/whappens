@@ -8,24 +8,15 @@ import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.utils.HelperItemReader
 
 class ClusteringViewModel : ViewModel() {
-    val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)//metrics.widthPixels, metrics.heightPixels
+    val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
     fun readItems(resources: Resources) {
         val inputStream = resources.openRawResource(R.raw.mock_london_even)
         val items = HelperItemReader().readSerializable(inputStream)
 //        algorithm.lock()
-//        try {
         algorithm.addItems(items)
-//            for (item in items) {
-//                val position = item.position
-//                algorithm.addItem(ClusterMarker(position.latitude, position.longitude, item.title, item.snippet))
-//
-//            }
-//        } finally {
 //        algorithm.unlock()
-//        }
     }
-
 
 
 }

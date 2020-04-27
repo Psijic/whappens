@@ -1,9 +1,15 @@
 package com.psvoid.whappens.map
 
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
+import com.psvoid.whappens.R
+import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.model.StreetEvent
+import com.psvoid.whappens.network.EventsApi
+import com.psvoid.whappens.utils.HelperItemReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,6 +18,19 @@ import kotlinx.coroutines.launch
 enum class EventsApiFilter(val value: String) { THEATRE("theatre"), MUSIC("music"), ALL("all") }
 
 class MapViewModel : ViewModel() {
+
+    val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
+
+    fun readItems(resources: Resources) {
+        val inputStream = resources.openRawResource(R.raw.mock_london_even)
+        val items = HelperItemReader().readSerializable(inputStream)
+//        algorithm.lock()
+        algorithm.addItems(items)
+//        algorithm.unlock()
+    }
+
+    // The internal MutableLiveData String that stores the most recent response
+    private val _response = MutableLiveData<String>()
 
 //    // The internal MutableLiveData that stores the status of the most recent request
 //    private val _status = MutableLiveData<EventsApiStatus>()
@@ -22,18 +41,18 @@ class MapViewModel : ViewModel() {
 
     // Internally, we use a MutableLiveData, because we will be updating the List of StreetEvent
     // with new values
-    private val _properties = MutableLiveData<List<StreetEvent>>()
+//    private val _properties = MutableLiveData<List<StreetEvent>>()
 
     // The external LiveData interface to the property is immutable, so only this class can modify
-    val properties: LiveData<List<StreetEvent>>
-        get() = _properties
+//    val properties: LiveData<List<StreetEvent>>
+//        get() = _properties
 
     // Internally, we use a MutableLiveData to handle nav_graph to the selected property
-    private val _navigateToSelectedProperty = MutableLiveData<StreetEvent>()
+//    private val _navigateToSelectedProperty = MutableLiveData<StreetEvent>()
 
     // The external immutable LiveData for the nav_graph property
-    val navigateToSelectedProperty: LiveData<StreetEvent>
-        get() = _navigateToSelectedProperty
+//    val navigateToSelectedProperty: LiveData<StreetEvent>
+//        get() = _navigateToSelectedProperty
 
     // Create a Coroutine scope using a job to be able to cancel when needed
     private var viewModelJob = Job()
@@ -60,19 +79,44 @@ class MapViewModel : ViewModel() {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
             var getEventsDeferred = EventsApi.retrofitService.getEvents()
-//            try {
+            try {
 //                _status.value = EventsApiStatus.LOADING
-//                // this will run on a thread managed by Retrofit
-//                val listResult = getPropertiesDeferred.await()
+                // this will run on a thread managed by Retrofit
+                val listResult = getEventsDeferred.await()
 //                _status.value = EventsApiStatus.DONE
-//                _properties.value = listResult
-//            } catch (e: Exception) {
-//                _status.value = EventsApiStatus.ERROR
-//                _properties.value = ArrayList()
-//            }
+                _response.value = "Success: ${listResult.size} Mars properties retrieved"
+            } catch (e: Exception) {
+                _response.value = "Failure: ${e.message}"
+            }
         }
     }
+
+    /**
+     * When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the
+     * Retrofit service to stop.
+     */
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
+
 }
+
+data class MarsProperty(
+    val id: String,
+    // used to map img_src from the JSON to imgSrcUrl in our class
+//    @Json(name = "img_src") val imgSrcUrl: String,
+    val type: String,
+    val price: Double
+)
+
+//@Serializable
+//data class MarsProperty(
+//    val id: String,
+//    // used to map img_src from the JSON to imgSrcUrl in our class
+//    @SerialName("img_src") val imgSrcUrl: String,
+//    val type: String,
+//    val price: Double)
 
 
 
