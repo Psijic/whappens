@@ -18,12 +18,10 @@ import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.LoadingStatus
 
 open class MapActivity : FragmentActivity(), OnMapReadyCallback {
-    private lateinit var map: GoogleMap
-    private var isRestore = false
-
-    private lateinit var clusterManager: ClusterManager<ClusterMarker>
-
     private lateinit var viewModel: MapViewModel
+    private lateinit var map: GoogleMap
+    private lateinit var clusterManager: ClusterManager<ClusterMarker>
+    private var isRestore = false
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,8 +94,6 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
 //        map.addMarker(MarkerOptions().position(start).title("Marker Start"))
 //        map.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 15f))
     }
-
-
 
 
 }
