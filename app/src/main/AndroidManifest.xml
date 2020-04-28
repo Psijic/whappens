@@ -41,6 +41,7 @@
         </activity>
 
         <activity android:name=".map.MapActivity" />
+        <activity android:name=".BaseActivity" />
     </application>
 
 </manifest>

@@ -2,7 +2,7 @@ package com.psvoid.whappens.map
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import androidx.fragment.app.FragmentActivity
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -10,14 +10,16 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
+import com.psvoid.whappens.BaseActivity
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.LoadingStatus
 
-open class MapActivity : FragmentActivity(), OnMapReadyCallback {
+open class MapActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
@@ -32,6 +34,11 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         setupMap()
         setupBinds()
         setupRestore()
+    }
+
+    private fun setupMap() {
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun setupBinds() {
@@ -54,8 +61,29 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         if (!isRestore) {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
         }
+
         showMapLayers()
+        if (Config.mapStyle > 0) setMapStyle(map, Config.mapStyle)
+        enableLocation()
+        setupMapButtons()
         start()
+    }
+
+    private fun setupMapButtons() {
+//        map.setMaxZoomPreference (15f)
+        map.uiSettings.isZoomControlsEnabled = true
+        map.uiSettings.isMapToolbarEnabled = false
+    }
+
+    override fun setupLocation() {
+        map.isMyLocationEnabled = true
+    }
+
+
+    /** Set map styling and theming. */
+    private fun setMapStyle(map: GoogleMap, style: Int) {
+        val success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, style))
+        if (!success) Log.e("MapActivity", "Setting map style failed.")
     }
 
     private fun showMapLayers() {
@@ -82,18 +110,8 @@ open class MapActivity : FragmentActivity(), OnMapReadyCallback {
         map.setOnCameraIdleListener(clusterManager)
     }
 
-    private fun setupMap() {
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
-    }
-
     /** Run the code. */
     private fun start() {
 //        setupRestore()
-//        val start = LatLng(37.42, -122.20)
-//        map.addMarker(MarkerOptions().position(start).title("Marker Start"))
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(start, 15f))
     }
-
-
 }
