@@ -1,5 +1,9 @@
 package com.psvoid.whappens.map
 
+import android.content.Context
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
@@ -33,7 +37,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
 
         setupMap()
         setupBinds()
-        setupRestore()
     }
 
     private fun setupMap() {
@@ -49,24 +52,36 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         })
     }
 
+    /** First run */
     private fun setupRestore() {
-        if (!isRestore) { // first run
-//            viewModel.readItems(resources)
+        if (!isRestore) {
             viewModel.getEventsAsync(EventsApiFilter.ALL)
+
+            // Set camera start point
+            val location = getMyLocation()
+            if (location != null)
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 10f))
         }
     }
 
     override fun onMapReady(map: GoogleMap) {
         this.map = map
-        if (!isRestore) {
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(51.503186, -0.126446), 10f))
-        }
 
         showMapLayers()
         if (Config.mapStyle > 0) setMapStyle(map, Config.mapStyle)
         enableLocation()
         setupMapButtons()
+        setupRestore()
         start()
+    }
+
+    private fun getMyLocation(): Location? {
+        if (isPermissionGranted(FINE_LOCATION)) {
+            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val provider = locationManager.getBestProvider(Criteria(), false)
+            return locationManager.getLastKnownLocation(provider ?: LocationManager.NETWORK_PROVIDER)
+        }
+        return null
     }
 
     private fun setupMapButtons() {
