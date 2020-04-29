@@ -22,14 +22,14 @@ interface EventsApiService {
      * Returns a Coroutine [Deferred] [List] of [StreetEvent] which can be fetched with await() if in a Coroutine scope.
      * The @GET annotation indicates that endpoint will be requested with the GET HTTP method
      */
-    @GET("?include=categories,subcategories,popularity,price&image_sizes=thumb,block250")
+    @GET("search?include=categories,subcategories,popularity,price&image_sizes=thumb,block250")
     suspend fun getEventsAsync(@QueryMap(encoded = false) options: Map<String, String>): Eve.Events
 //    suspend fun getEventsAsync(@Query("where") location: String): Eve.Events
 }
 
 /** A public Api object that exposes the lazy-initialized Retrofit service */
 object EventsApi {
-    private const val BASE_URL = "https://api.eventful.com/json/events/search/"
+    private const val BASE_URL = "https://api.eventful.com/json/events/"
     private val contentType: MediaType = MediaType.get("application/json")
     private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
     private val logLevel = if (Config.logs) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
@@ -38,7 +38,6 @@ object EventsApi {
 
     /** Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter. */
     private val retrofit = Retrofit.Builder()
-//        .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .addConverterFactory(json.asConverterFactory(contentType))
         .baseUrl(BASE_URL)
         .client(httpClient)
