@@ -33,7 +33,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
         isRestore = savedInstanceState != null
-        viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
+        viewModel = ViewModelProvider(this, MapViewModelFactory(resources)).get(MapViewModel::class.java)
 
         setupMap()
     }
@@ -67,6 +67,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             // get events near needed point
             viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude)
         }
+        getString(R.string.eventful_key)
     }
 
     override fun onMapReady(map: GoogleMap) {

@@ -22,7 +22,7 @@ interface EventsApiService {
      * Returns a Coroutine [Deferred] [List] of [StreetEvent] which can be fetched with await() if in a Coroutine scope.
      * The @GET annotation indicates that endpoint will be requested with the GET HTTP method
      */
-    @GET("?app_key=hFc7MXpW2X4ZnCqr&include=categories,subcategories,popularity,price&image_sizes=thumb,block250")
+    @GET("?include=categories,subcategories,popularity,price&image_sizes=thumb,block250")
     suspend fun getEventsAsync(@QueryMap(encoded = false) options: Map<String, String>): Eve.Events
 //    suspend fun getEventsAsync(@Query("where") location: String): Eve.Events
 }

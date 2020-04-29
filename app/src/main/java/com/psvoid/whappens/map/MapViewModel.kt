@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.datatransport.runtime.logging.Logging
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
@@ -18,12 +19,19 @@ import kotlinx.coroutines.launch
 
 enum class EventsApiFilter(val value: String) { THEATRE("theatre"), MUSIC("music"), ALL("all") }
 
-class MapViewModel : ViewModel() {
+/** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
+class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MapViewModel::class.java)) return MapViewModel(resources) as T
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
 
+class MapViewModel(private val resources: Resources) : ViewModel() {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
     /* Read local JSON file */
-    fun readResourceJson(resources: Resources) {
+    fun readResourceJson() {
         val inputStream = resources.openRawResource(R.raw.event1)
         val items = HelperItemReader().readSerializable(inputStream)
         addClusterItems(items)
@@ -39,6 +47,7 @@ class MapViewModel : ViewModel() {
 
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+
 
     /**
      * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
@@ -66,6 +75,7 @@ class MapViewModel : ViewModel() {
         options["within"] = "25"
         options["date"] = "Future"
         options["page_size"] = "10"
+        options["app_key"] = resources.getString(R.string.eventful_key)
         return options
     }
 
