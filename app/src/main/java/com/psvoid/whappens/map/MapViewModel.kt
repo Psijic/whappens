@@ -8,7 +8,6 @@ import com.google.android.datatransport.runtime.logging.Logging
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
-import com.psvoid.whappens.model.StreetEvent
 import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
@@ -41,14 +40,8 @@ class MapViewModel : ViewModel() {
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    init {
-//        getEvents(EventsApiFilter.ALL)
-    }
-
     /**
-     * Gets filtered Mars real estate property information from the Mars API Retrofit service and
-     * updates the [StreetEvent] [List] and [EventsApiStatus] [LiveData]. The Retrofit service
-     * returns a coroutine Deferred, which we await to get the result of the transaction.
+     * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
     fun getEventsAsync(filter: EventsApiFilter, lat: Double, long: Double) {
@@ -56,14 +49,8 @@ class MapViewModel : ViewModel() {
             // Get the Deferred object for our Retrofit request
             _clusterStatus.value = LoadingStatus.LOADING
             try {
-                // Adding query params. This will run on a thread managed by Retrofit.
-                val options: MutableMap<String, String> = HashMap()
-                options["where"] = "$lat,$long"
-                options["within"] = "25"
-                options["date"] = "Future"
-                options["page_size"] = "10"
-
-                val listResult = EventsApi.retrofitService.getEventsAsync(options)
+                // This will run on a thread managed by Retrofit.
+                val listResult = EventsApi.retrofitService.getEventsAsync(getQueryOptions(lat, long))
                 addClusterItems(listResult.events.event)
             } catch (e: Exception) {
                 Logging.e("MapViewModel", "Error loading events", e)
@@ -72,11 +59,21 @@ class MapViewModel : ViewModel() {
         }
     }
 
+    /** Adding query params. */
+    private fun getQueryOptions(lat: Double, long: Double): MutableMap<String, String> {
+        val options: MutableMap<String, String> = HashMap()
+        options["where"] = "$lat,$long"
+        options["within"] = "25"
+        options["date"] = "Future"
+        options["page_size"] = "10"
+        return options
+    }
+
     private fun addClusterItems(items: List<ClusterMarker>) {
 //        algorithm.lock()
         algorithm.addItems(items)
-        _clusterStatus.value = LoadingStatus.DONE
 //        algorithm.unlock()
+        _clusterStatus.value = LoadingStatus.DONE
     }
 
     /** When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the Retrofit service to stop. */
