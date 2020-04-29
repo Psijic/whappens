@@ -36,7 +36,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         setupMap()
-        setupBinds()
     }
 
     private fun setupMap() {
@@ -55,19 +54,26 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
     /** First run */
     private fun setupRestore() {
         if (!isRestore) {
-            viewModel.getEventsAsync(EventsApiFilter.ALL)
-
-            // Set camera start point
+            // set camera start point
             val location = getMyLocation()
-            if (location != null)
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 10f))
+            var latitude: Double = 32.746782
+            var longitude: Double = -117.162841
+
+            if (location != null) {
+                latitude = location.latitude
+                longitude = location.longitude
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 10f))
+            }
+            // get events near needed point
+            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude)
         }
     }
 
     override fun onMapReady(map: GoogleMap) {
         this.map = map
 
-        showMapLayers()
+        setupMapLayers()
+        setupBinds()
         if (Config.mapStyle > 0) setMapStyle(map, Config.mapStyle)
         enableLocation()
         setupMapButtons()
@@ -101,7 +107,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         if (!success) Log.e("MapActivity", "Setting map style failed.")
     }
 
-    private fun showMapLayers() {
+    private fun setupMapLayers() {
         // Shared object managers - used to support multiple layer types on the map simultaneously
         val markerManager = MarkerManager(map)
 //        val groundOverlayManager = GroundOverlayManager(map)

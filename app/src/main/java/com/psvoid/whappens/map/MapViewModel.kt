@@ -51,13 +51,19 @@ class MapViewModel : ViewModel() {
      * returns a coroutine Deferred, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
-    fun getEventsAsync(filter: EventsApiFilter) {
+    fun getEventsAsync(filter: EventsApiFilter, lat: Double, long: Double) {
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
             _clusterStatus.value = LoadingStatus.LOADING
             try {
-                // this will run on a thread managed by Retrofit
-                val listResult = EventsApi.retrofitService.getEventsAsync()
+                // Adding query params. This will run on a thread managed by Retrofit.
+                val options: MutableMap<String, String> = HashMap()
+                options["where"] = "$lat,$long"
+                options["within"] = "25"
+                options["date"] = "Future"
+                options["page_size"] = "10"
+
+                val listResult = EventsApi.retrofitService.getEventsAsync(options)
                 addClusterItems(listResult.events.event)
             } catch (e: Exception) {
                 Logging.e("MapViewModel", "Error loading events", e)

@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
+import retrofit2.http.QueryMap
 
 enum class LoadingStatus { LOADING, ERROR, DONE }
 
@@ -21,14 +22,14 @@ interface EventsApiService {
      * Returns a Coroutine [Deferred] [List] of [StreetEvent] which can be fetched with await() if in a Coroutine scope.
      * The @GET annotation indicates that endpoint will be requested with the GET HTTP method
      */
-    @GET("search?app_key=hFc7MXpW2X4ZnCqr&location=london&page_size=10&include=categories,subcategories,popularity,price&date=Future&image_sizes=thumb,block250")
-    suspend fun getEventsAsync(): Eve.Events
-    // The Coroutine Call Adapter allows us to return a Deferred, a Job with a result
+    @GET("?app_key=hFc7MXpW2X4ZnCqr&include=categories,subcategories,popularity,price&image_sizes=thumb,block250")
+    suspend fun getEventsAsync(@QueryMap(encoded = false) options: Map<String, String>): Eve.Events
+//    suspend fun getEventsAsync(@Query("where") location: String): Eve.Events
 }
 
 /** A public Api object that exposes the lazy-initialized Retrofit service */
 object EventsApi {
-    private const val BASE_URL = "https://api.eventful.com/json/events/"
+    private const val BASE_URL = "https://api.eventful.com/json/events/search/"
     private val contentType: MediaType = MediaType.get("application/json")
     private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
     private val logLevel = if (Config.logs) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
