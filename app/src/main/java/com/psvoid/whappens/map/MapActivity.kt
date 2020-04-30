@@ -68,7 +68,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 10f))
             }
             // get events near needed point
-            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude)
+//            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude, map.cameraPosition.zoom)
         }
     }
 
@@ -107,7 +107,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
 
 
     private fun setupMapButtons() {
-//        map.setMaxZoomPreference (15f)
+        map.setMaxZoomPreference(Config.maxMapZoom)
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isMapToolbarEnabled = false
 
@@ -147,14 +147,23 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         if (Config.showMarkerImages)
             clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
 
-        // Handle event when map camera stops moving.
-        map.setOnCameraIdleListener {
-            Log.v("MapActivity", "onCameraIdle")
+        map.setOnCameraIdleListener { onCameraIdleListener() }
+    }
+
+    /** Handle event when map camera stops moving. */
+    private fun onCameraIdleListener() {
+        Log.i("MapActivity", "onCameraIdle ${map.cameraPosition.zoom}")
+        clusterManager.onCameraIdle()
+
+        //TODO: Check if the position isn't changed but only zoom increased - there is no need to update. Zoom cap
+        if (map.cameraPosition.zoom in Config.minSearchZoom..Config.maxMapZoom) {
             val position = map.cameraPosition.target
-            clusterManager.onCameraIdle()
-            viewModel.getEventsAsync(EventsApiFilter.ALL, position.latitude, position.longitude)
+            viewModel.getEventsAsync(EventsApiFilter.ALL, position.latitude, position.longitude, radius())
         }
     }
+
+    //TODO: Add screen size and user settings to calculations
+    private fun radius() = (Config.searchRadius / map.cameraPosition.zoom) // Zoom in 3..21
 
     /** Run the code. */
     private fun start() {
@@ -168,7 +177,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             val marker = map.addMarker(
                 MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
-            viewModel.getEventsAsync(EventsApiFilter.ALL, latLng.latitude, latLng.longitude)
+            viewModel.getEventsAsync(EventsApiFilter.ALL, latLng.latitude, latLng.longitude, radius())
             Handler().postDelayed({ marker.remove() }, 800)
         }
     }
