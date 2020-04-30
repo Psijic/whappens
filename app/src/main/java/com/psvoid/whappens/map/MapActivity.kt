@@ -132,13 +132,13 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
 //        val polygonManager = PolygonManager(map)
 //        val polylineManager = PolylineManager(map)
 
-        addClusters(map, markerManager)
+        addClusters(markerManager)
 //        addGeoJson(map, markerManager, polylineManager, polygonManager, groundOverlayManager)
 //        addKml(map, markerManager, polylineManager, polygonManager, groundOverlayManager)
 //        addMarker(markerManager)
     }
 
-    private fun addClusters(map: GoogleMap, markerManager: MarkerManager) {
+    private fun addClusters(markerManager: MarkerManager) {
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(metrics)
         viewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
@@ -146,12 +146,18 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         clusterManager.setAlgorithm(viewModel.algorithm)
         if (Config.showMarkerImages)
             clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
-        map.setOnCameraIdleListener(clusterManager)
+
+        // Handle event when map camera stops moving.
+        map.setOnCameraIdleListener {
+            Log.v("MapActivity", "onCameraIdle")
+            val position = map.cameraPosition.target
+            clusterManager.onCameraIdle()
+            viewModel.getEventsAsync(EventsApiFilter.ALL, position.latitude, position.longitude)
+        }
     }
 
     /** Run the code. */
     private fun start() {
-//        setupRestore()
 
     }
 
@@ -164,9 +170,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             )
             viewModel.getEventsAsync(EventsApiFilter.ALL, latLng.latitude, latLng.longitude)
             Handler().postDelayed({ marker.remove() }, 800)
-
         }
-
     }
-
 }
