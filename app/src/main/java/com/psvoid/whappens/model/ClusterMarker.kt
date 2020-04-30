@@ -36,7 +36,7 @@ data class ClusterMarker(
 
     override fun getPosition() = LatLng(latitude, longitude)
     override fun getTitle() = name
-    override fun getSnippet() = address
+    override fun getSnippet() = address ?: dateTime
 
     @Serializable
     data class Categories(val category: List<IdName>)

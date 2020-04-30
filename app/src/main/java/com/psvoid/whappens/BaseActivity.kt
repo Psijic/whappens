@@ -35,5 +35,44 @@ open class BaseActivity : FragmentActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
-    protected open fun setupLocation() {}
+    protected open fun setupLocation() {
+//        checkDeviceLocationSettingsAndStartGeofence()
+    }
+
+/*    private fun checkDeviceLocationSettingsAndStartGeofence(resolve: Boolean = true) {
+        val locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_LOW_POWER
+        }
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
+        val settingsClient = LocationServices.getSettingsClient(this)
+        val locationSettingsResponseTask =
+            settingsClient.checkLocationSettings(builder.build())
+        locationSettingsResponseTask.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException && resolve) {
+                try {
+                    exception.startResolutionForResult(this@BaseActivity, REQUEST_TURN_DEVICE_LOCATION_ON)
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Log.d("BaseActivity", "Error getting location settings resolution: " + sendEx.message)
+                }
+            } else {
+//                Snackbar.make(this.view, R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
+//                    .setAction(android.R.string.ok) { checkDeviceLocationSettingsAndStartGeofence() }
+//                    .show()
+            }
+        }
+        locationSettingsResponseTask.addOnCompleteListener {
+            if (it.isSuccessful) {
+//                addGeofenceForClue()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
+            checkDeviceLocationSettingsAndStartGeofence(false)
+        }
+    }*/
 }
+
+private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29

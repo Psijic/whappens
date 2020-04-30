@@ -5,6 +5,7 @@ import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.lifecycle.Observer
@@ -13,8 +14,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.BaseActivity
@@ -67,7 +70,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             // get events near needed point
             viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude)
         }
-        getString(R.string.eventful_key)
     }
 
     override fun onMapReady(map: GoogleMap) {
@@ -79,6 +81,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         enableLocation()
         setupMapButtons()
         setupRestore()
+        setupActions()
         start()
     }
 
@@ -89,15 +92,29 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             return locationManager.getLastKnownLocation(provider ?: LocationManager.NETWORK_PROVIDER)
         }
         return null
+
+/*        var locationListener = LocationListener() {
+            fun onLocationChanged(location: Location?) {
+                // Called when a new location is found by the network location provider.
+                makeUseOfNewLocation(location)
+            }
+
+            fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            fun onProviderEnabled(provider: String?) {}
+            fun onProviderDisabled(provider: String?) {}
+        }*/
     }
+
 
     private fun setupMapButtons() {
 //        map.setMaxZoomPreference (15f)
         map.uiSettings.isZoomControlsEnabled = true
         map.uiSettings.isMapToolbarEnabled = false
+
     }
 
     override fun setupLocation() {
+        super.setupLocation()
         map.isMyLocationEnabled = true
     }
 
@@ -135,5 +152,21 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
     /** Run the code. */
     private fun start() {
 //        setupRestore()
+
     }
+
+    /** Setup user actions handling*/
+    private fun setupActions() {
+        // Long click
+        map.setOnMapLongClickListener { latLng ->
+            val marker = map.addMarker(
+                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            )
+            viewModel.getEventsAsync(EventsApiFilter.ALL, latLng.latitude, latLng.longitude)
+            Handler().postDelayed({ marker.remove() }, 800)
+
+        }
+
+    }
+
 }
