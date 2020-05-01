@@ -158,7 +158,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         //TODO: Check if the position isn't changed but only zoom increased - there is no need to update. Zoom cap
         if (map.cameraPosition.zoom in Config.minSearchZoom..Config.maxMapZoom) {
             val position = map.cameraPosition.target
-            viewModel.getEventsAsync(position.latitude, position.longitude, radius())
+            viewModel.loadEvents(position.latitude, position.longitude, radius())
         }
     }
 
@@ -177,7 +177,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             val marker = map.addMarker(
                 MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
-            viewModel.getEventsAsync(latLng.latitude, latLng.longitude, radius())
+            viewModel.loadEvents(latLng.latitude, latLng.longitude, radius())
             Handler().postDelayed({ marker.remove() }, 800)
         }
     }
