@@ -1,6 +1,5 @@
 package com.psvoid.whappens.model
 
-import com.google.firebase.database.IgnoreExtraProperties
 import kotlinx.serialization.Serializable
 import java.util.*
 
@@ -61,5 +60,11 @@ data class Price(
 data class EventImage(
     val url: String,
     val width: String,
-    val height: String
+    val height: String = "dff"
 )
+
+object EventFilter {
+    enum class Category(val value: String) { THEATRE("theatre"), MUSIC("music"), ALL("all") }
+    enum class Period (val value: String) {TODAY ("Today"), THIS_WEEK ("This Week"), NEXT_WEEK ("Next week")}
+}
+

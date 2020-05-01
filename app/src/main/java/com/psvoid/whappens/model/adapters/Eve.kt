@@ -11,7 +11,12 @@ class Eve {
     }
 
     @Serializable
-    data class Events(val events: Event)
+    data class Events(
+        val events: Event,
+        val page_number: String, //TODO: Int
+        val page_size: String,
+        val page_count: String
+    )
 
     @Serializable
     data class Event(val event: List<ClusterMarker>)

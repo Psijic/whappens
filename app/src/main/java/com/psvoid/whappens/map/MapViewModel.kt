@@ -1,14 +1,15 @@
 package com.psvoid.whappens.map
 
 import android.content.res.Resources
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.datatransport.runtime.logging.Logging
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
@@ -16,8 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-
-enum class EventsApiFilter(val value: String) { THEATRE("theatre"), MUSIC("music"), ALL("all") }
 
 /** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
 class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.Factory {
@@ -53,29 +52,48 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
      * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
-    fun getEventsAsync(filter: EventsApiFilter, lat: Double, long: Double, radius: Float) {
+    fun getEventsAsync(lat: Double, long: Double, radius: Float) {
+
+
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
             _clusterStatus.value = LoadingStatus.LOADING
+            val queryOptions = getQueryOptions(lat, long, radius, Config.period)
             try {
                 // This will run on a thread managed by Retrofit.
-                val listResult = EventsApi.retrofitService.getEventsAsync(getQueryOptions(lat, long, radius))
-                addClusterItems(listResult.events.event)
+                var pageNumber = 0
+                var pageCount = 1
+
+                //TODO: optimize
+                while (pageNumber < pageCount) {
+                    _clusterStatus.value = LoadingStatus.LOADING
+                    pageNumber++
+                    queryOptions["page_number"] = pageNumber.toString()
+                    val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
+                    pageCount = listResult.page_count.toInt()
+//                    addClusterItems(listResult.events.event)
+                    algorithm.lock()
+                    algorithm.addItems(listResult.events.event)
+                    algorithm.unlock()
+                    _clusterStatus.value = LoadingStatus.DONE
+                }
             } catch (e: Exception) {
-                Logging.e("MapViewModel", "Error loading events", e)
+                Log.e("MapViewModel", "Error loading events", e)
                 _clusterStatus.value = LoadingStatus.ERROR
             }
         }
     }
 
     /** Adding query params. */
-    private fun getQueryOptions(lat: Double, long: Double, radius:Float): MutableMap<String, String> {
+    private fun getQueryOptions(lat: Double, long: Double, radius: Float, period: String): MutableMap<String, String> {
         val options: MutableMap<String, String> = HashMap()
+        options["app_key"] = resources.getString(R.string.eventful_key)
         options["where"] = "$lat,$long"
         options["within"] = radius.toString()
-        options["date"] = "Future"
-        options["page_size"] = "10"
-        options["app_key"] = resources.getString(R.string.eventful_key)
+        options["date"] = period
+        options["page_size"] = Config.pageSize.toString()
+//        options["include"] = "categories,popularity,price" //subcategories
+        options["image_sizes"] = "thumb,block250"
         return options
     }
 

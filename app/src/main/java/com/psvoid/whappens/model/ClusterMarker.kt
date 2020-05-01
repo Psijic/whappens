@@ -21,8 +21,8 @@ data class ClusterMarker(
     val longitude: Double,
     val description: String? = null,
     val price: String? = null,
-    val categories: Categories,
-    val popularity: String?,
+    val categories: Categories? = null,
+    val popularity: String? = null,
     @SerialName("venue_address")
     val address: String?,
     val city_name: String,

@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.net.toUri
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -19,7 +22,7 @@ import com.psvoid.whappens.model.ClusterMarker
  * When there are multiple images in the cluster, draw multiple images (using MultiDrawable).
  */
 class ClusterMarkerRenderer(
-    context: Context,
+    private val context: Context,
     map: GoogleMap,
     clusterManager: ClusterManager<ClusterMarker>,
     resources: Resources
@@ -42,12 +45,16 @@ class ClusterMarkerRenderer(
         val padding = resources.getDimension(R.dimen.custom_profile_padding).toInt()
         imageView.setPadding(padding, padding, padding, padding)
         iconGenerator.setContentView(imageView)
+
     }
 
     override fun onBeforeClusterItemRendered(marker: ClusterMarker, markerOptions: MarkerOptions) {
+        loadImage(marker)
+
         // Draw a single marker - show their profile photo and set the info window to show their name
         markerOptions
             .icon(getItemIcon(marker))
+//            .icon(loadImage(marker))
             .title(marker.name)
     }
 
@@ -62,4 +69,21 @@ class ClusterMarkerRenderer(
         val icon = iconGenerator.makeIcon()
         return BitmapDescriptorFactory.fromBitmap(icon)
     }
+
+    private fun loadImage(marker: ClusterMarker) {
+
+        //TODO: finish
+        val imgUrl = marker.images?.thumb?.url
+        imgUrl?.let {
+            val imgUri = imgUrl.toUri().buildUpon().scheme("https").build() // Make image Uri
+            Glide.with(context)
+                .load(imgUri)
+                .centerCrop()
+                .apply(RequestOptions().placeholder(R.drawable.loading_animation).error(R.drawable.ic_broken_image))
+                .into(imageView)
+
+        }
+    }
+
+
 }
