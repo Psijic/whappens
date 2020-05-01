@@ -46,14 +46,15 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
 
     // the Coroutine runs using the Main (UI) dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+//    private var eventsJobStatus: JobStatus = JobStatus.STOP
+    private var getEventsJob:Job? = null
 
 
     /**
      * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
-    fun getEventsAsync(lat: Double, long: Double, radius: Float) {
-
+/*    fun getEventsAsync1(lat: Double, long: Double, radius: Float) {
 
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
@@ -71,11 +72,38 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
                     queryOptions["page_number"] = pageNumber.toString()
                     val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
                     pageCount = listResult.page_count.toInt()
-//                    addClusterItems(listResult.events.event)
-                    algorithm.lock()
                     algorithm.addItems(listResult.events.event)
-                    algorithm.unlock()
                     _clusterStatus.value = LoadingStatus.DONE
+                }
+                pageCount
+            } catch (e: Exception) {
+                Log.e("MapViewModel", "Error loading events", e)
+                _clusterStatus.value = LoadingStatus.ERROR
+            }
+        }
+    }*/
+
+    fun loadEvents(lat: Double, long: Double, radius: Float) {
+        if (getEventsJob != null) getEventsJob?.cancel(null) //TODO: finish job without starting new request, not cancel
+        val queryOptions = getQueryOptions(lat, long, radius, Config.period)
+        loadEventsInternal(queryOptions, 1)
+    }
+
+    //TODO: optimize
+    private fun loadEventsInternal(queryOptions: MutableMap<String, String>, page: Int = 1) {
+        getEventsJob = coroutineScope.launch {
+            // Get the Deferred object for our Retrofit request
+            _clusterStatus.value = LoadingStatus.LOADING
+            try {
+                queryOptions["page_number"] = page.toString()
+                val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
+                algorithm.addItems(listResult.events.event)
+                _clusterStatus.value = LoadingStatus.DONE
+                if (page < listResult.page_count.toInt()) {
+                    loadEventsInternal(queryOptions, page.inc())
+                }
+                else{
+                    Log.i("MapViewModel","All events downloaded")
                 }
             } catch (e: Exception) {
                 Log.e("MapViewModel", "Error loading events", e)
