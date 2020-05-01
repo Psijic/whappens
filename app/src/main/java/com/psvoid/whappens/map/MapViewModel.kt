@@ -13,10 +13,7 @@ import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 /** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
 class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.Factory {
@@ -44,38 +41,11 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     // Create a Coroutine scope using a job to be able to cancel when needed
     private val viewModelJob = Job()
 
-    // the Coroutine runs using the Main (UI) dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
-
-    private var getEventsJob: Job? = null
-
-/*    fun getEventsAsync1(queryOptions: MutableMap<String, String>) {
-        coroutineScope.launch {
-            // Get the Deferred object for our Retrofit request
-            _clusterStatus.value = LoadingStatus.LOADING
-            try {
-                // This will run on a thread managed by Retrofit.
-                var pageNumber = 0
-                var pageCount = 1
-                while (pageNumber < pageCount) {
-                    _clusterStatus.value = LoadingStatus.LOADING
-                    pageNumber++
-                    queryOptions["page_number"] = pageNumber.toString()
-                    Log.v("MapViewModel", "coroutineScope $pageNumber")
-                    val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
-                    pageCount = listResult.page_count.toInt()
-                    algorithm.addItems(listResult.events.event)
-                    _clusterStatus.value = LoadingStatus.DONE
-                }
-            } catch (e: Exception) {
-                Log.e("MapViewModel", "Error loading events", e)
-                _clusterStatus.value = LoadingStatus.ERROR
-            }
-        }
-    }*/
+    // the Coroutine runs using the IO dispatcher
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
     fun loadEvents(lat: Double, long: Double, radius: Float) {
-        getEventsJob?.cancel(null) //TODO: finish job without starting a new request, not cancel
+        viewModelJob.cancelChildren(null)
         val queryOptions = getQueryOptions(lat, long, radius, Config.period)
         loadEventsInternal(queryOptions, 1)
     }
@@ -85,22 +55,22 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
     private fun loadEventsInternal(queryOptions: MutableMap<String, String>, page: Int = 1) {
-        //TODO: optimize
-        getEventsJob = coroutineScope.launch {
+        //TODO: optimize, add cache
+        coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
-            _clusterStatus.value = LoadingStatus.LOADING
+            _clusterStatus.postValue(LoadingStatus.LOADING)
             try {
                 queryOptions["page_number"] = page.toString()
                 val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
                 algorithm.addItems(listResult.events.event)
-                _clusterStatus.value = LoadingStatus.DONE
+                _clusterStatus.postValue(LoadingStatus.DONE)
                 if (page < listResult.page_count.toInt())
                     loadEventsInternal(queryOptions, page.inc())
                 else
                     Log.i("MapViewModel", "All events downloaded")
             } catch (e: Exception) {
                 Log.e("MapViewModel", "Error loading events", e)
-                _clusterStatus.value = LoadingStatus.ERROR
+                _clusterStatus.postValue(LoadingStatus.ERROR)
             }
         }
     }
@@ -119,9 +89,7 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     }
 
     private fun addClusterItems(items: List<ClusterMarker>) {
-//        algorithm.lock()
         algorithm.addItems(items)
-//        algorithm.unlock()
         _clusterStatus.value = LoadingStatus.DONE
     }
 
