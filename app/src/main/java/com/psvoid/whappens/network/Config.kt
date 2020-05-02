@@ -9,8 +9,7 @@ object Config {
     const val searchRadius = 100f
     const val minSearchZoom = 10f
     const val maxMapZoom = 17f
-//    const val period = "This Week"
-    const val period = "Today"
+    const val period = "Future" // "This Week", "Future"
     const val pageSize = 10
 
 }

@@ -28,7 +28,7 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
 
     /* Read local JSON file */
     fun readResourceJson() {
-        val inputStream = resources.openRawResource(R.raw.event1)
+        val inputStream = resources.openRawResource(R.raw.event_utah)
         val items = HelperItemReader().readSerializable(inputStream)
         addClusterItems(items)
     }
