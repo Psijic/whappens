@@ -46,8 +46,8 @@ data class Classification(
 
 @Serializable
 data class IdName(
-    val id: String,
-    val name: String
+    val id: String = "",
+    val name: String = ""
 )
 
 data class Price(
@@ -58,9 +58,9 @@ data class Price(
 
 @Serializable
 data class EventImage(
-    val url: String,
-    val width: String,
-    val height: String = "dff"
+    val url: String = "",
+    val width: String = "",
+    val height: String = ""
 )
 
 object EventFilter {

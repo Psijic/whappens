@@ -73,16 +73,16 @@ class ClusterMarkerRenderer(
     private fun loadImage(marker: ClusterMarker) {
 
         //TODO: finish
-        val imgUrl = marker.images?.thumb?.url
-        imgUrl?.let {
-            val imgUri = imgUrl.toUri().buildUpon().scheme("https").build() // Make image Uri
-            Glide.with(context)
-                .load(imgUri)
-                .centerCrop()
-                .apply(RequestOptions().placeholder(R.drawable.loading_animation).error(R.drawable.ic_broken_image))
-                .into(imageView)
-
-        }
+//        val imgUrl = marker.images?.thumb?.url
+//        imgUrl?.let {
+//            val imgUri = imgUrl.toUri().buildUpon().scheme("https").build() // Make image Uri
+//            Glide.with(context)
+//                .load(imgUri)
+//                .centerCrop()
+//                .apply(RequestOptions().placeholder(R.drawable.loading_animation).error(R.drawable.ic_broken_image))
+//                .into(imageView)
+//
+//        }
     }
 
 

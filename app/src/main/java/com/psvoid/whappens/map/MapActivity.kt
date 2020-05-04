@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.FirebaseApp
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.BaseActivity
@@ -33,9 +34,12 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
 
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+
+
         isRestore = savedInstanceState != null
         viewModel = ViewModelProvider(this, MapViewModelFactory(resources)).get(MapViewModel::class.java)
 

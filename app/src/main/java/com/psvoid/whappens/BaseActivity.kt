@@ -8,10 +8,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
 open class BaseActivity : FragmentActivity() {
-
     companion object Permissions {
         const val LOCATION_PERMISSIONS = 1
         const val FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
+        const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
     }
 
     /**  Check if a user gave a permission. */
@@ -74,5 +74,3 @@ open class BaseActivity : FragmentActivity() {
         }
     }*/
 }
-
-private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29

@@ -6,6 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.database.ktx.getValue
+import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
@@ -24,7 +30,12 @@ class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.
 }
 
 class MapViewModel(private val resources: Resources) : ViewModel() {
+    companion object {
+        const val TAG = "MapViewModel"
+    }
+
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
+//    private lateinit var database: DatabaseReference
 
     /* Read local JSON file */
     fun readResourceJson() {
@@ -44,7 +55,33 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     // the Coroutine runs using the IO dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
+    //    private lateinit var database: DatabaseReference
+    private var database = Firebase.database.reference
+
+    private fun fetchFirebase() {
+        // [START single_value_read]
+        database.child("events").child("LVA").addListenerForSingleValueEvent(
+            object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    // Get user value
+                    val markers = dataSnapshot.getValue<List<ClusterMarker>>()
+                    markers?.let { addClusterItems(markers) }
+                    Log.v(TAG, "getUser:onDataChange")
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Log.w(TAG, "getUser:onCancelled", databaseError.toException())
+                    // [START_EXCLUDE]
+//                    setEditingEnabled(true)
+                    // [END_EXCLUDE]
+                }
+            })
+        // [END single_value_read]
+    }
+
     fun fetchEvents(lat: Double, long: Double, radius: Float) {
+        fetchFirebase()
+        return
         viewModelJob.cancelChildren(null)
         val queryOptions = getQueryOptions(lat, long, radius, Config.period)
         fetchEventsInternal(queryOptions, 1)
@@ -67,9 +104,9 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
                 if (page < listResult.page_count.toInt())
                     fetchEventsInternal(queryOptions, page.inc())
                 else
-                    Log.i("MapViewModel", "All events downloaded")
+                    Log.i(TAG, "All events downloaded")
             } catch (e: Exception) {
-                Log.e("MapViewModel", "Error loading events", e)
+                Log.e(TAG, "Error loading events", e)
                 _clusterStatus.postValue(LoadingStatus.ERROR)
             }
         }
