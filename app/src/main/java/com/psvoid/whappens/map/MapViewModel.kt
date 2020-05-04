@@ -44,17 +44,17 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     // the Coroutine runs using the IO dispatcher
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
-    fun loadEvents(lat: Double, long: Double, radius: Float) {
+    fun fetchEvents(lat: Double, long: Double, radius: Float) {
         viewModelJob.cancelChildren(null)
         val queryOptions = getQueryOptions(lat, long, radius, Config.period)
-        loadEventsInternal(queryOptions, 1)
+        fetchEventsInternal(queryOptions, 1)
     }
 
     /**
      * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
-    private fun loadEventsInternal(queryOptions: MutableMap<String, String>, page: Int = 1) {
+    private fun fetchEventsInternal(queryOptions: MutableMap<String, String>, page: Int = 1) {
         //TODO: optimize, add cache
         coroutineScope.launch {
             // Get the Deferred object for our Retrofit request
@@ -65,7 +65,7 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
                 algorithm.addItems(listResult.events.event)
                 _clusterStatus.postValue(LoadingStatus.DONE)
                 if (page < listResult.page_count.toInt())
-                    loadEventsInternal(queryOptions, page.inc())
+                    fetchEventsInternal(queryOptions, page.inc())
                 else
                     Log.i("MapViewModel", "All events downloaded")
             } catch (e: Exception) {

@@ -6,10 +6,10 @@ object Config {
     const val showMarkerImages = false
     const val logs = true
     const val defaultSearchRadius = 15f
-    const val searchRadius = 100f
+    const val searchRadius = 0.022f
     const val minSearchZoom = 10f
-    const val maxMapZoom = 17f
-    const val period = "Future" // "This Week", "Future"
-    const val pageSize = 10
+    const val maxMapZoom = 21f
+    const val period = "Today" // "This Week", "Future"
+    const val pageSize = 30
 
 }

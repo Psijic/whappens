@@ -25,6 +25,7 @@ import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.LoadingStatus
+import kotlin.math.pow
 
 open class MapActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var viewModel: MapViewModel
@@ -158,12 +159,12 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         //TODO: Check if the position isn't changed but only zoom increased - there is no need to update. Zoom cap
         if (map.cameraPosition.zoom in Config.minSearchZoom..Config.maxMapZoom) {
             val position = map.cameraPosition.target
-            viewModel.loadEvents(position.latitude, position.longitude, radius())
+            viewModel.fetchEvents(position.latitude, position.longitude, radius())
         }
     }
 
     //TODO: Add screen size and user settings to calculations
-    private fun radius() = (Config.searchRadius / map.cameraPosition.zoom) // Zoom in 3..21
+    private fun radius() = (Config.searchRadius * 2f.pow(map.maxZoomLevel - map.cameraPosition.zoom)) // Zoom in 3..21
 
     /** Run the code. */
     private fun start() {
@@ -177,7 +178,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             val marker = map.addMarker(
                 MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
-            viewModel.loadEvents(latLng.latitude, latLng.longitude, radius())
+            viewModel.fetchEvents(latLng.latitude, latLng.longitude, radius())
             Handler().postDelayed({ marker.remove() }, 800)
         }
     }
