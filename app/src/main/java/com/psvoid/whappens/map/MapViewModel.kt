@@ -21,7 +21,9 @@ import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
 import kotlinx.coroutines.*
+import java.lang.Math.toRadians
 import kotlin.collections.set
+import kotlin.math.cos
 import kotlin.math.roundToInt
 
 /** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
@@ -35,10 +37,24 @@ class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.
 class MapViewModel(private val resources: Resources) : ViewModel() {
     companion object {
         const val TAG = "MapViewModel"
+
+        data class Cluster(
+            val bounds: Bounds,
+            val markers: List<ClusterMarker>,
+            val timestamp: Long = System.currentTimeMillis()
+        )
+
+        data class Bounds(
+            val latMin: Double,
+            val latMax: Double,
+            val lngMin: Double,
+            val lngMax: Double
+        ) {
+            fun contains(lat: Double, lng: Double) = lat in latMin..latMax && lng in lngMin..lngMax
+        }
     }
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
-//    private lateinit var database: DatabaseReference
 
     /* Read local JSON file */
     fun readResourceJson() {
@@ -118,17 +134,16 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
             if (cluster.bounds.contains(lat, lng)) return
         }
 
-        // Convert radius from kms to degrees and cache items
-        // 1 latitude point ~ 111.2km, 1 longitude point ~ cos(rad(lat)) * 111.2km
-        val latLength = 1 // TODO: radius / 111.2
-        val lngLength = 1 // TODO: cos(rad(lat)) * 111.2
+        // Calculate cluster size in degrees. 1 latitude degree ~ 111.2km, 1 longitude degree ~ cos(rad(lat)) * 111.2km
+        val latLength = 0.5 // 111.2km
+        val lngLength = latLength / cos(toRadians(lat)) // secant = 1 / cos
         cachedMarkers.add(
             Cluster(
                 Bounds(
-                    lat1 = (lat - latLength).roundToInt().toDouble(),
-                    lat2 = (lat + latLength).roundToInt().toDouble(),
-                    lng1 = (lng - lngLength).roundToInt().toDouble(),
-                    lng2 = (lng + lngLength).roundToInt().toDouble()
+                    latMin = (lat - latLength).roundToInt().toDouble(),
+                    latMax = (lat + latLength).roundToInt().toDouble(),
+                    lngMin = (lng - lngLength).roundToInt().toDouble(),
+                    lngMax = (lng + lngLength).roundToInt().toDouble()
                 ),
                 markers = markers
             )
@@ -151,10 +166,10 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
                 algorithm.addItems(markers)
                 _clusterStatus.postValue(LoadingStatus.DONE)
                 cacheMarkers(lat, lng, markers)
-                if (page < listResult.page_count.toInt())
-                    fetchEventsInternal(lat, lng, queryOptions, page.inc())
-                else
-                    Log.i(TAG, "All events downloaded")
+//                if (page < listResult.page_count.toInt())
+//                    fetchEventsInternal(lat, lng, queryOptions, page.inc())
+//                else
+                Log.i(TAG, "All events downloaded")
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading events", e)
                 _clusterStatus.postValue(LoadingStatus.ERROR)
@@ -185,20 +200,4 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
         super.onCleared()
         viewModelJob.cancel()
     }
-
-}
-
-data class Cluster(
-    val bounds: Bounds,
-    val markers: List<ClusterMarker>,
-    val timestamp: Long = System.currentTimeMillis()
-)
-
-data class Bounds(
-    val lat1: Double,
-    val lat2: Double,
-    val lng1: Double,
-    val lng2: Double
-) {
-    fun contains(lat: Double, lng: Double) = lat in lat1..lat2 && lng in lng1..lng2
 }
