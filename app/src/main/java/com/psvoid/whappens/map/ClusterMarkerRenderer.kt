@@ -4,9 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.net.toUri
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory

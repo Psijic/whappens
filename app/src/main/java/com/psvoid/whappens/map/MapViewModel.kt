@@ -16,15 +16,16 @@ import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.model.Country
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
-import kotlinx.coroutines.*
-import java.lang.Math.toRadians
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import kotlin.collections.set
-import kotlin.math.cos
-import kotlin.math.roundToInt
 
 /** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
 class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.Factory {
@@ -39,19 +40,19 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
         const val TAG = "MapViewModel"
 
         data class Cluster(
-            val bounds: Bounds,
+//            val bounds: Bounds,
             val markers: List<ClusterMarker>,
             val timestamp: Long = System.currentTimeMillis()
         )
 
-        data class Bounds(
-            val latMin: Double,
-            val latMax: Double,
-            val lngMin: Double,
-            val lngMax: Double
-        ) {
-            fun contains(lat: Double, lng: Double) = lat in latMin..latMax && lng in lngMin..lngMax
-        }
+//        data class Bounds(
+//            val latMin: Double,
+//            val latMax: Double,
+//            val lngMin: Double,
+//            val lngMax: Double
+//        ) {
+//            fun contains(lat: Double, lng: Double) = lat in latMin..latMax && lng in lngMin..lngMax
+//        }
     }
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
@@ -75,28 +76,23 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
     private var database: DatabaseReference
-//    private var database1 = Firebase.database.getReference("events")
 
-
-    //    private var cachedMarkers: List<Cluster> = emptyList()
-    private var cachedMarkers: MutableList<Cluster> = mutableListOf()
-//    private var cachedMarkers: Dictionary<Bounds, Cluster> =
+    private val cachedMarkers: MutableMap<String, Cluster> = mutableMapOf()
 
     init {
         Firebase.database.setPersistenceEnabled(true)
         database = Firebase.database.reference
     }
 
-    private fun fetchFirebase(lat: Double, lng: Double, radius: Float, period: String) {
+    private fun fetchFirebase(countryName: String, period: String) {
         // [START single_value_read]
-        database.child("events").child("LVA").addListenerForSingleValueEvent(
+        database.child("events").child(countryName).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Get user value
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
-                        cacheMarkers(lat, lng, markers)
-//                        cachedMarkers.addAll(markers)
+                        cacheMarkers(countryName, markers)
                         addClusterItems(markers)
                     }
                     Log.v(TAG, "getUser:onDataChange")
@@ -112,42 +108,35 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
         // [END single_value_read]
     }
 
-    fun fetchEvents(lat: Double, lng: Double, radius: Float) {
-        // check if cache already contains items
-        for (cluster in cachedMarkers) {
-            if (cluster.bounds.contains(lat, lng)) {
-                addClusterItems(cluster.markers)
-                return
-            }
+    fun fetchEventsByCountryList(countries: List<Country>) {
+        for (country in countries) {
+            val countryName = country.toString()
+            if (!cachedMarkers.containsKey(countryName) /*|| cachedMarkers[countryName].timestamp > time*/) // TODO: refresh time
+                fetchFirebase(countryName, Config.period)
         }
-
-//        fetchFirebase(lat, lng, radius, Config.period)
-//        return
-        viewModelJob.cancelChildren(null)
-        val queryOptions = getQueryOptions(lat, lng, radius, Config.period)
-        fetchEventsInternal(lat, lng, queryOptions, 1)
     }
 
-    private fun cacheMarkers(lat: Double, lng: Double, markers: List<ClusterMarker>) {
-        //check if cluster is already added. TODO: Switch to Dictionary
-        for (cluster in cachedMarkers) {
-            if (cluster.bounds.contains(lat, lng)) return
-        }
+    fun refreshMarkers(){
 
-        // Calculate cluster size in degrees. 1 latitude degree ~ 111.2km, 1 longitude degree ~ cos(rad(lat)) * 111.2km
-        val latLength = 0.5 // 111.2km
-        val lngLength = latLength / cos(toRadians(lat)) // secant = 1 / cos
-        cachedMarkers.add(
-            Cluster(
-                Bounds(
-                    latMin = (lat - latLength).roundToInt().toDouble(),
-                    latMax = (lat + latLength).roundToInt().toDouble(),
-                    lngMin = (lng - lngLength).roundToInt().toDouble(),
-                    lngMax = (lng + lngLength).roundToInt().toDouble()
-                ),
-                markers = markers
-            )
-        )
+    }
+
+    fun fetchEvents(lat: Double, lng: Double, radius: Float) {
+        cachedMarkers.forEach { addClusterItems(it.value.markers) } // TODO: Add specific settings like event types selected
+
+        // check if cache already contains items
+//        cachedMarkers["USA"]?.let {
+//            addClusterItems(it.markers)
+//            return
+//        }
+
+//        fetchFirebase(lat, lng, radius, Config.period)
+//        viewModelJob.cancelChildren(null)
+//        val queryOptions = getQueryOptions(lat, lng, 25f, Config.period)
+//        fetchEventsInternal(lat, lng, queryOptions, 1)
+    }
+
+    private fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
+        cachedMarkers[country] = Cluster(markers = markers)
     }
 
     /**
@@ -155,9 +144,8 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
      */
     private fun fetchEventsInternal(lat: Double, lng: Double, queryOptions: MutableMap<String, String>, page: Int = 1) {
-        //TODO: optimize, add cache
         coroutineScope.launch {
-            // Get the Deferred object for our Retrofit request
+            // Get the object for Retrofit request
             _clusterStatus.postValue(LoadingStatus.LOADING)
             try {
                 queryOptions["page_number"] = page.toString()
@@ -165,11 +153,11 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
                 val markers = listResult.events.event
                 algorithm.addItems(markers)
                 _clusterStatus.postValue(LoadingStatus.DONE)
-                cacheMarkers(lat, lng, markers)
-//                if (page < listResult.page_count.toInt())
-//                    fetchEventsInternal(lat, lng, queryOptions, page.inc())
-//                else
-                Log.i(TAG, "All events downloaded")
+//                cacheMarkers(lat, lng, markers)
+                if (page < listResult.page_count.toInt())
+                    fetchEventsInternal(lat, lng, queryOptions, page.inc())
+                else
+                    Log.i(TAG, "All events downloaded")
             } catch (e: Exception) {
                 Log.e(TAG, "Error loading events", e)
                 _clusterStatus.postValue(LoadingStatus.ERROR)
@@ -200,4 +188,6 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
         super.onCleared()
         viewModelJob.cancel()
     }
+
+
 }

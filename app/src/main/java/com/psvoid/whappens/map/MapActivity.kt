@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.FirebaseApp
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.BaseActivity
@@ -44,6 +43,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         viewModel = ViewModelProvider(this, MapViewModelFactory(resources)).get(MapViewModel::class.java)
 
         setupMap()
+        viewModel.fetchEventsByCountryList(Config.countries) // TODO: Move to MainActivity
     }
 
     private fun setupMap() {
@@ -70,7 +70,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             if (location != null) {
                 latitude = location.latitude
                 longitude = location.longitude
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 10f))
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 11f))
             }
             // get events near needed point
 //            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude, map.cameraPosition.zoom)
