@@ -13,6 +13,6 @@ object Config {
     const val maxMapZoom = 21f
     const val period = "Future" // "This Week", "Future"
     const val pageSize = 30
-    val countries = listOf(Country.ESP, Country.PRT)
+    val countries = listOf(Country.PRT)
 
 }

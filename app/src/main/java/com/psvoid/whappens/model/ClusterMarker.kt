@@ -1,5 +1,8 @@
 package com.psvoid.whappens.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
@@ -10,15 +13,17 @@ import kotlinx.serialization.Serializable
 /** A data class that implements the [ClusterItem] interface so it can be clustered. */
 @IgnoreExtraProperties
 @Serializable
+@Entity(tableName = "markers_table")
 data class ClusterMarker(
 //    @SerialName("title")
     val name: String = "",
-    val id: String = "",
+    @PrimaryKey val id: String = "",
     val url: String? = null,
     val locale: String = "en",
 //    @SerialName("image")
     val images: Images? = null,
-    @SerialName("start_time") @PropertyName("start_time") val startTime: String = "",
+    @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
+    val startTime: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val description: String? = null,
