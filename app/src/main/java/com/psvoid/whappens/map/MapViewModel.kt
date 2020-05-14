@@ -1,6 +1,6 @@
 package com.psvoid.whappens.map
 
-import android.content.res.Resources
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,27 +15,26 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
+import com.psvoid.whappens.database.MarkerDatabase
+import com.psvoid.whappens.database.MarkerDatabaseDao
 import com.psvoid.whappens.model.ClusterMarker
 import com.psvoid.whappens.model.Country
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import com.psvoid.whappens.network.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlin.collections.set
 
 /** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
-class MapViewModelFactory(private val resources: Resources) : ViewModelProvider.Factory {
+class MapViewModelFactory(private val app: Application) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MapViewModel::class.java)) return MapViewModel(resources) as T
+        if (modelClass.isAssignableFrom(MapViewModel::class.java)) return MapViewModel(app) as T
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
 
-class MapViewModel(private val resources: Resources) : ViewModel() {
+class MapViewModel(private val app: Application) : ViewModel() {
     companion object {
         const val TAG = "MapViewModel"
 
@@ -57,12 +56,6 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
-    /* Read local JSON file */
-    fun readResourceJson() {
-        val inputStream = resources.openRawResource(R.raw.event_utah)
-        val items = HelperItemReader().readSerializable(inputStream)
-        addClusterItems(items)
-    }
 
     // The internal MutableLiveData that stores the status of the most recent request
     private val _clusterStatus = MutableLiveData<LoadingStatus>()
@@ -72,27 +65,39 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     // Create a Coroutine scope using a job to be able to cancel when needed
     private val viewModelJob = Job()
 
-    // the Coroutine runs using the IO dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
+    // Coroutine runs using the IO dispatcher
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
-    private var database: DatabaseReference
+    private var firebaseDb: DatabaseReference
 
     private val cachedMarkers: MutableMap<String, Cluster> = mutableMapOf()
 
+    private val markerDb: MarkerDatabaseDao
+
     init {
         Firebase.database.setPersistenceEnabled(true)
-        database = Firebase.database.reference
+        firebaseDb = Firebase.database.reference
+        markerDb = MarkerDatabase.getInstance(app).markerDatabaseDao
+    }
+
+    /* Read local JSON file */
+    fun readResourceJson() {
+        val inputStream = app.resources.openRawResource(R.raw.event_utah)
+        val items = HelperItemReader().readSerializable(inputStream)
+        addClusterItems(items)
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
         // [START single_value_read]
-        database.child("events").child(countryName).addListenerForSingleValueEvent(
+        firebaseDb.child("events").child(countryName).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     // Get user value
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
-                        cacheMarkers(countryName, markers)
+                        coroutineScope.launch {
+                            cacheMarkers(countryName, markers)
+                        }
                         addClusterItems(markers)
                     }
                     Log.v(TAG, "getUser:onDataChange")
@@ -116,13 +121,13 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
         }
     }
 
-    fun refreshMarkers(){
+    fun refreshMarkers() {
 
     }
 
     fun fetchEvents(lat: Double, lng: Double, radius: Float) {
         cachedMarkers.forEach { addClusterItems(it.value.markers) } // TODO: Add specific settings like event types selected
-
+        val all = markerDb.getAllMarkers().value.orEmpty()
         // check if cache already contains items
 //        cachedMarkers["USA"]?.let {
 //            addClusterItems(it.markers)
@@ -135,8 +140,15 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
 //        fetchEventsInternal(lat, lng, queryOptions, 1)
     }
 
-    private fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
+    private suspend fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
         cachedMarkers[country] = Cluster(markers = markers)
+
+        withContext(Dispatchers.IO) {
+//            for (marker in markers)
+//                markerDb.insert(marker)
+//            markerDb.insert(markers.forEach { return@forEach })
+            markerDb.insert(markers)
+        }
     }
 
     /**
@@ -168,7 +180,7 @@ class MapViewModel(private val resources: Resources) : ViewModel() {
     /** Adding query params. */
     private fun getQueryOptions(lat: Double, lng: Double, radius: Float, period: String): MutableMap<String, String> {
         val options: MutableMap<String, String> = HashMap()
-        options["app_key"] = resources.getString(R.string.eventful_key)
+        options["app_key"] = app.resources.getString(R.string.eventful_key)
         options["where"] = "$lat,$lng"
         options["within"] = radius.toString()
         options["date"] = period

@@ -38,9 +38,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-
         isRestore = savedInstanceState != null
-        viewModel = ViewModelProvider(this, MapViewModelFactory(resources)).get(MapViewModel::class.java)
+        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
 
         setupMap()
         viewModel.fetchEventsByCountryList(Config.countries) // TODO: Move to MainActivity

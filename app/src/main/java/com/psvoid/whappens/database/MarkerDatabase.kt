@@ -4,9 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.psvoid.whappens.model.CategoriesConverter
 import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.model.ImagesConverter
 
 @Database(entities = [ClusterMarker::class], version = 1/*, exportSchema = false*/)
+@TypeConverters(ImagesConverter::class, CategoriesConverter::class)
 abstract class MarkerDatabase : RoomDatabase() {
     abstract val markerDatabaseDao: MarkerDatabaseDao
 

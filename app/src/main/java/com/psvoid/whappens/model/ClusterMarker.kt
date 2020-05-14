@@ -1,8 +1,6 @@
 package com.psvoid.whappens.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
@@ -17,10 +15,12 @@ import kotlinx.serialization.Serializable
 data class ClusterMarker(
 //    @SerialName("title")
     val name: String = "",
-    @PrimaryKey val id: String = "",
+    @PrimaryKey
+    val id: String = "",
     val url: String? = null,
     val locale: String = "en",
 //    @SerialName("image")
+    @TypeConverters(ImagesConverter::class)
     val images: Images? = null,
     @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
     val startTime: String = "",
@@ -29,6 +29,7 @@ data class ClusterMarker(
     val description: String? = null,
     val price: String? = null,
 //    val categories: Categories? = null,
+    @TypeConverters(CategoriesConverter::class)
     val categories: List<IdName>? = null,
 //    val popularity: String? = null,
     val popularity: Int? = null,
@@ -56,6 +57,32 @@ data class ClusterMarker(
 
     //@Serializable
     //data class Performer(val performer: List<IdName>)
+}
+
+class ImagesConverter {
+    @TypeConverter
+    fun fromImages(images: ClusterMarker.Images?): String {
+        return images?.block250.toString()
+    }
+
+    @TypeConverter
+    fun toImages(data: String): ClusterMarker.Images {
+        val list = data.split(", ")
+        return ClusterMarker.Images(block250 = EventImage(list[0], list[1], list[2]))
+    }
+}
+
+class CategoriesConverter {
+    @TypeConverter
+    fun fromData(value: List<IdName>): String {
+        return value.toString()
+    }
+
+    @TypeConverter
+    fun toData(data: String): List<IdName> {
+        val list = data.split(" ")
+        return listOf()
+    }
 }
 
 
