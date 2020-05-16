@@ -1,4 +1,4 @@
-package com.psvoid.whappens.map
+package com.psvoid.whappens
 
 import android.content.Context
 import android.location.Criteria
@@ -20,11 +20,12 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
-import com.psvoid.whappens.BaseActivity
-import com.psvoid.whappens.R
-import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.network.Config
-import com.psvoid.whappens.network.LoadingStatus
+import com.psvoid.whappens.data.LoadingStatus
+import com.psvoid.whappens.viewmodels.MapViewModel
+import com.psvoid.whappens.viewmodels.MapViewModelFactory
+import com.psvoid.whappens.views.ClusterMarkerRenderer
 import kotlin.math.pow
 
 open class MapActivity : BaseActivity(), OnMapReadyCallback {
@@ -39,7 +40,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
 
         isRestore = savedInstanceState != null
-        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
+        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(
+            MapViewModel::class.java)
 
         setupMap()
         viewModel.fetchEventsByCountryList(Config.countries) // TODO: Move to MainActivity
@@ -149,7 +151,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         clusterManager = ClusterManager(this, map, markerManager)
         clusterManager.setAlgorithm(viewModel.algorithm)
         if (Config.showMarkerImages)
-            clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
+            clusterManager.renderer =
+                ClusterMarkerRenderer(this, map, clusterManager, resources)
 
         map.setOnCameraIdleListener { onCameraIdleListener() }
     }

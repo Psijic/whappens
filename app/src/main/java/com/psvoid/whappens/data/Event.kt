@@ -1,4 +1,4 @@
-package com.psvoid.whappens.model
+package com.psvoid.whappens.data
 
 import kotlinx.serialization.Serializable
 import java.util.*

@@ -1,6 +1,6 @@
 package com.psvoid.whappens.network
 
-import com.psvoid.whappens.model.Country
+import com.psvoid.whappens.data.Country
 
 object Config {
 

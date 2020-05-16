@@ -1,4 +1,4 @@
-package com.psvoid.whappens.model
+package com.psvoid.whappens.data
 
 enum class Country {
     ALA, ALB, AND, ARM, AUT, BLR, BEL, BIH, BGR, HRV, CZE, DNK,
@@ -7,3 +7,5 @@ enum class Country {
     NLD, NOR, POL, PRT, ROU, RUS, SMR, SRB, SVK, SVN, ESP, SJM,
     SWE, CHE, UKR, GBR
 }
+
+enum class LoadingStatus { LOADING, ERROR, DONE }

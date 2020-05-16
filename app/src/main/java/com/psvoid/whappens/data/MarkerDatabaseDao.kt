@@ -1,20 +1,16 @@
-package com.psvoid.whappens.database
+package com.psvoid.whappens.data
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
-import com.psvoid.whappens.model.ClusterMarker
+import androidx.room.*
 
 /** Defines methods for using the ClusterMarker class with Room. */
 @Dao
 interface MarkerDatabaseDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(marker: ClusterMarker)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(markers: List<ClusterMarker>)
 
     /**
@@ -30,7 +26,7 @@ interface MarkerDatabaseDao {
 
     /** Delete all values from the table. This does not delete the table. */
     @Query("DELETE FROM markers_table")
-    fun clear()
+    suspend fun clear()
 
     /** Select and returns all rows in the table. */
     @Query("SELECT * FROM markers_table")

@@ -1,11 +1,10 @@
-package com.psvoid.whappens.map
+package com.psvoid.whappens.viewmodels
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -15,28 +14,31 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
-import com.psvoid.whappens.database.MarkerDatabase
-import com.psvoid.whappens.database.MarkerDatabaseDao
-import com.psvoid.whappens.model.ClusterMarker
-import com.psvoid.whappens.model.Country
+import com.psvoid.whappens.data.MarkerDatabase
+import com.psvoid.whappens.data.MarkerDatabaseDao
+import com.psvoid.whappens.data.ClusterMarker
+import com.psvoid.whappens.data.Country
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
-import com.psvoid.whappens.network.LoadingStatus
+import com.psvoid.whappens.data.LoadingStatus
 import com.psvoid.whappens.utils.HelperItemReader
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.concurrent.Executors
 import kotlin.collections.set
-
-/** Possible to inline factory https://www.albertgao.xyz/2018/04/13/how-to-add-additional-parameters-to-viewmodel-via-kotlin */
-class MapViewModelFactory(private val app: Application) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MapViewModel::class.java)) return MapViewModel(app) as T
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
 
 class MapViewModel(private val app: Application) : ViewModel() {
     companion object {
         const val TAG = "MapViewModel"
+
+        private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
+
+        /** Utility method to run blocks on a dedicated background thread, used for io/database work. */
+        fun ioThread(f: () -> Unit) {
+            IO_EXECUTOR.execute(f)
+        }
 
         data class Cluster(
 //            val bounds: Bounds,
@@ -66,7 +68,7 @@ class MapViewModel(private val app: Application) : ViewModel() {
     private val viewModelJob = Job()
 
     // Coroutine runs using the IO dispatcher
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
     private var firebaseDb: DatabaseReference
 
@@ -95,9 +97,8 @@ class MapViewModel(private val app: Application) : ViewModel() {
                     // Get user value
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
-                        coroutineScope.launch {
-                            cacheMarkers(countryName, markers)
-                        }
+                        cacheMarkers(countryName, markers)
+                        insertMarkers(markers)
                         addClusterItems(markers)
                     }
                     Log.v(TAG, "getUser:onDataChange")
@@ -127,7 +128,7 @@ class MapViewModel(private val app: Application) : ViewModel() {
 
     fun fetchEvents(lat: Double, lng: Double, radius: Float) {
         cachedMarkers.forEach { addClusterItems(it.value.markers) } // TODO: Add specific settings like event types selected
-        val all = markerDb.getAllMarkers().value.orEmpty()
+        val all = markerDb.getAllMarkers()//.value.orEmpty()
         // check if cache already contains items
 //        cachedMarkers["USA"]?.let {
 //            addClusterItems(it.markers)
@@ -140,15 +141,21 @@ class MapViewModel(private val app: Application) : ViewModel() {
 //        fetchEventsInternal(lat, lng, queryOptions, 1)
     }
 
-    private suspend fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
-        cachedMarkers[country] = Cluster(markers = markers)
+    fun insertMarkers(markers: List<ClusterMarker>) =
+        ioThread {
+            markerDb.insert(markers)
+        }
 
-        withContext(Dispatchers.IO) {
+    private fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
+        cachedMarkers[country] =
+            Cluster(markers = markers)
+
+/*        withContext(Dispatchers.IO) {
 //            for (marker in markers)
 //                markerDb.insert(marker)
 //            markerDb.insert(markers.forEach { return@forEach })
             markerDb.insert(markers)
-        }
+        }*/
     }
 
     /**

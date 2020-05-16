@@ -1,15 +1,12 @@
-package com.psvoid.whappens.database
+package com.psvoid.whappens.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.psvoid.whappens.model.CategoriesConverter
-import com.psvoid.whappens.model.ClusterMarker
-import com.psvoid.whappens.model.ImagesConverter
 
-@Database(entities = [ClusterMarker::class], version = 1/*, exportSchema = false*/)
+@Database(entities = [ClusterMarker::class], version = 2, exportSchema = false)
 @TypeConverters(ImagesConverter::class, CategoriesConverter::class)
 abstract class MarkerDatabase : RoomDatabase() {
     abstract val markerDatabaseDao: MarkerDatabaseDao
@@ -26,7 +23,7 @@ abstract class MarkerDatabase : RoomDatabase() {
          *  thread to shared data are visible to other threads.
          */
         @Volatile
-        private var instance: MarkerDatabase? = null
+        private var INSTANCE: MarkerDatabase? = null
 
         /**
          * Helper function to get the database.
@@ -52,7 +49,7 @@ abstract class MarkerDatabase : RoomDatabase() {
             synchronized(this) {
                 // Copy the current value of INSTANCE to a local variable so Kotlin can smart cast.
                 // Smart cast is only available to local variables.
-                var instance = instance
+                var instance = INSTANCE
                 // If instance is `null` make a new database instance.
                 if (instance == null) {
                     instance = Room.databaseBuilder(
@@ -65,7 +62,7 @@ abstract class MarkerDatabase : RoomDatabase() {
                         .fallbackToDestructiveMigration()
                         .build()
                     // Assign INSTANCE to the newly created database.
-                    Companion.instance = instance
+                    INSTANCE = instance
                 }
                 // Return instance; smart cast to be non-null.
                 return instance

@@ -1,8 +1,8 @@
 package com.psvoid.whappens.network
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.psvoid.whappens.model.StreetEvent
-import com.psvoid.whappens.model.adapters.Eve
+import com.psvoid.whappens.data.StreetEvent
+import com.psvoid.whappens.adapters.Eve
 import kotlinx.coroutines.Deferred
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -13,8 +13,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.QueryMap
-
-enum class LoadingStatus { LOADING, ERROR, DONE }
 
 /** A public interface that exposes the [getEventsAsync] method */
 interface EventsApiService {

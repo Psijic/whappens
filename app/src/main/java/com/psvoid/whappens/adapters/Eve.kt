@@ -1,9 +1,8 @@
-package com.psvoid.whappens.model.adapters
+package com.psvoid.whappens.adapters
 
-import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.data.ClusterMarker
 import kotlinx.serialization.Serializable
 
-/* This should be on server side */
 class Eve {
 
     companion object {
@@ -13,7 +12,7 @@ class Eve {
     @Serializable
     data class Events(
         val events: Event,
-        val page_number: String, //TODO: Int
+        val page_number: String,
         val page_size: String,
         val page_count: String
     )

@@ -1,4 +1,4 @@
-package com.psvoid.whappens.model
+package com.psvoid.whappens.data
 
 import androidx.room.*
 import com.google.android.gms.maps.model.LatLng
@@ -68,7 +68,13 @@ class ImagesConverter {
     @TypeConverter
     fun toImages(data: String): ClusterMarker.Images {
         val list = data.split(", ")
-        return ClusterMarker.Images(block250 = EventImage(list[0], list[1], list[2]))
+        return ClusterMarker.Images(
+            block250 = EventImage(
+                list[0],
+                list[1],
+                list[2]
+            )
+        )
     }
 }
 

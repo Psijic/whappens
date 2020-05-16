@@ -1,7 +1,7 @@
 package com.psvoid.whappens.utils
 
-import com.psvoid.whappens.model.ClusterMarker
-import com.psvoid.whappens.model.adapters.Eve
+import com.psvoid.whappens.data.ClusterMarker
+import com.psvoid.whappens.adapters.Eve
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.io.InputStream

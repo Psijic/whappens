@@ -1,4 +1,4 @@
-package com.psvoid.whappens.map
+package com.psvoid.whappens.views
 
 import android.content.Context
 import android.content.res.Resources
@@ -12,7 +12,7 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ui.IconGenerator
 import com.psvoid.whappens.R
-import com.psvoid.whappens.model.ClusterMarker
+import com.psvoid.whappens.data.ClusterMarker
 
 /**
  * Draws profile images inside markers (using IconGenerator).
