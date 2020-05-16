@@ -14,14 +14,9 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
-import com.psvoid.whappens.data.MarkerDatabase
-import com.psvoid.whappens.data.MarkerDatabaseDao
-import com.psvoid.whappens.data.ClusterMarker
-import com.psvoid.whappens.data.Country
+import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
-import com.psvoid.whappens.data.LoadingStatus
-import com.psvoid.whappens.utils.HelperItemReader
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -58,35 +53,25 @@ class MapViewModel(private val app: Application) : ViewModel() {
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
-
-    // The internal MutableLiveData that stores the status of the most recent request
+    /** The internal MutableLiveData that stores the status of the most recent request */
     private val _clusterStatus = MutableLiveData<LoadingStatus>()
     val clusterStatus: LiveData<LoadingStatus>
         get() = _clusterStatus
 
-    // Create a Coroutine scope using a job to be able to cancel when needed
+    /** Create a Coroutine scope using a job to be able to cancel when needed */
     private val viewModelJob = Job()
 
-    // Coroutine runs using the IO dispatcher
+    /** Coroutine runs using the IO dispatcher */
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
     private var firebaseDb: DatabaseReference
-
     private val cachedMarkers: MutableMap<String, Cluster> = mutableMapOf()
-
     private val markerDb: MarkerDatabaseDao
 
     init {
         Firebase.database.setPersistenceEnabled(true)
         firebaseDb = Firebase.database.reference
         markerDb = MarkerDatabase.getInstance(app).markerDatabaseDao
-    }
-
-    /* Read local JSON file */
-    fun readResourceJson() {
-        val inputStream = app.resources.openRawResource(R.raw.event_utah)
-        val items = HelperItemReader().readSerializable(inputStream)
-        addClusterItems(items)
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
@@ -207,6 +192,4 @@ class MapViewModel(private val app: Application) : ViewModel() {
         super.onCleared()
         viewModelJob.cancel()
     }
-
-
 }
