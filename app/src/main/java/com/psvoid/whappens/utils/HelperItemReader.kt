@@ -8,9 +8,8 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.io.InputStream
 
-/** Helper class to read in cluster items from a resource */
+/** Helper class to read in cluster items from a resource. Uses kotlin serialization */
 class HelperItemReader {
-
     private fun readSerializable(inputStream: InputStream): List<ClusterMarker> {
         val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
         val jsonString = inputStreamToString(inputStream)
