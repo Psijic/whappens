@@ -2,9 +2,7 @@ package com.psvoid.whappens.viewmodels
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -24,7 +22,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 import kotlin.collections.set
 
-class MapViewModel(private val app: Application) : ViewModel() {
+class MapViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val TAG = "MapViewModel"
 
@@ -60,18 +58,23 @@ class MapViewModel(private val app: Application) : ViewModel() {
 
     /** Create a Coroutine scope using a job to be able to cancel when needed */
     private val viewModelJob = Job()
+    private var all: LiveData<List<ClusterMarker>>
 
     /** Coroutine runs using the IO dispatcher */
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
-    private var firebaseDb: DatabaseReference
+    private val firebaseDb: DatabaseReference
     private val cachedMarkers: MutableMap<String, Cluster> = mutableMapOf()
-    private val markerDb: MarkerDatabaseDao
+    private val markerDao: MarkerDao
+    private val repository: MarkerRepository
+    private val mApplication: Application = application
 
     init {
         Firebase.database.setPersistenceEnabled(true)
         firebaseDb = Firebase.database.reference
-        markerDb = MarkerDatabase.getInstance(app).markerDatabaseDao
+        markerDao = MarkerDatabase.getInstance(application).markerDatabaseDao
+        repository = MarkerRepository(markerDao)
+        all = repository.allMarkers//.value.orEmpty()
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
@@ -107,13 +110,9 @@ class MapViewModel(private val app: Application) : ViewModel() {
         }
     }
 
-    fun refreshMarkers() {
-
-    }
-
     fun fetchEvents(lat: Double, lng: Double, radius: Float) {
         cachedMarkers.forEach { addClusterItems(it.value.markers) } // TODO: Add specific settings like event types selected
-        val all = markerDb.getAllMarkers()//.value.orEmpty()
+        all = repository.allMarkers//.value.orEmpty()
         // check if cache already contains items
 //        cachedMarkers["USA"]?.let {
 //            addClusterItems(it.markers)
@@ -126,21 +125,11 @@ class MapViewModel(private val app: Application) : ViewModel() {
 //        fetchEventsInternal(lat, lng, queryOptions, 1)
     }
 
-    fun insertMarkers(markers: List<ClusterMarker>) =
-        ioThread {
-            markerDb.insert(markers)
-        }
+    /** Launching a new coroutine to insert the data in a non-blocking way */
+    fun insertMarkers(markers: List<ClusterMarker>) = viewModelScope.launch(Dispatchers.IO) { repository.insert(markers) }
 
     private fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
-        cachedMarkers[country] =
-            Cluster(markers = markers)
-
-/*        withContext(Dispatchers.IO) {
-//            for (marker in markers)
-//                markerDb.insert(marker)
-//            markerDb.insert(markers.forEach { return@forEach })
-            markerDb.insert(markers)
-        }*/
+        cachedMarkers[country] = Cluster(markers = markers)
     }
 
     /**
@@ -155,9 +144,7 @@ class MapViewModel(private val app: Application) : ViewModel() {
                 queryOptions["page_number"] = page.toString()
                 val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
                 val markers = listResult.events.event
-                algorithm.addItems(markers)
-                _clusterStatus.postValue(LoadingStatus.DONE)
-//                cacheMarkers(lat, lng, markers)
+                addClusterItems(markers)
                 if (page < listResult.page_count.toInt())
                     fetchEventsInternal(lat, lng, queryOptions, page.inc())
                 else
@@ -172,7 +159,7 @@ class MapViewModel(private val app: Application) : ViewModel() {
     /** Adding query params. */
     private fun getQueryOptions(lat: Double, lng: Double, radius: Float, period: String): MutableMap<String, String> {
         val options: MutableMap<String, String> = HashMap()
-        options["app_key"] = app.resources.getString(R.string.eventful_key)
+        options["app_key"] = mApplication.resources.getString(R.string.eventful_key)
         options["where"] = "$lat,$lng"
         options["within"] = radius.toString()
         options["date"] = period

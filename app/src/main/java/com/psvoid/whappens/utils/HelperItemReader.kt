@@ -25,7 +25,7 @@ class HelperItemReader {
         return String(buffer)
     }
 
-    /* Read local JSON file */
+    /** Read local JSON file */
     fun readResourceJson(resources: Resources): List<ClusterMarker> {
         val inputStream = resources.openRawResource(R.raw.event_utah)
         return HelperItemReader().readSerializable(inputStream)

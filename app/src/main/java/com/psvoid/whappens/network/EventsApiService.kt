@@ -8,6 +8,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.Interceptor
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -28,7 +29,7 @@ interface EventsApiService {
 /** A public Api object that exposes the lazy-initialized Retrofit service */
 object EventsApi {
     private const val BASE_URL = "https://api.eventful.com/json/events/"
-    private val contentType: MediaType = MediaType.get("application/json")
+    private val contentType: MediaType = "application/json".toMediaType()
     private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
     private val logLevel = if (Config.logs) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
     private val logging: Interceptor = HttpLoggingInterceptor().setLevel(logLevel)

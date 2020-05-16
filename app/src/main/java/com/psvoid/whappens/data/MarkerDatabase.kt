@@ -6,10 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [ClusterMarker::class], version = 2, exportSchema = false)
+@Database(entities = [ClusterMarker::class], version = 1, exportSchema = false)
 @TypeConverters(ImagesConverter::class, CategoriesConverter::class)
 abstract class MarkerDatabase : RoomDatabase() {
-    abstract val markerDatabaseDao: MarkerDatabaseDao
+    abstract val markerDatabaseDao: MarkerDao
 
     /** Define a companion object, this allows us to add functions on the SleepDatabase class. */
     companion object {

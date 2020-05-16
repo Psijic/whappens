@@ -1,5 +1,6 @@
 package com.psvoid.whappens
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Criteria
 import android.location.Location
@@ -40,8 +41,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
 
         isRestore = savedInstanceState != null
-        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(
-            MapViewModel::class.java)
+        viewModel = MapViewModel(application)
+//        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
 
         setupMap()
         viewModel.fetchEventsByCountryList(Config.countries) // TODO: Move to MainActivity
@@ -91,6 +92,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         start()
     }
 
+    @SuppressLint("MissingPermission")
     private fun getMyLocation(): Location? {
         if (isPermissionGranted(FINE_LOCATION)) {
             val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager

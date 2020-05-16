@@ -5,7 +5,7 @@ import androidx.room.*
 
 /** Defines methods for using the ClusterMarker class with Room. */
 @Dao
-interface MarkerDatabaseDao {
+interface MarkerDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(marker: ClusterMarker)
