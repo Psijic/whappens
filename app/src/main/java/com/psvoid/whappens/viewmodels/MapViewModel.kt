@@ -51,22 +51,26 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         allMarkers = repository.getAllMarkers()
 
         // Check if Android database have actual data for current countries. If not, fetch them.
+        // Use observeForever https://stackoverflow.com/questions/47515997/observing-livedata-from-viewmodel
+        // or some options https://developer.android.com/topic/libraries/architecture/coroutines
         allMarkers.observeForever(markersObserver)
     }
 
     private fun getMarkers(markers: List<ClusterMarker>) {
-        if (markers.isNullOrEmpty() /*|| markers.timestamp > time*/) // TODO: refresh outdated markers
+        if (markers.isNullOrEmpty() /*|| markers.timestamp > time*/) { // TODO: refresh outdated markers
             fetchEventsByCountryList(Config.countries)
-        else
-            addClusterItems(markers)
+        } else {
+            //Need to check if there are no outdated data and delete old. So, store markers in tables by date
+            for (country in Config.countries) {
+                addClusterItems(markers)
+            }
+        }
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
-        // [START single_value_read]
         firebaseDb.child("events").child(countryName).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    // Get user value
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
                         insertMarkers(markers)
@@ -77,12 +81,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
                 override fun onCancelled(databaseError: DatabaseError) {
                     Log.w(TAG, "getUser:onCancelled", databaseError.toException())
-                    // [START_EXCLUDE]
-//                    setEditingEnabled(true)
-                    // [END_EXCLUDE]
                 }
             })
-        // [END single_value_read]
     }
 
     private fun fetchEventsByCountryList(countries: List<Country>) {

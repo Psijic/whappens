@@ -150,8 +150,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         clusterManager = ClusterManager(this, map, markerManager)
         clusterManager.setAlgorithm(viewModel.algorithm)
         if (Config.showMarkerImages)
-            clusterManager.renderer =
-                ClusterMarkerRenderer(this, map, clusterManager, resources)
+            clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
 
         map.setOnCameraIdleListener { onCameraIdleListener() }
     }
