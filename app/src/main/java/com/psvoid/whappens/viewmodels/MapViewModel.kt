@@ -19,23 +19,8 @@ import kotlinx.coroutines.*
 import kotlin.collections.set
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
-    companion object {
+    private companion object {
         const val TAG = "MapViewModel"
-
-        data class Cluster(
-//            val bounds: Bounds,
-            val markers: List<ClusterMarker>,
-            val timestamp: Long = System.currentTimeMillis()
-        )
-
-//        data class Bounds(
-//            val latMin: Double,
-//            val latMax: Double,
-//            val lngMin: Double,
-//            val lngMax: Double
-//        ) {
-//            fun contains(lat: Double, lng: Double) = lat in latMin..latMax && lng in lngMin..lngMax
-//        }
     }
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
@@ -47,15 +32,14 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Create a Coroutine scope using a job to be able to cancel when needed */
     private val viewModelJob = Job()
-    private val allMarkers: LiveData<List<ClusterMarker>>
 
     /** Coroutine runs using the IO dispatcher */
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
-    private val firebaseDb: DatabaseReference
-    private val cachedMarkers: MutableMap<String, Cluster> = mutableMapOf()
     private val markerDao: MarkerDao
+    private val firebaseDb: DatabaseReference
     private val repository: MarkerRepository
+    private val allMarkers: LiveData<List<ClusterMarker>>
     private val mApplication: Application = application
     private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
@@ -70,9 +54,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         allMarkers.observeForever(markersObserver)
     }
 
-
     private fun getMarkers(markers: List<ClusterMarker>) {
-        if (markers.isNullOrEmpty())
+        if (markers.isNullOrEmpty() /*|| markers.timestamp > time*/) // TODO: refresh outdated markers
             fetchEventsByCountryList(Config.countries)
         else
             addClusterItems(markers)
@@ -86,7 +69,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                     // Get user value
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
-                        cacheMarkers(countryName, markers)
                         insertMarkers(markers)
                         addClusterItems(markers)
                     }
@@ -105,32 +87,17 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun fetchEventsByCountryList(countries: List<Country>) {
         for (country in countries) {
-            val countryName = country.toString()
-            if (!cachedMarkers.containsKey(countryName) /*|| cachedMarkers[countryName].timestamp > time*/) // TODO: refresh time
-                fetchFirebase(countryName, Config.period)
+            fetchFirebase(country.toString(), Config.period)
         }
     }
 
+    /** Add specific settings like event types selected */
     fun fetchEvents(lat: Double, lng: Double, radius: Float) {
-        cachedMarkers.forEach { addClusterItems(it.value.markers) } // TODO: Add specific settings like event types selected
-//        all = repository.allMarkers//.value.orEmpty()
-        // check if cache already contains items
-//        cachedMarkers["USA"]?.let {
-//            addClusterItems(it.markers)
-//            return
-//        }
-
-//        fetchFirebase(lat, lng, radius, Config.period)
 
     }
-
 
     /** Launching a new coroutine to insert the data in a non-blocking way */
     fun insertMarkers(markers: List<ClusterMarker>) = viewModelScope.launch(Dispatchers.IO) { repository.insert(markers) }
-
-    private fun cacheMarkers(country: String, markers: List<ClusterMarker>) {
-        cachedMarkers[country] = Cluster(markers = markers)
-    }
 
     fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
         viewModelJob.cancelChildren(null)
