@@ -8,7 +8,8 @@ class MarkerRepository(private val markerDao: MarkerDao) {
 
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
-    val allMarkers: LiveData<List<ClusterMarker>> = markerDao.getAllMarkers()
+    fun getAllMarkers(): LiveData<List<ClusterMarker>> = markerDao.getAllMarkers()
+    fun getAllMarkersByCountry(abbr: String): LiveData<List<ClusterMarker>> = markerDao.getAllMarkersByCountry(abbr)
 
     suspend fun insert(marker: ClusterMarker) = markerDao.insert(marker)
     suspend fun insert(markers: List<ClusterMarker>) = markerDao.insert(markers)

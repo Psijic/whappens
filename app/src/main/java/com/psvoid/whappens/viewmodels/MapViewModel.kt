@@ -16,19 +16,11 @@ import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import kotlinx.coroutines.*
-import java.util.concurrent.Executors
 import kotlin.collections.set
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val TAG = "MapViewModel"
-
-        private val IO_EXECUTOR = Executors.newSingleThreadExecutor()
-
-        /** Utility method to run blocks on a dedicated background thread, used for io/database work. */
-        fun ioThread(f: () -> Unit) {
-            IO_EXECUTOR.execute(f)
-        }
 
         data class Cluster(
 //            val bounds: Bounds,
@@ -55,7 +47,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Create a Coroutine scope using a job to be able to cancel when needed */
     private val viewModelJob = Job()
-    private var all: LiveData<List<ClusterMarker>>
+    private val allMarkers: LiveData<List<ClusterMarker>>
 
     /** Coroutine runs using the IO dispatcher */
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
@@ -65,13 +57,25 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val markerDao: MarkerDao
     private val repository: MarkerRepository
     private val mApplication: Application = application
+    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
     init {
         Firebase.database.setPersistenceEnabled(true)
         firebaseDb = Firebase.database.reference
         markerDao = MarkerDatabase.getInstance(application).markerDatabaseDao
         repository = MarkerRepository(markerDao)
-        all = repository.allMarkers//.value.orEmpty()
+        allMarkers = repository.getAllMarkers()
+
+        // Check if Android database have actual data for current countries. If not, fetch them.
+        allMarkers.observeForever(markersObserver)
+    }
+
+
+    private fun getMarkers(markers: List<ClusterMarker>) {
+        if (markers.isNullOrEmpty())
+            fetchEventsByCountryList(Config.countries)
+        else
+            addClusterItems(markers)
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
@@ -99,7 +103,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         // [END single_value_read]
     }
 
-    fun fetchEventsByCountryList(countries: List<Country>) {
+    private fun fetchEventsByCountryList(countries: List<Country>) {
         for (country in countries) {
             val countryName = country.toString()
             if (!cachedMarkers.containsKey(countryName) /*|| cachedMarkers[countryName].timestamp > time*/) // TODO: refresh time
@@ -109,7 +113,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     fun fetchEvents(lat: Double, lng: Double, radius: Float) {
         cachedMarkers.forEach { addClusterItems(it.value.markers) } // TODO: Add specific settings like event types selected
-        all = repository.allMarkers//.value.orEmpty()
+//        all = repository.allMarkers//.value.orEmpty()
         // check if cache already contains items
 //        cachedMarkers["USA"]?.let {
 //            addClusterItems(it.markers)
@@ -181,5 +185,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
+        allMarkers.removeObserver(markersObserver)
     }
 }

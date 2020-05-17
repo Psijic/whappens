@@ -20,8 +20,8 @@ data class ClusterMarker(
     val url: String? = null,
     val locale: String = "en",
 //    @SerialName("image")
-    @TypeConverters(ImagesConverter::class)
-    val images: Images? = null,
+//    @TypeConverters(ImagesConverter::class)
+//    val images: Images? = null,
     @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
     val startTime: String = "",
     val latitude: Double = 0.0,
@@ -29,8 +29,8 @@ data class ClusterMarker(
     val description: String? = null,
     val price: String? = null,
 //    val categories: Categories? = null,
-    @TypeConverters(CategoriesConverter::class)
-    val categories: List<IdName>? = null,
+//    @TypeConverters(CategoriesConverter::class)
+//    val categories: List<IdName>? = null,
 //    val popularity: String? = null,
     val popularity: Int? = null,
 //    @SerialName("venue_address")

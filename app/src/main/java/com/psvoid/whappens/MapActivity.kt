@@ -10,7 +10,6 @@ import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -22,10 +21,9 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
-import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.data.LoadingStatus
+import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
-import com.psvoid.whappens.viewmodels.MapViewModelFactory
 import com.psvoid.whappens.views.ClusterMarkerRenderer
 import kotlin.math.pow
 
@@ -45,7 +43,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
 //        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
 
         setupMap()
-        viewModel.fetchEventsByCountryList(Config.countries) // TODO: Move to MainActivity
     }
 
     private fun setupMap() {
