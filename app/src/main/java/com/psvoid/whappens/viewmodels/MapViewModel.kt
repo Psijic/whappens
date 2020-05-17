@@ -15,10 +15,7 @@ import com.psvoid.whappens.R
 import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import kotlin.collections.set
 
@@ -120,10 +117,9 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 //        }
 
 //        fetchFirebase(lat, lng, radius, Config.period)
-//        viewModelJob.cancelChildren(null)
-//        val queryOptions = getQueryOptions(lat, lng, 25f, Config.period)
-//        fetchEventsInternal(lat, lng, queryOptions, 1)
+
     }
+
 
     /** Launching a new coroutine to insert the data in a non-blocking way */
     fun insertMarkers(markers: List<ClusterMarker>) = viewModelScope.launch(Dispatchers.IO) { repository.insert(markers) }
@@ -132,9 +128,16 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         cachedMarkers[country] = Cluster(markers = markers)
     }
 
+    fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
+        viewModelJob.cancelChildren(null)
+        val queryOptions = getQueryOptions(lat, lng, radius, Config.period)
+        fetchEventsInternal(lat, lng, queryOptions, 1)
+    }
+
     /**
      * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
      * @param filter the [EventsApiFilter] that is sent as part of the web server request
+     * @param page the events list page within the response, usually started from 1
      */
     private fun fetchEventsInternal(lat: Double, lng: Double, queryOptions: MutableMap<String, String>, page: Int = 1) {
         coroutineScope.launch {

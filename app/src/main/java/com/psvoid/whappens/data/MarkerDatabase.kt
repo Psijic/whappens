@@ -52,11 +52,7 @@ abstract class MarkerDatabase : RoomDatabase() {
                 var instance = INSTANCE
                 // If instance is `null` make a new database instance.
                 if (instance == null) {
-                    instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        MarkerDatabase::class.java,
-                        "marker_database"
-                    )
+                    instance = Room.databaseBuilder(context.applicationContext, MarkerDatabase::class.java, "marker_database")
                         // Wipes and rebuilds instead of migrating if no Migration object. Migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         .fallbackToDestructiveMigration()
