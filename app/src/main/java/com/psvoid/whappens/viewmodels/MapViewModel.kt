@@ -50,9 +50,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         repository = MarkerRepository(markerDao)
         allMarkers = repository.getAllMarkers()
 
-        // Check if Android database have actual data for current countries. If not, fetch them.
+        // Check if Android database have actual markers for current countries. If not, fetch them.
         // Use observeForever https://stackoverflow.com/questions/47515997/observing-livedata-from-viewmodel
-        // or some options https://developer.android.com/topic/libraries/architecture/coroutines
         allMarkers.observeForever(markersObserver)
     }
 
@@ -100,7 +99,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     fun insertMarkers(markers: List<ClusterMarker>) = viewModelScope.launch(Dispatchers.IO) { repository.insert(markers) }
 
     fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
-        viewModelJob.cancelChildren(null)
+        viewModelJob.cancelChildren(CancellationException("Updated"))
         val queryOptions = getQueryOptions(lat, lng, radius, Config.period)
         fetchEventsInternal(lat, lng, queryOptions, 1)
     }
