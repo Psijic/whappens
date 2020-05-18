@@ -4,11 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 
-@Database(entities = [ClusterMarker::class], version = 5, exportSchema = false)
-abstract class MarkerDatabase : RoomDatabase() {
-    abstract val markerDatabaseDao: MarkerDao
+@Database(entities = [ClusterMarker::class, CountryData::class], version = 5, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract val markerDao: MarkerDao
+    abstract val countriesDao: CountriesDao
 
     /** Define a companion object, this allows us to add functions on the SleepDatabase class. */
     companion object {
@@ -22,7 +22,7 @@ abstract class MarkerDatabase : RoomDatabase() {
          *  thread to shared data are visible to other threads.
          */
         @Volatile
-        private var INSTANCE: MarkerDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
         /**
          * Helper function to get the database.
@@ -41,7 +41,7 @@ abstract class MarkerDatabase : RoomDatabase() {
          *
          * @param context The application context Singleton, used to get access to the filesystem.
          */
-        fun getInstance(context: Context): MarkerDatabase {
+        fun getInstance(context: Context): AppDatabase {
             // Multiple threads can ask for the database at the same time, ensure we only initialize
             // it once by using synchronized. Only one thread may enter a synchronized block at a
             // time.
@@ -51,7 +51,7 @@ abstract class MarkerDatabase : RoomDatabase() {
                 var instance = INSTANCE
                 // If instance is `null` make a new database instance.
                 if (instance == null) {
-                    instance = Room.databaseBuilder(context.applicationContext, MarkerDatabase::class.java, "marker_database")
+                    instance = Room.databaseBuilder(context.applicationContext, AppDatabase::class.java, "marker_database")
                         // Wipes and rebuilds instead of migrating if no Migration object. Migration with Room in this blog post:
                         // https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929
                         .fallbackToDestructiveMigration()

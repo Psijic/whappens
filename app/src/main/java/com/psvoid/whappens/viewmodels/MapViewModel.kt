@@ -36,19 +36,25 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     /** Coroutine runs using the IO dispatcher */
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
-    private val markerDao: MarkerDao
     private val firebaseDb: DatabaseReference
-    private val repository: MarkerRepository
+    private val markerRepository: MarkerRepository
+    private val countriesRepository: CountriesRepository
     private val allMarkers: LiveData<List<ClusterMarker>>
+    private val markersTimestamps: LiveData<List<CountryData>>
     private val mApplication: Application = application
     private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
     init {
         Firebase.database.setPersistenceEnabled(true)
         firebaseDb = Firebase.database.reference
-        markerDao = MarkerDatabase.getInstance(application).markerDatabaseDao
-        repository = MarkerRepository(markerDao)
-        allMarkers = repository.getAllMarkers()
+
+        val markerDao = AppDatabase.getInstance(application).markerDao
+        markerRepository = MarkerRepository(markerDao)
+        val countriesDao = AppDatabase.getInstance(application).countriesDao
+        countriesRepository = CountriesRepository(countriesDao)
+
+        allMarkers = markerRepository.getAllMarkers()
+        markersTimestamps = countriesRepository.getAll()
 
         // Check if Android database have actual markers for current countries. If not, fetch them.
         // Use observeForever https://stackoverflow.com/questions/47515997/observing-livedata-from-viewmodel
@@ -72,7 +78,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
-                        insertMarkers(markers)
+                        saveMarkers(countryName, markers)
                         addClusterItems(markers)
                     }
                     Log.v(TAG, "getUser:onDataChange")
@@ -95,8 +101,20 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     }
 
+    private fun saveMarkers(countryName: String, markers: List<ClusterMarker>) {
+        insertMarkers(markers)
+        insertCountry(CountryData(countryName))
+    }
+
     /** Launching a new coroutine to insert the data in a non-blocking way */
-    fun insertMarkers(markers: List<ClusterMarker>) = viewModelScope.launch(Dispatchers.IO) { repository.insert(markers) }
+    private fun insertMarkers(markers: List<ClusterMarker>) =
+        viewModelScope.launch(Dispatchers.IO) { markerRepository.insert(markers) }
+
+    private fun insertCountries(countries: List<CountryData>) =
+        viewModelScope.launch(Dispatchers.IO) { countriesRepository.insert(countries) }
+
+    private fun insertCountry(country: CountryData) =
+        viewModelScope.launch(Dispatchers.IO) { countriesRepository.insert(country) }
 
     fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
         viewModelJob.cancelChildren(CancellationException("Updated"))

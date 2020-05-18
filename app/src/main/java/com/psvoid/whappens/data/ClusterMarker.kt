@@ -1,6 +1,8 @@
 package com.psvoid.whappens.data
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.firebase.database.PropertyName
@@ -18,7 +20,7 @@ data class ClusterMarker(
     @PrimaryKey
     val id: String = "",
     val url: String? = null,
-    val locale: String = "en",
+    val locale: String? = null,
 //    @SerialName("image")
 //    @TypeConverters(ImagesConverter::class)
     val image: String? = null, // 250*250 or 4*3 ratio
