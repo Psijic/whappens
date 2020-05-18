@@ -33,6 +33,6 @@ interface MarkerDao {
     fun getAllMarkers(): LiveData<List<ClusterMarker>>
 
     /** Select and returns all rows in the table. */
-    @Query("SELECT * FROM markers_table WHERE country_abbr = :countryAbbr")
-    fun getAllMarkersByCountry(countryAbbr: String): LiveData<List<ClusterMarker>>
+    @Query("SELECT * FROM markers_table WHERE country_code = :country_code")
+    fun getAllMarkersByCountry(country_code: String): LiveData<List<ClusterMarker>>
 }

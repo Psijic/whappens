@@ -36,9 +36,9 @@ data class ClusterMarker(
 //    @SerialName("venue_address")
     val address: String? = null,
     val country_name: String = "",
-    val country_abbr: String = "",
-    val city_name: String = "",
-    val region_name: String? = null
+    val country_code: String = "",
+    val city: String = "",
+    val region: String? = null
 //    val performers: Performer
 //    val place: Place,
 

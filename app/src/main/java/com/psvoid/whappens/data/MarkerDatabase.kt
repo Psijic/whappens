@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [ClusterMarker::class], version = 4, exportSchema = false)
+@Database(entities = [ClusterMarker::class], version = 5, exportSchema = false)
 abstract class MarkerDatabase : RoomDatabase() {
     abstract val markerDatabaseDao: MarkerDao
 
