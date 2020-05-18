@@ -21,7 +21,7 @@ interface CountriesDao {
 
     /** Select and returns all rows in the table. */
     @Query("SELECT * FROM countries_table")
-    fun getAll(): LiveData<List<CountryData>>
+    suspend fun getAll(): List<CountryData>
 
     @Query("SELECT * FROM countries_table WHERE country_code = :country_code")
     fun get(country_code: String): LiveData<List<CountryData>>

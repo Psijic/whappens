@@ -39,10 +39,12 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val firebaseDb: DatabaseReference
     private val markerRepository: MarkerRepository
     private val countriesRepository: CountriesRepository
-    private val allMarkers: LiveData<List<ClusterMarker>>
-    private val markersTimestamps: LiveData<List<CountryData>>
+    private lateinit var allMarkers: List<ClusterMarker>
+    private lateinit var markersTimestamps: List<CountryData>
+
+    //    private val markersTimestamps: LiveData<List<CountryData>>
     private val mApplication: Application = application
-    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
+//    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
     init {
         Firebase.database.setPersistenceEnabled(true)
@@ -53,19 +55,25 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         val countriesDao = AppDatabase.getInstance(application).countriesDao
         countriesRepository = CountriesRepository(countriesDao)
 
-        allMarkers = markerRepository.getAllMarkers()
-        markersTimestamps = countriesRepository.getAll()
+
+//        markersTimestamps = countriesRepository.getAll()
+        viewModelScope.launch(Dispatchers.IO) {
+            allMarkers = markerRepository.getAllMarkers()
+            markersTimestamps = countriesRepository.getAll()
+            getMarkers(allMarkers, countriesRepository.getAll())
+        }
 
         // Check if Android database have actual markers for current countries. If not, fetch them.
         // Use observeForever https://stackoverflow.com/questions/47515997/observing-livedata-from-viewmodel
-        allMarkers.observeForever(markersObserver)
+//        allMarkers.observeForever(markersObserver)
     }
 
-    private fun getMarkers(markers: List<ClusterMarker>) {
+    private fun getMarkers(markers: List<ClusterMarker>, timestamps: List<CountryData>) {
         if (markers.isNullOrEmpty() /*|| markers.timestamp > time*/) { // TODO: refresh outdated markers
-            fetchEventsByCountryList(Config.countries)
+            fetchEventsByCountries(Config.countries)
         } else {
-            //Need to check if there are no outdated data and delete old. So, store markers in tables by date
+            // Need to check if there are no outdated data and delete old. So, store markers in tables by date
+            // If data can't be fetched (no internet or error), return cached from the database
             for (country in Config.countries) {
                 addClusterItems(markers)
             }
@@ -73,24 +81,26 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
+        _clusterStatus.postValue(LoadingStatus.LOADING)
         firebaseDb.child("events").child(countryName).addListenerForSingleValueEvent(
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
                     markers?.let {
-                        saveMarkers(countryName, markers)
                         addClusterItems(markers)
+                        saveMarkers(countryName, markers)
                     }
                     Log.v(TAG, "getUser:onDataChange")
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
                     Log.w(TAG, "getUser:onCancelled", databaseError.toException())
+                    _clusterStatus.postValue(LoadingStatus.ERROR)
                 }
             })
     }
 
-    private fun fetchEventsByCountryList(countries: List<Country>) {
+    private fun fetchEventsByCountries(countries: List<Country>) {
         for (country in countries) {
             fetchFirebase(country.toString(), Config.period)
         }
@@ -169,6 +179,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     override fun onCleared() {
         super.onCleared()
         viewModelJob.cancel()
-        allMarkers.removeObserver(markersObserver)
+//        allMarkers.removeObserver(markersObserver)
     }
 }

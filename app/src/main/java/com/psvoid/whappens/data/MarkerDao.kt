@@ -30,9 +30,9 @@ interface MarkerDao {
 
     /** Select and returns all rows in the table. */
     @Query("SELECT * FROM markers_table")
-    fun getAllMarkers(): LiveData<List<ClusterMarker>>
+    suspend fun getAllMarkers(): List<ClusterMarker>
 
     /** Select and returns all rows in the table. */
-    @Query("SELECT * FROM markers_table WHERE country_code = :country_code")
-    fun getAllMarkersByCountry(country_code: String): LiveData<List<ClusterMarker>>
+    @Query("SELECT * FROM markers_table WHERE country_code = :countryCode")
+    suspend fun getAllMarkersByCountry(countryCode: String): List<ClusterMarker>
 }

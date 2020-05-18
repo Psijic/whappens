@@ -17,8 +17,7 @@ import kotlinx.serialization.Serializable
 data class ClusterMarker(
 //    @SerialName("title")
     val name: String = "",
-    @PrimaryKey
-    val id: String = "",
+    @PrimaryKey val id: String = "",
     val url: String? = null,
     val locale: String? = null,
 //    @SerialName("image")
