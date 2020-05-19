@@ -6,5 +6,6 @@ class CountriesRepository(private val countriesDao: CountriesDao) {
     suspend fun insert(country: CountryData) = countriesDao.insert(country)
 
     suspend fun getAll() = countriesDao.getAll()
+    suspend fun getByCountry(countryCode: String) = countriesDao.getByCountry(countryCode)
 
 }

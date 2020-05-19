@@ -13,7 +13,8 @@ object Config {
     const val maxMapZoom = 21f
     const val period = "Future" // "This Week", "Future"
     const val pageSize = 30
-    const val cacheRefreshTime = 1000
-    val countries = listOf(Country.PRT)
+    const val cacheRefreshTime = 86400000 // 24 hours
+    val countries = listOf("EST", "LVA", "LIE", "FIN", "PRT")
+    val launchTime = System.currentTimeMillis()
 
 }

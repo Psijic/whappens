@@ -37,47 +37,45 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
     private val firebaseDb: DatabaseReference
-    private val markerRepository: MarkerRepository
-    private val countriesRepository: CountriesRepository
-    private lateinit var allMarkers: List<ClusterMarker>
-    private lateinit var markersTimestamps: List<CountryData>
+    private val markerRepo: MarkerRepository
+    private val countriesRepo: CountriesRepository
+    private val allMarkers: MutableMap<String, List<ClusterMarker>> = mutableMapOf()
+//    private lateinit var markersTimestamps: List<CountryData>
 
     //    private val markersTimestamps: LiveData<List<CountryData>>
     private val mApplication: Application = application
 //    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
     init {
-        Firebase.database.setPersistenceEnabled(true)
+//        Firebase.database.setPersistenceEnabled(true)
         firebaseDb = Firebase.database.reference
 
         val markerDao = AppDatabase.getInstance(application).markerDao
-        markerRepository = MarkerRepository(markerDao)
+        markerRepo = MarkerRepository(markerDao)
         val countriesDao = AppDatabase.getInstance(application).countriesDao
-        countriesRepository = CountriesRepository(countriesDao)
-
-
-//        markersTimestamps = countriesRepository.getAll()
-        viewModelScope.launch(Dispatchers.IO) {
-            allMarkers = markerRepository.getAllMarkers()
-            markersTimestamps = countriesRepository.getAll()
-            getMarkers(allMarkers, countriesRepository.getAll())
-        }
+        countriesRepo = CountriesRepository(countriesDao)
 
         // Check if Android database have actual markers for current countries. If not, fetch them.
-        // Use observeForever https://stackoverflow.com/questions/47515997/observing-livedata-from-viewmodel
-//        allMarkers.observeForever(markersObserver)
-    }
+        viewModelScope.launch(Dispatchers.IO) {
+            for (countryName in Config.countries) {
+                val markers = markerRepo.getMarkersByCountry(countryName)
+                allMarkers[countryName] = markers
+                val countryTimestamp = countriesRepo.getByCountry(countryName)
+                val timestamp = countryTimestamp?.timestamp ?: 0
 
-    private fun getMarkers(markers: List<ClusterMarker>, timestamps: List<CountryData>) {
-        if (markers.isNullOrEmpty() /*|| markers.timestamp > time*/) { // TODO: refresh outdated markers
-            fetchEventsByCountries(Config.countries)
-        } else {
-            // Need to check if there are no outdated data and delete old. So, store markers in tables by date
-            // If data can't be fetched (no internet or error), return cached from the database
-            for (country in Config.countries) {
-                addClusterItems(markers)
+                // Check if the database data is cleared/broken or outdated
+                Log.i(TAG, "Getting database data, timestamp: $timestamp")
+                if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) {
+                    fetchFirebase(countryName, Config.period)
+                } else {
+                    addClusterItems(markers)
+                }
             }
         }
+    }
+
+    private fun getMarkers(markers: List<ClusterMarker>, countryDataList: List<CountryData>) {
+
     }
 
     private fun fetchFirebase(countryName: String, period: String) {
@@ -86,16 +84,19 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
-                    markers?.let {
+                    if (markers.isNullOrEmpty()) {
+                        // Add cached markers if firebase doesn't work well and return empty list.
+                        addClusterItems(allMarkers[countryName])
+                    } else {
                         addClusterItems(markers)
                         saveMarkers(countryName, markers)
                     }
-                    Log.v(TAG, "getUser:onDataChange")
+                    Log.v(TAG, "fetch Firebase markers: onDataChange")
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    Log.w(TAG, "getUser:onCancelled", databaseError.toException())
-                    _clusterStatus.postValue(LoadingStatus.ERROR)
+                    Log.w(TAG, "fetch Firebase markers: onCancelled", databaseError.toException())
+                    addClusterItems(allMarkers[countryName])
                 }
             })
     }
@@ -118,13 +119,13 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     /** Launching a new coroutine to insert the data in a non-blocking way */
     private fun insertMarkers(markers: List<ClusterMarker>) =
-        viewModelScope.launch(Dispatchers.IO) { markerRepository.insert(markers) }
+        viewModelScope.launch(Dispatchers.IO) { markerRepo.insert(markers) }
 
     private fun insertCountries(countries: List<CountryData>) =
-        viewModelScope.launch(Dispatchers.IO) { countriesRepository.insert(countries) }
+        viewModelScope.launch(Dispatchers.IO) { countriesRepo.insert(countries) }
 
     private fun insertCountry(country: CountryData) =
-        viewModelScope.launch(Dispatchers.IO) { countriesRepository.insert(country) }
+        viewModelScope.launch(Dispatchers.IO) { countriesRepo.insert(country) }
 
     fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
         viewModelJob.cancelChildren(CancellationException("Updated"))
@@ -170,9 +171,13 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         return options
     }
 
-    private fun addClusterItems(items: List<ClusterMarker>) {
-        algorithm.addItems(items)
-        _clusterStatus.postValue(LoadingStatus.DONE)
+    private fun addClusterItems(items: List<ClusterMarker>?) {
+        if (items.isNullOrEmpty()) {
+            _clusterStatus.postValue(LoadingStatus.ERROR)
+        } else {
+            algorithm.addItems(items)
+            _clusterStatus.postValue(LoadingStatus.DONE)
+        }
     }
 
     /** When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the Retrofit service to stop. */

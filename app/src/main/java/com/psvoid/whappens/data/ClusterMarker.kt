@@ -23,8 +23,8 @@ data class ClusterMarker(
 //    @SerialName("image")
 //    @TypeConverters(ImagesConverter::class)
     val image: String? = null, // 250*250 or 4*3 ratio
-    @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
-    val startTime: String = "",
+//    @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
+    val start_time: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val description: String? = null,
@@ -47,7 +47,7 @@ data class ClusterMarker(
 
     override fun getPosition() = LatLng(latitude, longitude)
     override fun getTitle() = name
-    override fun getSnippet() = address ?: startTime
+    override fun getSnippet() = start_time
 
     @Serializable
     data class Categories(val category: List<IdName>)
