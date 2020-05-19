@@ -40,14 +40,12 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val markerRepo: MarkerRepository
     private val countriesRepo: CountriesRepository
     private val allMarkers: MutableMap<String, List<ClusterMarker>> = mutableMapOf()
-//    private lateinit var markersTimestamps: List<CountryData>
 
-    //    private val markersTimestamps: LiveData<List<CountryData>>
     private val mApplication: Application = application
 //    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
     init {
-//        Firebase.database.setPersistenceEnabled(true)
+//        Firebase.database.setPersistenceEnabled(true) // TODO: Move
         firebaseDb = Firebase.database.reference
 
         val markerDao = AppDatabase.getInstance(application).markerDao
@@ -74,10 +72,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun getMarkers(markers: List<ClusterMarker>, countryDataList: List<CountryData>) {
-
-    }
-
     private fun fetchFirebase(countryName: String, period: String) {
         _clusterStatus.postValue(LoadingStatus.LOADING)
         firebaseDb.child("events").child(countryName).addListenerForSingleValueEvent(
@@ -99,12 +93,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                     addClusterItems(allMarkers[countryName])
                 }
             })
-    }
-
-    private fun fetchEventsByCountries(countries: List<Country>) {
-        for (country in countries) {
-            fetchFirebase(country.toString(), Config.period)
-        }
     }
 
     /** Add specific settings like event types selected */
