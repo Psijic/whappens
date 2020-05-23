@@ -78,6 +78,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
+                    Log.v(TAG, "fetch Firebase markers: onDataChange")
+
                     if (markers.isNullOrEmpty()) {
                         // Add cached markers if firebase doesn't work well and return empty list.
                         addClusterItems(allMarkers[countryName])
@@ -85,7 +87,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                         addClusterItems(markers)
                         saveMarkers(countryName, markers)
                     }
-                    Log.v(TAG, "fetch Firebase markers: onDataChange")
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
