@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Menu
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -25,6 +26,7 @@ import com.psvoid.whappens.data.LoadingStatus
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
+import kotlinx.android.synthetic.main.activity_maps.*
 import kotlin.math.pow
 
 open class MapActivity : BaseActivity(), OnMapReadyCallback {
@@ -38,11 +40,19 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
+//        setSupportActionBar(bottom_app_bar)
+
         isRestore = savedInstanceState != null
         viewModel = MapViewModel(application)
 //        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
 
         setupMap()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.bottom_app_bar_menu, menu)
+        return true
     }
 
     private fun setupMap() {

@@ -3,11 +3,12 @@ package com.psvoid.whappens
 import android.Manifest
 import android.content.pm.PackageManager
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 
-open class BaseActivity : FragmentActivity() {
+open class BaseActivity : AppCompatActivity() {
     companion object Permissions {
         const val LOCATION_PERMISSIONS = 1
         const val FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
