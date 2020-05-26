@@ -40,18 +40,11 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-        setSupportActionBar(bottom_app_bar)
-
         isRestore = savedInstanceState != null
         viewModel = MapViewModel(application)
 //        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
 
         setupMap()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.bottom_app_bar_menu, menu)
-        return true
     }
 
     private fun setupMap() {
