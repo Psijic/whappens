@@ -40,7 +40,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
 
-//        setSupportActionBar(bottom_app_bar)
+        setSupportActionBar(bottom_app_bar)
 
         isRestore = savedInstanceState != null
         viewModel = MapViewModel(application)
@@ -50,8 +50,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.bottom_app_bar_menu, menu)
+        menuInflater.inflate(R.menu.bottom_app_bar_menu, menu)
         return true
     }
 
