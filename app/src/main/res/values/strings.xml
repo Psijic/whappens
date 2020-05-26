@@ -10,7 +10,7 @@
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>
     <string name="need_location_permission">Whappens needs to know your location to show events near.</string>
-    <string name="action_favorite">Favourite</string>
+    <string name="action_favorite">Favorite</string>
     <string name="search">Search</string>
     <string name="action_date_range">1d</string>
 </resources>
