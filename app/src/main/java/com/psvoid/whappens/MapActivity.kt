@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Menu
+import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -26,11 +26,10 @@ import com.psvoid.whappens.data.LoadingStatus
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
-import kotlinx.android.synthetic.main.activity_maps.*
 import kotlin.math.pow
 
 open class MapActivity : BaseActivity(), OnMapReadyCallback {
-    private lateinit var viewModel: MapViewModel
+    private val viewModel: MapViewModel by viewModels()
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
@@ -41,9 +40,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         setContentView(R.layout.activity_maps)
 
         isRestore = savedInstanceState != null
-        viewModel = MapViewModel(application)
-//        viewModel = ViewModelProvider(this, MapViewModelFactory(application)).get(MapViewModel::class.java)
-
         setupMap()
     }
 
