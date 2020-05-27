@@ -90,6 +90,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
     @SuppressLint("MissingPermission")
     private fun getMyLocation(): Location? {
         if (isPermissionGranted(FINE_LOCATION)) {
+//            ContextCompat.getSystemService(this, LocationManager::class.java) as LocationManager
             val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val provider = locationManager.getBestProvider(Criteria(), false)
             return locationManager.getLastKnownLocation(provider ?: LocationManager.NETWORK_PROVIDER)
