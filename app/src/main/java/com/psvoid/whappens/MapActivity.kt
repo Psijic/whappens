@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.LoadingStatus
@@ -28,7 +29,8 @@ import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
 import kotlin.math.pow
 
-open class MapActivity : BaseActivity(), OnMapReadyCallback {
+
+open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickListener<ClusterMarker> {
     private val viewModel: MapViewModel by viewModels()
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
@@ -60,10 +62,10 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
         if (!isRestore) {
             // set camera start point
             val location = getMyLocation()
-            var latitude: Double = 32.746782
-            var longitude: Double = -117.162841
+            var latitude = 32.746782
+            var longitude = -117.162841
 
-            if (location != null) {
+            location?.let {
                 latitude = location.latitude
                 longitude = location.longitude
                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 11f))
@@ -183,5 +185,16 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
             viewModel.fetchEvents(latLng.latitude, latLng.longitude, radius())
             Handler().postDelayed({ marker.remove() }, 800)
         }
+
+        // Click
+        clusterManager.setOnClusterItemClickListener(this)
+    }
+
+    /** Called when the user clicks a ClusterMarker.  */
+    override fun onClusterItemClick(item: ClusterMarker): Boolean {
+
+
+        // Does nothing, but you could go into the user's profile page, for example.
+        return false
     }
 }
