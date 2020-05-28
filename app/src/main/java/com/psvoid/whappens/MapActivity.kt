@@ -34,7 +34,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback {
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
 
-
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
