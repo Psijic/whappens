@@ -12,6 +12,10 @@ android {
     buildToolsVersion '29.0.3'
     viewBinding.enabled = true
 
+    dataBinding {
+        enabled = true
+    }
+
     defaultConfig {
         applicationId 'com.psvoid.whappens'
         minSdkVersion 21

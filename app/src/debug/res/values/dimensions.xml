@@ -17,5 +17,11 @@
 
 <resources>
     <dimen name="custom_profile_image">50dp</dimen>
+    <dimen name="default_image_width">150dp</dimen>
+    <dimen name="default_image_height">150dp</dimen>
     <dimen name="custom_profile_padding">2dp</dimen>
+
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="default_half_padding">8dp</dimen>
+
 </resources>
