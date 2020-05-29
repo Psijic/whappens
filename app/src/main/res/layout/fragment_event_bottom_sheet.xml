@@ -15,6 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryDark"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical"
         android:padding="@dimen/default_half_padding"
         app:behavior_hideable="false"
@@ -32,10 +34,9 @@
                 android:layout_height="@dimen/default_image_height"
                 android:contentDescription="@string/card_image_description"
                 android:scaleType="centerCrop"
-                android:src="@drawable/discoveries"
-                 />
+                android:src="@drawable/discoveries" />
 
-<!--            app:imageFromUrl="@{event.image}"-->
+            <!--            app:imageFromUrl="@{event.image}"-->
 
             <LinearLayout
                 android:layout_width="match_parent"
