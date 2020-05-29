@@ -25,6 +25,7 @@ data class ClusterMarker(
     val image: String? = null, // 250*250 or 4*3 ratio
 //    @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
     val start_time: String = "",
+    val stop_time: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val description: String? = null,
@@ -55,6 +56,8 @@ data class ClusterMarker(
     @Serializable
 //    data class Images(val thumb: EventImage, val block250: EventImage)
     data class Images(val block250: EventImage? = null)
+
+    fun getTimePeriod() = "$start_time - $stop_time"
 
     //@Serializable
     //data class Performer(val performer: List<IdName>)

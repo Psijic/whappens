@@ -53,6 +53,13 @@
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         tools:text="Event Title" />
 
+                    <androidx.appcompat.widget.AppCompatRatingBar
+                        style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:numStars="5"
+                        android:rating="3.5" />
+
                     <TextView
                         android:id="@+id/description"
                         android:layout_width="match_parent"

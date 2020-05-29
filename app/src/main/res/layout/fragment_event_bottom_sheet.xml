@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:drawablePadding="@dimen/default_padding">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -19,7 +18,7 @@
         android:orientation="vertical"
         android:padding="@dimen/default_half_padding"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="90dp"
+        app:behavior_peekHeight="92dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout
@@ -33,7 +32,8 @@
                 android:layout_height="@dimen/default_image_height"
                 android:contentDescription="@string/card_image_description"
                 android:scaleType="centerCrop"
-                android:src="@drawable/discoveries" />
+                android:src="@drawable/discoveries"
+                app:imageFromUrl="@{event.image}" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,72 +42,68 @@
                 android:paddingStart="@dimen/default_half_padding"
                 android:paddingEnd="0dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?attr/textAppearanceHeadline6"
-                    tools:text="Event Title" />
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{event.timePeriod}"
+                        android:textColor="@color/accent"
+                        tools:text="17:00 - 19:00, 04 Dec" />
 
                     <androidx.appcompat.widget.AppCompatRatingBar
                         style="@style/Base.Widget.AppCompat.RatingBar.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:numStars="5"
-                        android:rating="4" />
+                        android:layout_gravity="end"
+                        android:numStars="3"
+                        android:rating="2" />
+                </FrameLayout>
 
-                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    tools:text="Event Title" />
 
                 <TextView
                     android:id="@+id/address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:drawableStart="@drawable/ic_cake_white_24dp"
+                    android:drawablePadding="@dimen/default_half_padding"
+                    android:text="{event.categories[1]}"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textColor="?android:attr/textColorSecondary"
+                    tools:text="Event Subcategory" />
+
+                <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@{event.address}"
-                    android:textAppearance="?attr/textAppearanceBody2"
-                    android:textColor="?android:attr/textColorSecondary"
-                    tools:text="Event Address" />
-
+                    android:layout_marginTop="@dimen/default_half_padding"
+                    android:text="@string/app_name"
+                    android:textColor="@color/white" />
 
             </LinearLayout>
-
         </LinearLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:drawableStart="@drawable/ic_location_city_white_24dp"
-            android:drawablePadding="@dimen/default_padding"
-            tools:text="Concerts" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:drawableStart="@drawable/ic_search_white_24dp"
-            android:drawablePadding="@dimen/default_padding"
+            android:layout_marginTop="@dimen/default_half_padding"
+            android:drawableStart="@drawable/ic_location_on_white_24dp"
+            android:drawablePadding="@dimen/default_half_padding"
             tools:text="New York, Wall Street" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:drawableStart="@drawable/ic_date_range_white_24dp"
-            android:drawablePadding="@dimen/default_padding"
-            tools:text="Fri, 7 PM - 9 PM" />
-
-        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/app_name"
-            android:textColor="@color/white" />
+            android:layout_marginTop="@dimen/default_half_padding"
+            android:drawablePadding="@dimen/default_padding"
+            tools:text="Description Text" />
 
     </LinearLayout>
 </layout>
