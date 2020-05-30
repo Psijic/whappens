@@ -83,12 +83,43 @@
                     android:textColor="?android:attr/textColorSecondary"
                     tools:text="Event Subcategory" />
 
-                <Button
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/default_half_padding"
-                    android:text="@string/app_name"
-                    android:textColor="@color/white" />
+                    app:layout_constraintHorizontal_chainStyle="spread_inside"
+                    android:layout_marginTop="@dimen/default_half_padding">
+
+                    <Button
+                        android:id="@+id/button2"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="@dimen/button_icon"
+
+                        android:layout_height="wrap_content"
+                        app:icon="@drawable/ic_favorite_border_white_24dp"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/button"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="@dimen/button_icon"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_today_white_24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/button3"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="@dimen/button_icon"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        app:icon="@drawable/ic_star_border_white_24dp"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
         </LinearLayout>
