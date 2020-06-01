@@ -25,6 +25,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
+    val selectedEvent = MutableLiveData<ClusterMarker>()
+
     /** The internal MutableLiveData that stores the status of the most recent request */
     private val _clusterStatus = MutableLiveData<LoadingStatus>()
     val clusterStatus: LiveData<LoadingStatus>

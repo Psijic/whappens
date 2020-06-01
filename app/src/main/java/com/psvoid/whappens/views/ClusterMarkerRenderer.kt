@@ -52,7 +52,7 @@ class ClusterMarkerRenderer(
         markerOptions
             .icon(getItemIcon(marker))
 //            .icon(loadImage(marker))
-            .title(marker.name)
+            .title(marker.title)
     }
 
     /**

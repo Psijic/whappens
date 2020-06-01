@@ -10,6 +10,7 @@ import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,6 +25,7 @@ import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListe
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.LoadingStatus
+import com.psvoid.whappens.databinding.ActivityMapsBinding
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
@@ -35,10 +37,12 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
-
+    private lateinit var binding: ActivityMapsBinding
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_maps)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
+        binding.event = ClusterMarker(name = "NEW ClusterMarker")
 
         isRestore = savedInstanceState != null
         setupMap()
@@ -54,6 +58,11 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
             if (LoadingStatus.DONE == it) {
                 clusterManager.cluster()
             }
+        })
+
+        viewModel.selectedEvent.observe(this, Observer {
+            binding.event = it
+            binding.showBottomBar = it.title.isNotEmpty()
         })
     }
 
@@ -182,6 +191,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
             val marker = map.addMarker(
                 MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
+
             viewModel.fetchEvents(latLng.latitude, latLng.longitude, radius())
             Handler().postDelayed({ marker.remove() }, 800)
         }
@@ -192,7 +202,9 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
     /** Called when the user clicks a ClusterMarker.  */
     override fun onClusterItemClick(item: ClusterMarker): Boolean {
-
+        viewModel.selectedEvent.value = item
+        binding.event = item
+        binding.executePendingBindings()
 
         // Does nothing, but you could go into the user's profile page, for example.
         return false

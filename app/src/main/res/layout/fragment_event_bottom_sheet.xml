@@ -68,6 +68,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
+                    android:text="@{event.title}"
                     android:textAppearance="?attr/textAppearanceHeadline6"
                     tools:text="Event Title" />
 
@@ -134,14 +135,16 @@
             android:layout_marginTop="@dimen/default_half_padding"
             android:drawableStart="@drawable/ic_location_on_white_24dp"
             android:drawablePadding="@dimen/default_half_padding"
-            android:text="@string/address_unknown" />
+            android:text="@{event.address}"
+            tools:text="@string/address_unknown" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_half_padding"
             android:drawablePadding="@dimen/default_padding"
-            android:text="@string/mock_description" />
+            android:text="@{event.description}"
+            tools:text="@string/mock_description" />
 
     </LinearLayout>
 </layout>
