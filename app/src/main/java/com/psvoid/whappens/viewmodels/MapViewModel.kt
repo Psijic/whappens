@@ -150,8 +150,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /** Adding query params. */
-    private fun getQueryOptions(lat: Double, lng: Double, radius: Float, period: String): MutableMap<String, String> {
-        val options: MutableMap<String, String> = HashMap()
+    private fun getQueryOptions(lat: Double, lng: Double, radius: Float, period: String): HashMap<String, String> {
+        val options = HashMap<String, String>()
         options["app_key"] = mApplication.resources.getString(R.string.eventful_key)
         options["where"] = "$lat,$lng"
         options["within"] = radius.toString()
