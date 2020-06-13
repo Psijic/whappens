@@ -3,6 +3,7 @@ package com.psvoid.whappens.viewmodels
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -26,6 +27,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
     val selectedEvent = MutableLiveData<ClusterMarker>()
+    var bottomSheetState = BottomSheetBehavior.STATE_HIDDEN
 
     /** The internal MutableLiveData that stores the status of the most recent request */
     private val _clusterStatus = MutableLiveData<LoadingStatus>()

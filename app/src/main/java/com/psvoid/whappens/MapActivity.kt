@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
@@ -42,7 +43,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
-        binding.event = ClusterMarker(name = "NEW ClusterMarker")
+        binding.bottomSheetState = viewModel.bottomSheetState
 
         isRestore = savedInstanceState != null
         setupMap()
@@ -60,10 +61,11 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
             }
         })
 
+        //bottom
         viewModel.selectedEvent.observe(this, Observer {
-//            val bottomBar = getview
-
-            binding.showBottomBar = !it?.title.isNullOrEmpty()
+            viewModel.bottomSheetState = if (it == null) BottomSheetBehavior.STATE_HIDDEN else
+                BottomSheetBehavior.STATE_COLLAPSED
+            binding.bottomSheetState = viewModel.bottomSheetState
             binding.event = it
         })
     }
@@ -84,6 +86,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
             // get events near needed point
 //            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude, map.cameraPosition.zoom)
+        } else {
+            // pass
         }
     }
 

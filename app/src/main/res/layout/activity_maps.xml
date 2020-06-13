@@ -10,8 +10,8 @@
             name="event"
             type="com.psvoid.whappens.data.ClusterMarker" />
         <variable
-            name="showBottomBar"
-            type="Boolean" />
+            name="bottomSheetState"
+            type="Integer" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -41,10 +41,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <include layout="@layout/fragment_event_bottom_sheet"
+        <include
             android:id="@+id/bottom_sheet"
-            app:isGone="@{!showBottomBar}"
-            app:event = "@{event}"/>
+            layout="@layout/fragment_event_bottom_sheet"
+            android:visibility="visible"
+            app:bottomSheetState="@{bottomSheetState}"
+            app:event="@{event}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

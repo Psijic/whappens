@@ -8,10 +8,15 @@
         <variable
             name="event"
             type="com.psvoid.whappens.data.ClusterMarker" />
+
+        <variable
+            name="bottomSheetState"
+            type="Integer" />
     </data>
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
+        style="?attr/bottomSheetStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/primaryDark"
@@ -19,8 +24,9 @@
         android:focusable="true"
         android:orientation="vertical"
         android:padding="@dimen/default_half_padding"
-        app:behavior_hideable="false"
+        app:behavior_hideable="true"
         app:behavior_peekHeight="108dp"
+        app:bottomSheetState="@{bottomSheetState}"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <LinearLayout
