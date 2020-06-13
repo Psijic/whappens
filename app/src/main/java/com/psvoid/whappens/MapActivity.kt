@@ -61,8 +61,10 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         })
 
         viewModel.selectedEvent.observe(this, Observer {
+//            val bottomBar = getview
+
+            binding.showBottomBar = !it?.title.isNullOrEmpty()
             binding.event = it
-            binding.showBottomBar = it.title.isNotEmpty()
         })
     }
 
@@ -77,8 +79,9 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
             location?.let {
                 latitude = location.latitude
                 longitude = location.longitude
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 11f))
             }
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 11f))
+
             // get events near needed point
 //            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude, map.cameraPosition.zoom)
         }
@@ -160,8 +163,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         clusterManager.setAlgorithm(viewModel.algorithm)
         if (Config.showMarkerImages)
             clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
-
-        map.setOnCameraIdleListener { onCameraIdleListener() }
     }
 
     /** Handle event when map camera stops moving. */
@@ -176,7 +177,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         }
     }
 
-    //TODO: Add screen size and user settings to calculations
+    //TODO: Add screen size and user settings to calculations?
     private fun radius() = (Config.searchRadius * 2f.pow(map.maxZoomLevel - map.cameraPosition.zoom)) // Zoom in 3..21
 
     /** Run the code. */
@@ -186,10 +187,14 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
     /** Setup user actions handling*/
     private fun setupActions() {
+        map.setOnCameraIdleListener { onCameraIdleListener() }
+
         // Long click
         map.setOnMapLongClickListener { latLng ->
             val marker = map.addMarker(
-                MarkerOptions().position(latLng).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
 
             viewModel.fetchEvents(latLng.latitude, latLng.longitude, radius())
@@ -198,15 +203,30 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
         // Click
         clusterManager.setOnClusterItemClickListener(this)
+        map.setOnMapClickListener { onMapClickListener() }
     }
 
     /** Called when the user clicks a ClusterMarker.  */
     override fun onClusterItemClick(item: ClusterMarker): Boolean {
         viewModel.selectedEvent.value = item
         binding.event = item
-        binding.executePendingBindings()
+        //binding.executePendingBindings()
 
-        // Does nothing, but you could go into the user's profile page, for example.
-        return false
+        // add custom behaviour
+        val update = CameraUpdateFactory.newLatLng(LatLng(item.latitude, item.longitude))
+        map.animateCamera(update, Config.animateCameraDuration, null)
+        // remove default marker behaviour (move camera and show a popup)
+        return true
     }
+
+
+    private fun onMapClickListener() {
+        Log.v("MapActivity", "onMapClickListener")
+
+        //remove marker selected status
+        viewModel.selectedEvent.value = null
+    }
+
 }
+
+

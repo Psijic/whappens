@@ -4,6 +4,7 @@ import com.psvoid.whappens.data.Country
 
 object Config {
 
+    const val animateCameraDuration = 300
     const val mapStyle = -1 //R.raw.map_style
     const val showMarkerImages = false
     const val logs = true
