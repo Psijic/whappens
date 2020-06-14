@@ -40,6 +40,7 @@
                 android:layout_height="@dimen/default_image_height"
                 android:contentDescription="@string/card_image_description"
                 android:scaleType="centerCrop"
+                app:imageFromUrl="@{event.image}"
                 android:src="@drawable/discoveries" />
 
             <!--            app:imageFromUrl="@{event.image}"-->
