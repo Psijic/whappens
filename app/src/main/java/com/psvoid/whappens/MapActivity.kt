@@ -43,7 +43,9 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
-        binding.bottomSheetState = viewModel.bottomSheetState
+//        binding.bottomSheetState = viewModel.bottomSheetState
+
+        //val behavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
 
         isRestore = savedInstanceState != null
         setupMap()
@@ -61,11 +63,10 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
             }
         })
 
-        //bottom
+        // bottomSheet
         viewModel.selectedEvent.observe(this, Observer {
-            viewModel.bottomSheetState = if (it == null) BottomSheetBehavior.STATE_HIDDEN else
+            binding.bottomSheetState = if (it == null) BottomSheetBehavior.STATE_HIDDEN else
                 BottomSheetBehavior.STATE_COLLAPSED
-            binding.bottomSheetState = viewModel.bottomSheetState
             binding.event = it
         })
     }
