@@ -1,13 +1,11 @@
 package com.psvoid.whappens.data
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.IgnoreExtraProperties
-import com.google.firebase.database.PropertyName
 import com.google.maps.android.clustering.ClusterItem
-import kotlinx.serialization.SerialName
+import com.psvoid.whappens.utils.DateUtils.getMonthName
 import kotlinx.serialization.Serializable
 
 /** A data class that implements the [ClusterItem] interface so it can be clustered. */
@@ -25,7 +23,7 @@ data class ClusterMarker(
     val image: String? = null, // 250*250 or 4*3 ratio
 //    @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
     val start_time: String = "",
-    val stop_time: String = "",
+    val stop_time: String? = null,
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val description: String? = null,
@@ -48,16 +46,28 @@ data class ClusterMarker(
 
     override fun getPosition() = LatLng(latitude, longitude)
     override fun getTitle() = name
-    override fun getSnippet() = start_time
+    override fun getSnippet() = address
 
     @Serializable
     data class Categories(val category: List<IdName>)
 
-    @Serializable
-//    data class Images(val thumb: EventImage, val block250: EventImage)
-    data class Images(val block250: EventImage? = null)
+    /**Convert date like this: "2020-05-20 20:30:00" to "17:00 - 19:00, 04 Dec" */
+    fun getTimePeriod(): String {
+        //TODO: Add conditions for multiple days
+        val sTime = start_time.substring(11, 16)
 
-    fun getTimePeriod() = "$start_time - $stop_time"
+        val month = getMonthName(start_time.substring(5, 7).toInt())
+        val sDate = "${start_time.substring(8, 10)} $month"
+
+        if (!stop_time.isNullOrEmpty()) {
+            sTime.plus(" - ${stop_time.substring(11, 16)}")
+            val dateEnd = stop_time.substring(5, 10)
+//            if (sDate != dateEnd) sDate.plus(" - $dateEnd")
+        }
+
+        return "$sTime, $sDate"
+    }
+
 
     //@Serializable
     //data class Performer(val performer: List<IdName>)
