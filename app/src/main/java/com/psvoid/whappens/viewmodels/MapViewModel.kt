@@ -3,7 +3,6 @@ package com.psvoid.whappens.viewmodels
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference

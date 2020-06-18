@@ -2,6 +2,8 @@ package com.psvoid.whappens.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import androidx.room.TypeConverters
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.maps.android.clustering.ClusterItem
@@ -29,8 +31,9 @@ data class ClusterMarker(
     val description: String? = null,
     val price: String? = null,
 //    val categories: Categories? = null,
-//    @TypeConverters(CategoriesConverter::class)
-//    val categories: List<IdName>? = null,
+    @TypeConverters(CategoriesConverter::class)
+    val categories: List<String> = listOf(),
+//    var categories: ArrayList<String> = arrayListOf(),
 //    val popularity: String? = null,
     val popularity: Int? = null,
 //    @SerialName("venue_address")
@@ -38,9 +41,9 @@ data class ClusterMarker(
     val country_name: String = "",
     val country_code: String = "",
     val city: String = "",
-    val region: String? = null
+    val region: String? = null,
 //    val performers: Performer
-//    val place: Place,
+    val place: String? = null
 
 ) : ClusterItem {
 
@@ -48,14 +51,13 @@ data class ClusterMarker(
     override fun getTitle() = name
     override fun getSnippet() = address
 
-    @Serializable
-    data class Categories(val category: List<IdName>)
+    fun getCategory(): String = categories.joinToString()
+    fun getFullAddress(): String = listOfNotNull(address, place).joinToString("; ")
 
     /**Convert date like this: "2020-05-20 20:30:00" to "17:00 - 19:00, 04 Dec" */
     fun getTimePeriod(): String {
         //TODO: Add conditions for multiple days
         val sTime = start_time.substring(11, 16)
-
         val month = getMonthName(start_time.substring(5, 7).toInt())
         val sDate = "${start_time.substring(8, 10)} $month"
 
@@ -73,37 +75,13 @@ data class ClusterMarker(
     //data class Performer(val performer: List<IdName>)
 }
 
-//class ImagesConverter {
-//    @TypeConverter
-//    fun fromImages(images: ClusterMarker.Images?): String {
-//        return images?.block250.toString()
-//    }
-//
-//    @TypeConverter
-//    fun toImages(data: String): ClusterMarker.Images {
-//        val list = data.split(", ")
-//        return ClusterMarker.Images(
-//            block250 = EventImage(
-//                list[0],
-//                list[1],
-//                list[2]
-//            )
-//        )
-//    }
-//}
-//
-//class CategoriesConverter {
-//    @TypeConverter
-//    fun fromData(value: List<IdName>): String {
-//        return value.toString()
-//    }
-//
-//    @TypeConverter
-//    fun toData(data: String): List<IdName> {
-//        val list = data.split(" ")
-//        return listOf()
-//    }
-//}
+class CategoriesConverter {
+    @TypeConverter
+    fun fromData(value: List<String>): String = value.joinToString()
+
+    @TypeConverter
+    fun toData(data: String): List<String> = data.split(" ")
+}
 
 
 

@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [ClusterMarker::class, CountryData::class], version = 8, exportSchema = false)
+@TypeConverters(CategoriesConverter::class)
+@Database(entities = [ClusterMarker::class, CountryData::class], version = 11, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract val markerDao: MarkerDao
     abstract val countriesDao: CountriesDao

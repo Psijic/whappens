@@ -23,5 +23,6 @@
 
     <dimen name="default_padding">16dp</dimen>
     <dimen name="default_half_padding">8dp</dimen>
+    <dimen name="default_text_field">24dp</dimen>
 
 </resources>

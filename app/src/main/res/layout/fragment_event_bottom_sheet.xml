@@ -16,10 +16,9 @@
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
-        style="?attr/bottomSheetStyle"
+        style="@style/BaseBottomSheetDialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/primaryDark"
         android:clickable="true"
         android:focusable="true"
         android:orientation="vertical"
@@ -40,14 +39,14 @@
                 android:layout_height="@dimen/default_image_height"
                 android:contentDescription="@string/card_image_description"
                 android:scaleType="centerCrop"
-                app:imageFromUrl="@{event.image}"
-                android:src="@drawable/discoveries" />
+                android:src="@drawable/discoveries"
+                app:imageFromUrl="@{event.image}" />
 
             <!--            app:imageFromUrl="@{event.image}"-->
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/default_image_height"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/default_half_padding"
                 android:paddingEnd="0dp">
@@ -60,7 +59,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{event.timePeriod}"
-                        android:textColor="@color/accent"
+                        android:textColor="@color/secondaryLightColor"
                         tools:text="17:00 - 19:00, 04 Dec" />
 
                     <androidx.appcompat.widget.AppCompatRatingBar
@@ -77,29 +76,29 @@
                     android:layout_height="52dp"
                     android:text="@{event.title}"
                     android:textAppearance="?attr/textAppearanceHeadline6"
-                    tools:text="Event Title" />
+                    tools:text="Event Title TheSecondLine" />
 
                 <TextView
                     android:id="@+id/address"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:drawableStart="@drawable/ic_cake_white_24dp"
+                    android:layout_height="@dimen/default_text_field"
+                    android:layout_marginTop="6dp"
+                    android:drawableStart="@drawable/ic_domain_white_24dp"
                     android:drawablePadding="@dimen/default_half_padding"
-                    android:text="{event.categories[1]}"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="?android:attr/textColorSecondary"
-                    tools:text="Event Subcategory" />
+                    app:text="@{event.category}"
+                    tools:text="conference, science" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
-                    android:layout_marginTop="@dimen/default_half_padding">
+                    android:layout_marginTop="7dp">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/favorite_button"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                        style="@style/ButtonIcon"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="40dp"
@@ -108,24 +107,22 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/calendar_button"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                        style="@style/ButtonIcon"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="40dp"
-                        android:textColor="@color/white"
                         app:icon="@drawable/ic_today_white_24dp"
                         app:layout_constraintEnd_toStartOf="@+id/star_button"
                         app:layout_constraintStart_toEndOf="@+id/favorite_button"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/star_button"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+                        style="@style/ButtonIcon"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/white"
                         app:icon="@drawable/ic_star_border_white_24dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/calendar_button"
@@ -142,16 +139,22 @@
             android:layout_marginTop="@dimen/default_half_padding"
             android:drawableStart="@drawable/ic_location_on_white_24dp"
             android:drawablePadding="@dimen/default_half_padding"
-            android:text="@{event.address}"
-            tools:text="@string/address_unknown" />
+            android:text="@{event.fullAddress != null ? event.fullAddress : @string/no_address}"
+            tools:text="@string/no_address" />
 
-        <TextView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_half_padding"
-            android:drawablePadding="@dimen/default_padding"
-            android:text="@{event.description}"
-            tools:text="@string/mock_description" />
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/default_half_padding"
+                android:drawablePadding="@dimen/default_padding"
+                android:text="@{event.description}"
+                app:isGone="@{event.description == null}"
+                tools:text="@string/mock_description" />
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </layout>

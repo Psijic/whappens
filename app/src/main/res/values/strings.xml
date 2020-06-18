@@ -14,5 +14,6 @@
     <string name="search">Search</string>
     <string name="action_date_range">1d</string>
     <string name="card_image_description">Selected event image</string>
-    <string name="address_unknown">Unknown Address</string>
+    <string name="unknown_address">Unknown Address</string>
+    <string name="no_address">No Address</string>
 </resources>
