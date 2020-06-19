@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:padding="@dimen/default_half_padding"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="108dp"
+        app:behavior_peekHeight="114dp"
         app:bottomSheetState="@{bottomSheetState}"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -76,7 +76,7 @@
                     android:layout_height="52dp"
                     android:text="@{event.title}"
                     android:textAppearance="?attr/textAppearanceHeadline6"
-                    tools:text="Event Title TheSecondLine" />
+                    tools:text="Event Title and there is The Second Line" />
 
                 <TextView
                     android:id="@+id/address"
@@ -86,7 +86,7 @@
                     android:drawableStart="@drawable/ic_domain_white_24dp"
                     android:drawablePadding="@dimen/default_half_padding"
                     android:textAppearance="?attr/textAppearanceBody1"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:textColor="@color/secondaryTextColor"
                     app:text="@{event.category}"
                     tools:text="conference, science" />
 
@@ -123,6 +123,7 @@
                         style="@style/ButtonIcon"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:visibility="visible"
                         app:icon="@drawable/ic_star_border_white_24dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/calendar_button"
@@ -140,6 +141,7 @@
             android:drawableStart="@drawable/ic_location_on_white_24dp"
             android:drawablePadding="@dimen/default_half_padding"
             android:text="@{event.fullAddress != null ? event.fullAddress : @string/no_address}"
+            android:textColor="@color/secondaryTextColor"
             tools:text="@string/no_address" />
 
         <androidx.core.widget.NestedScrollView
@@ -152,7 +154,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_half_padding"
                 android:drawablePadding="@dimen/default_padding"
-                android:text="@{event.description}"
+                app:renderHtml="@{event.description}"
+                android:textColor="@color/secondaryTextColor"
                 app:isGone="@{event.description == null}"
                 tools:text="@string/mock_description" />
         </androidx.core.widget.NestedScrollView>

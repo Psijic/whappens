@@ -15,8 +15,9 @@
         <item name="android:background">@color/primaryDarkColor</item>
     </style>
 
-    <style name="ButtonIcon" parent="@style/Widget.MaterialComponents.Button.Icon">
+    <style name="ButtonIcon" parent="@style/Widget.MaterialComponents.Button">
         <item name="iconTint">@color/primaryTextColor</item>
+        <item name="iconGravity">textStart</item>
     </style>
 
 </resources>
