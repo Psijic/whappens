@@ -6,18 +6,24 @@
         android:id="@+id/category"
         android:icon="@drawable/ic_domain_white_24dp"
         android:title="@string/action_favorite"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/date_range"
         android:icon="@drawable/ic_date_range_white_24dp"
         android:title="@string/action_date_range"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/search"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/list"
+        android:icon="@drawable/ic_baseline_list_alt_24"
+        android:title="@string/list"
+        app:showAsAction="always" />
 
 </menu>

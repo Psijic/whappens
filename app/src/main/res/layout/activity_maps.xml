@@ -12,12 +12,31 @@
         <variable
             name="bottomSheetState"
             type="Integer" />
+
+        <variable
+            name="hiddenUI"
+            type="Boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/topAppBar"
+                style="@style/TopAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:isGone="@{hiddenUI}"
+                app:menu="@menu/top_app_bar"
+                app:navigationIcon="@drawable/ic_menu_white_24dp" />
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/map"

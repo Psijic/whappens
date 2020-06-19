@@ -26,6 +26,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
     val selectedEvent = MutableLiveData<ClusterMarker>()
+    var hiddenUI: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
 //    var bottomSheetState = BottomSheetBehavior.STATE_HIDDEN // TODO: save height expanded?
 
     /** The internal MutableLiveData that stores the status of the most recent request */

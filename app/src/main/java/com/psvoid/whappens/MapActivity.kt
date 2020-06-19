@@ -45,7 +45,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
 //        binding.bottomSheetState = viewModel.bottomSheetState
 
-        //val behavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
 
         isRestore = savedInstanceState != null
         setupMap()
@@ -65,9 +64,19 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
         // bottomSheet
         viewModel.selectedEvent.observe(this, Observer {
-            binding.bottomSheetState = if (it == null) BottomSheetBehavior.STATE_HIDDEN else
-                BottomSheetBehavior.STATE_COLLAPSED
             binding.event = it
+
+            val behavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
+            binding.bottomSheetState = when {
+                it == null -> BottomSheetBehavior.STATE_HIDDEN
+                behavior.state != BottomSheetBehavior.STATE_HIDDEN -> behavior.state
+                else -> BottomSheetBehavior.STATE_COLLAPSED
+            }
+        })
+
+        // topBar UI
+        viewModel.hiddenUI.observe(this, Observer {
+            binding.hiddenUI = it
         })
     }
 
@@ -175,7 +184,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         Log.i("MapActivity", "onCameraIdle ${map.cameraPosition.zoom}")
         clusterManager.onCameraIdle()
 
-        //TODO: Check if the position isn't changed but only zoom increased - there is no need to update. Zoom cap
+        //TODO: Check if the position hasn't changed but only zoom increased - there is no need to update. Zoom cap
         if (map.cameraPosition.zoom in Config.minSearchZoom..Config.maxMapZoom) {
             val position = map.cameraPosition.target
             viewModel.fetchEvents(position.latitude, position.longitude, radius())
@@ -215,6 +224,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
     override fun onClusterItemClick(item: ClusterMarker): Boolean {
         viewModel.selectedEvent.value = item
         binding.event = item
+
+        viewModel.hiddenUI.value = false
         //binding.executePendingBindings()
 
         // add custom behaviour
@@ -230,6 +241,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
         //remove marker selected status
         viewModel.selectedEvent.value = null
+        viewModel.hiddenUI.value = viewModel.hiddenUI.value?.not()
     }
 
 }

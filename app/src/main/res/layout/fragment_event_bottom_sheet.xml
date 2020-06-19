@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:padding="@dimen/default_half_padding"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="114dp"
+        app:behavior_peekHeight="166dp"
         app:bottomSheetState="@{bottomSheetState}"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 

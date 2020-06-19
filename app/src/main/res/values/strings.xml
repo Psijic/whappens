@@ -1,19 +1,15 @@
 <resources>
     <string name="app_name">Whappens</string>
     <string name="title_activity_main">Map</string>
-
-    <string name="normal_map">Normal Map</string>
-    <string name="hybrid_map">Hybrid Map</string>
-    <string name="satellite_map">Satellite Map</string>
-    <string name="terrain_map">Terrain Map</string>
     <string name="lat_long_snippet">Lat: %1$.5f, Long: %2$.5f</string>
     <string name="dropped_pin">Dropped Pin</string>
     <string name="poi">poi</string>
     <string name="need_location_permission">Whappens needs to know your location to show events near.</string>
     <string name="action_favorite">Favorite</string>
     <string name="search">Search</string>
-    <string name="action_date_range">1d</string>
+    <string name="action_date_range">Date range</string>
     <string name="card_image_description">Selected event image</string>
     <string name="unknown_address">Unknown Address</string>
     <string name="no_address">No Address</string>
+    <string name="list">List</string>
 </resources>

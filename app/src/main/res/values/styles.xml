@@ -20,4 +20,10 @@
         <item name="iconGravity">textStart</item>
     </style>
 
+    <style name="TopAppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
+        <item name="android:background">@color/primaryDarkColor</item>
+    </style>
+
+
+
 </resources>
