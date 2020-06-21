@@ -181,30 +181,5 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
 //        allMarkers.removeObserver(markersObserver)
     }
 
-    fun getCategory(item: ClusterMarker): Category {
-        val categories: MutableMap<String, Category> = mutableMapOf()
-        categories["family_fun_kids"] = Category("Family", BitmapDescriptorFactory.HUE_YELLOW)
-        categories["learning_education"] = Category("Education", BitmapDescriptorFactory.HUE_AZURE)
-        categories["other"] = Category("Other", BitmapDescriptorFactory.HUE_ROSE)
-        categories["sports"] = Category("Sports", BitmapDescriptorFactory.HUE_BLUE)
-        categories["performing_arts"] = Category("Performing Arts", BitmapDescriptorFactory.HUE_VIOLET)
-        categories["science"] = Category("Science", BitmapDescriptorFactory.HUE_CYAN)
-        categories["business"] = Category("Business, Networking", BitmapDescriptorFactory.HUE_MAGENTA)
-        categories["food"] = Category("Food", BitmapDescriptorFactory.HUE_GREEN)
-        categories["singles_social"] = Category("Nightlife, Singles", BitmapDescriptorFactory.HUE_VIOLET)
-        categories["fundraisers"] = Category("Fundraising, Charity", BitmapDescriptorFactory.HUE_MAGENTA)
-        categories["technology"] = Category("Technology", BitmapDescriptorFactory.HUE_CYAN)
-        categories["comedy"] = Category("Comedy", BitmapDescriptorFactory.HUE_VIOLET)
-        categories["holiday"] = Category("Holiday", BitmapDescriptorFactory.HUE_YELLOW)
-        categories["music"] = Category("Music", BitmapDescriptorFactory.HUE_VIOLET)
-        categories["politics_activism"] = Category("Politics", BitmapDescriptorFactory.HUE_YELLOW)
-        categories["festivals_parades"] = Category("Festivals", BitmapDescriptorFactory.HUE_YELLOW)
-        categories["movies_film"] = Category("Movie", BitmapDescriptorFactory.HUE_VIOLET)
-        categories["support"] = Category("Health", BitmapDescriptorFactory.HUE_GREEN)
-        categories["outdoors_recreation"] = Category("Outdoors, Recreation", BitmapDescriptorFactory.HUE_GREEN)
-        categories["attractions"] = Category("Museums, Attractions", BitmapDescriptorFactory.HUE_VIOLET)
-        categories["conference"] = Category("Conferences, Tradeshows", BitmapDescriptorFactory.HUE_VIOLET)
 
-        return categories.getValue(item.categories.firstOrNull() ?: "other")
-    }
 }

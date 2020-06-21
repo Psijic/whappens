@@ -10,6 +10,7 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ui.IconGenerator
 import com.psvoid.whappens.R
+import com.psvoid.whappens.data.Categories
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.viewmodels.MapViewModel
 
@@ -60,7 +61,7 @@ class ClusterMarkerRenderer(
 //    }
 
     override fun onBeforeClusterItemRendered(item: ClusterMarker, markerOptions: MarkerOptions) {
-        val markerDescriptor = BitmapDescriptorFactory.defaultMarker(getMarkerColor(item))
+        val markerDescriptor = BitmapDescriptorFactory.defaultMarker(item.getCategoryColor())
         markerOptions.icon(markerDescriptor)
     }
 
@@ -71,7 +72,7 @@ class ClusterMarkerRenderer(
 
     private fun getMarkerColor(item: ClusterMarker): Float {
         //        val color = if (item.id == viewModel.selectedEvent.value?.id) BitmapDescriptorFactory.HUE_CYAN
-        return viewModel.getCategory(item).color
+        return Categories.getCategory(item).color
     }
 
 

@@ -12,13 +12,3 @@ enum class LoadingStatus { LOADING, ERROR, DONE }
 
 enum class Month { Jan, Feb, MAr, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec }
 
-
-sealed class Expr
-data class Const(val number: Double) : Expr()
-data class Sum(val e1: Expr, val e2: Expr) : Expr()
-object NotANumber : Expr()
-
-fun a() {
-    val b = Const(2.0)
-    Sum(b, b)
-}

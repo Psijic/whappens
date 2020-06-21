@@ -87,7 +87,7 @@
                     android:drawablePadding="@dimen/default_half_padding"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="@color/secondaryTextColor"
-                    app:text="@{event.category}"
+                    app:text="@{event.getCategoryName()}"
                     tools:text="conference, science" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout

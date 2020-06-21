@@ -68,3 +68,9 @@ object EventFilter {
     enum class Period(val value: String) { TODAY("Today"), THIS_WEEK("This Week"), NEXT_WEEK("Next week") }
 }
 
+data class Category(
+    val name: String,
+    val color: Float,
+    val icon: String = ""
+)
+
