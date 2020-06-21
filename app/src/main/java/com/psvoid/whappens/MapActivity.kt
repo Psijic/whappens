@@ -30,6 +30,7 @@ import com.psvoid.whappens.databinding.ActivityMapsBinding
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
+import com.psvoid.whappens.views.ClusterMarkerRendererPhoto
 import kotlin.math.pow
 
 
@@ -75,8 +76,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         })
 
         // topBar UI
-        viewModel.hiddenUI.observe(this, Observer {
-            binding.hiddenUI = it
+        viewModel.isHideUI.observe(this, Observer {
+            binding.isHideUI = it
         })
     }
 
@@ -175,8 +176,16 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         viewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
         clusterManager = ClusterManager(this, map, markerManager)
         clusterManager.setAlgorithm(viewModel.algorithm)
-        if (Config.showMarkerImages)
-            clusterManager.renderer = ClusterMarkerRenderer(this, map, clusterManager, resources)
+        clusterManager.renderer = if (Config.showMarkerImages)
+            ClusterMarkerRendererPhoto(this, map, clusterManager, resources)
+        else
+            ClusterMarkerRenderer(this, map, clusterManager, viewModel)
+
+
+//        clusterManager.renderer.setOnClusterItemClickListener {  }
+//        // Get the icon for the feature
+//        val pointIcon = BitmapDescriptorFactory
+//            .defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
     }
 
     /** Handle event when map camera stops moving. */
@@ -222,16 +231,20 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
     /** Called when the user clicks a ClusterMarker.  */
     override fun onClusterItemClick(item: ClusterMarker): Boolean {
-        viewModel.selectedEvent.value = item
+//        item.isSelected = true
+
+        viewModel.selectedEvent.postValue(item)
         binding.event = item
 
-        viewModel.hiddenUI.value = false
+        viewModel.isHideUI.postValue(false)
         //binding.executePendingBindings()
 
         // add custom behaviour
         val update = CameraUpdateFactory.newLatLng(LatLng(item.latitude, item.longitude))
         map.animateCamera(update, Config.animateCameraDuration, null)
         // remove default marker behaviour (move camera and show a popup)
+
+        clusterManager.updateItem(item)
         return true
     }
 
@@ -240,8 +253,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         Log.v("MapActivity", "onMapClickListener")
 
         //remove marker selected status
-        viewModel.selectedEvent.value = null
-        viewModel.hiddenUI.value = viewModel.hiddenUI.value?.not()
+        viewModel.selectedEvent.postValue(null)
+        viewModel.isHideUI.postValue(viewModel.isHideUI.value?.not())
     }
 
 }

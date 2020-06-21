@@ -64,7 +64,7 @@ data class EventImage(
 )
 
 object EventFilter {
-    enum class Category(val value: String) { THEATRE("theatre"), MUSIC("music"), ALL("all") }
-    enum class Period (val value: String) {TODAY ("Today"), THIS_WEEK ("This Week"), NEXT_WEEK ("Next week")}
+    enum class Category(val value: String, val color2: Int) { THEATRE("theatre", 4), MUSIC("music", 5), ALL("all", 6) }
+    enum class Period(val value: String) { TODAY("Today"), THIS_WEEK("This Week"), NEXT_WEEK("Next week") }
 }
 

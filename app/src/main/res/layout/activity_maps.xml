@@ -14,7 +14,7 @@
             type="Integer" />
 
         <variable
-            name="hiddenUI"
+            name="isHideUI"
             type="Boolean" />
     </data>
 
@@ -32,7 +32,7 @@
                 style="@style/TopAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:isGone="@{hiddenUI}"
+                app:isGone="@{isHideUI}"
                 app:menu="@menu/top_app_bar"
                 app:navigationIcon="@drawable/ic_menu_white_24dp" />
 

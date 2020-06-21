@@ -1,6 +1,8 @@
 package com.psvoid.whappens.views
 
 import android.content.Context
+import android.content.res.Resources
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
@@ -11,18 +13,18 @@ import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.ui.IconGenerator
 import com.psvoid.whappens.R
 import com.psvoid.whappens.data.ClusterMarker
-import com.psvoid.whappens.viewmodels.MapViewModel
-
 
 /**
  * Draws profile images inside markers (using IconGenerator).
  * When there are multiple images in the cluster, draw multiple images (using MultiDrawable).
  */
-class ClusterMarkerRenderer(
-    context: Context, map: GoogleMap,
+class ClusterMarkerRendererPhoto(
+    private val context: Context,
+    map: GoogleMap,
     clusterManager: ClusterManager<ClusterMarker>,
-    private val viewModel: MapViewModel
-) : DefaultClusterRenderer<ClusterMarker>(context, map, clusterManager) {
+    resources: Resources
+) :
+    DefaultClusterRenderer<ClusterMarker>(context, map, clusterManager) {
     private val iconGenerator = IconGenerator(context)
 
     //    val clusterIconGenerator = IconGenerator(context)
@@ -35,47 +37,23 @@ class ClusterMarkerRenderer(
 //        mClusterIconGenerator.setContentView(multiProfile)
 //        clusterImageView = multiProfile.findViewById(R.id.image)
 
-//        val dimension = resources.getDimension(R.dimen.custom_profile_image).toInt()
-//        imageView.layoutParams = ViewGroup.LayoutParams(dimension, dimension)
-//        val padding = resources.getDimension(R.dimen.custom_profile_padding).toInt()
-//        imageView.setPadding(padding, padding, padding, padding)
-//        iconGenerator.setContentView(imageView)
+        val dimension = resources.getDimension(R.dimen.custom_profile_image).toInt()
+        imageView.layoutParams = ViewGroup.LayoutParams(dimension, dimension)
+        val padding = resources.getDimension(R.dimen.custom_profile_padding).toInt()
+        imageView.setPadding(padding, padding, padding, padding)
+        iconGenerator.setContentView(imageView)
 
     }
 
-//    override fun getColor(clusterSize: Int): Int {
-//        return Color.parseColor("#fa5788")
-//
-//
-//    }
+    override fun onBeforeClusterItemRendered(marker: ClusterMarker, markerOptions: MarkerOptions) {
+        loadImage(marker)
 
-//    override fun onBeforeClusterItemRendered(marker: ClusterMarker, markerOptions: MarkerOptions) {
-//        loadImage(marker)
-//
-//        // Draw a single marker - show their profile photo and set the info window to show their name
-//        markerOptions
-//            .icon(getItemIcon(marker))
-////            .icon(loadImage(marker))
-//            .title(marker.title)
-//    }
-
-    override fun onBeforeClusterItemRendered(item: ClusterMarker, markerOptions: MarkerOptions) {
-        val markerDescriptor = BitmapDescriptorFactory.defaultMarker(getMarkerColor(item))
-        markerOptions.icon(markerDescriptor)
+        // Draw a single marker - show their profile photo and set the info window to show their name
+        markerOptions
+            .icon(getItemIcon(marker))
+//            .icon(loadImage(marker))
+            .title(marker.title)
     }
-
-//    override fun onClusterItemUpdated(item: ClusterMarker, marker: Marker) {
-//        val markerDescriptor = BitmapDescriptorFactory.defaultMarker(getMarkerColor(item))
-//        marker.setIcon(markerDescriptor)
-//    }
-
-    private fun getMarkerColor(item: ClusterMarker): Float {
-        //        val color = if (item.id == viewModel.selectedEvent.value?.id) BitmapDescriptorFactory.HUE_CYAN
-        return viewModel.getCategory(item).color
-    }
-
-
-
 
     /**
      * Get a descriptor for a single marker (marker outside a cluster) for a marker icon

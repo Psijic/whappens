@@ -32,7 +32,7 @@ data class ClusterMarker(
     val price: String? = null,
 //    val categories: Categories? = null,
     @TypeConverters(CategoriesConverter::class)
-    val categories: List<String> = listOf(),
+    val categories: List<String> = listOf("other"),
 //    var categories: ArrayList<String> = arrayListOf(),
 //    val popularity: String? = null,
     val popularity: Int? = null,
@@ -45,7 +45,12 @@ data class ClusterMarker(
 //    val performers: Performer
     val place: String? = null
 
+    // Additional stuff
+//    var isSelected: Boolean = false,
+//    var isFavorite: Boolean = false
+
 ) : ClusterItem {
+
 
     override fun getPosition() = LatLng(latitude, longitude)
     override fun getTitle() = name
@@ -80,8 +85,14 @@ class CategoriesConverter {
     fun fromData(value: List<String>): String = value.joinToString()
 
     @TypeConverter
-    fun toData(data: String): List<String> = data.split(" ")
+    fun toData(data: String): List<String> = data.split(", ")
 }
+
+data class Category(
+    val name: String,
+    val color: Float,
+    val icon: String = ""
+)
 
 
 

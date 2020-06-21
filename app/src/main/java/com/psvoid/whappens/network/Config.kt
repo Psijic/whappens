@@ -15,7 +15,7 @@ object Config {
     const val period = "Future" // "This Week", "Future"
     const val pageSize = 30
     const val cacheRefreshTime = 86400000 // 24 hours
-    var countries = listOf("LTU")
+    var countries = listOf("DEU")
     val launchTime = System.currentTimeMillis()
 
 }
