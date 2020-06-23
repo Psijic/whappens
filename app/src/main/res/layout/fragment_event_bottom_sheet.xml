@@ -138,7 +138,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_half_padding"
-            android:drawableStart="@drawable/ic_location_on_white_24dp"
+            android:drawableStart="@drawable/ic_location_city_white_24dp"
             android:drawablePadding="@dimen/default_half_padding"
             android:text="@{event.fullAddress != null ? event.fullAddress : @string/no_address}"
             android:textColor="@color/secondaryTextColor"
