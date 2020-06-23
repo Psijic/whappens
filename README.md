@@ -3,6 +3,8 @@
 ## Description
 Android application to find events around you. Uses ```Google Maps, Firebase, Retrofit, Glide, AndroidX```.
 
+![Screenshot](screenshot.png)
+
 ## Requirements
 Android API level 21+
 Maps SDK via Google Play Services
