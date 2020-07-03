@@ -1,6 +1,7 @@
 package com.psvoid.whappens.views
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -24,10 +25,12 @@ class ClusterMarkerRenderer(
 
     override fun onBeforeClusterItemRendered(item: ClusterMarker, markerOptions: MarkerOptions) {
         markerOptions.icon(getMarkerColor(item))
+        Log.v("ClusterMarkerRenderer", "onBeforeClusterItemRendered")
     }
 
     override fun onClusterItemUpdated(item: ClusterMarker, marker: Marker) {
         marker.setIcon(getMarkerColor(item))
+        Log.v("ClusterMarkerRenderer", "onClusterItemUpdated")
     }
 
     private fun getMarkerColor(item: ClusterMarker): BitmapDescriptor {

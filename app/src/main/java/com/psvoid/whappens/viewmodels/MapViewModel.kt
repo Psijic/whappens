@@ -86,7 +86,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                     Log.v(TAG, "fetch Firebase markers: onDataChange")
 
                     if (markers.isNullOrEmpty()) {
-                        // Add cached markers if firebase doesn't work well and return empty list.
+                        // Add cached markers if Firebase doesn't work well and returns empty list.
                         addClusterItems(allMarkers[countryName])
                     } else {
                         addClusterItems(markers)
