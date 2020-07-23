@@ -49,6 +49,28 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
         isRestore = savedInstanceState != null
         setupMap()
+        setupTopAppBar()
+    }
+
+    private fun setupTopAppBar() {
+        val topAppBar = binding.topAppBar
+
+        topAppBar.setNavigationOnClickListener {
+            // Handle navigation icon press
+            Log.d("MapActivity", "TopAppBar Navigation Clicked")
+        }
+
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.countries -> {
+                    true
+                }
+                R.id.options -> {
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun setupMap() {

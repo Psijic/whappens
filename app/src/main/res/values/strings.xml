@@ -7,9 +7,12 @@
     <string name="need_location_permission">Whappens needs to know your location to show events near.</string>
     <string name="action_favorite">Favorite</string>
     <string name="search">Search</string>
-    <string name="action_date_range">Date range</string>
+    <string name="date_range">Date range</string>
     <string name="card_image_description">Selected event image</string>
     <string name="unknown_address">Unknown Address</string>
     <string name="no_address">No Address</string>
     <string name="list">List</string>
+    <string name="category">Category</string>
+    <string name="countries">Countries</string>
+    <string name="options">Options</string>
 </resources>

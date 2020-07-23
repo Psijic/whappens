@@ -69,8 +69,10 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 // Check if the database data is cleared/broken or outdated
                 Log.i(TAG, "Getting database data, timestamp: $timestamp")
                 if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) {
+                    Log.d(TAG, "Fetching markers from Firebase")
                     fetchFirebase(countryName, Config.period)
                 } else {
+                    Log.d(TAG, "Add markers from a cache")
                     addClusterItems(markers)
                 }
             }
@@ -107,6 +109,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveMarkers(countryName: String, markers: List<ClusterMarker>) {
+        Log.i(TAG, "Saving markers into DB")
         insertMarkers(markers)
         insertCountry(CountryData(countryName))
     }

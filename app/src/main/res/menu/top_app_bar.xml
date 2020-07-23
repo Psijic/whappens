@@ -5,13 +5,13 @@
     <item
         android:id="@+id/category"
         android:icon="@drawable/ic_domain_white_24dp"
-        android:title="@string/action_favorite"
+        android:title="@string/category"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/date_range"
         android:icon="@drawable/ic_date_range_white_24dp"
-        android:title="@string/action_date_range"
+        android:title="@string/date_range"
         app:showAsAction="always" />
 
     <item
