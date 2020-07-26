@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
@@ -16,31 +17,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        FirebaseApp.initializeApp(this)
-
-        // When enabled, the app writes the data locally to the device and can maintain state while offline,
-        // even if the user or operating system restarts the app.
-
         setSupportActionBar(topAppBar)
-
-//        val navController = findNavController(R.id.map)
-//        appBarConfiguration = AppBarConfiguration(navController.graph)
-//        findViewById<Toolbar>(R.id.topAppBar).setupWithNavController(navController, appBarConfiguration)
+        //        FirebaseApp.initializeApp(this)
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(R.id.mapActivity, R.id.nav_home, R.id.nav_slideshow), drawerLayout)
+        appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_slideshow), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-//        setupTopAppBar()
 
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        val appBarConfiguration = AppBarConfiguration(navController.graph)
+//        findViewById<Toolbar>(R.id.toolbar)
+//            .setupWithNavController(navController, appBarConfiguration)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -48,10 +43,9 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-//    }
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
 
     private fun setupTopAppBar() {
 
