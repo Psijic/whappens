@@ -9,9 +9,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Menu
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -21,6 +31,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
@@ -31,6 +42,7 @@ import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
 import com.psvoid.whappens.views.ClusterMarkerRendererPhoto
+import kotlinx.android.synthetic.main.activity_maps.*
 import kotlin.math.pow
 
 
@@ -40,37 +52,15 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
     private lateinit var binding: ActivityMapsBinding
+
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
 //        binding.bottomSheetState = viewModel.bottomSheetState
 
-
         isRestore = savedInstanceState != null
         setupMap()
-        setupTopAppBar()
-    }
-
-    private fun setupTopAppBar() {
-        val topAppBar = binding.topAppBar
-
-        topAppBar.setNavigationOnClickListener {
-            // Handle navigation icon press
-            Log.d("MapActivity", "TopAppBar Navigation Clicked")
-        }
-
-        topAppBar.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.countries -> {
-                    true
-                }
-                R.id.options -> {
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
     private fun setupMap() {
@@ -88,7 +78,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         // bottomSheet
         viewModel.selectedEvent.observe(this, Observer {
             binding.event = it
-
             val behavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
             binding.bottomSheetState = when {
                 it == null -> BottomSheetBehavior.STATE_HIDDEN
@@ -158,7 +147,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
             fun onProviderDisabled(provider: String?) {}
         }*/
     }
-
 
     private fun setupMapButtons() {
         map.setMaxZoomPreference(Config.maxMapZoom)
@@ -270,7 +258,6 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         return true
     }
 
-
     private fun onMapClickListener() {
         Log.v("MapActivity", "onMapClickListener")
 
@@ -281,5 +268,3 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
     }
 
 }
-
-
