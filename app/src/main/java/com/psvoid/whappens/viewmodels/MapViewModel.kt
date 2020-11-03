@@ -1,9 +1,7 @@
 package com.psvoid.whappens.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -17,6 +15,7 @@ import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import kotlinx.coroutines.*
+import timber.log.Timber
 import kotlin.collections.set
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
@@ -67,12 +66,12 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 val timestamp = countryTimestamp?.timestamp ?: 0
 
                 // Check if the database data is cleared/broken or outdated
-                Log.i(TAG, "Getting database data, timestamp: $timestamp")
+                Timber.i("Getting database data, timestamp: $timestamp")
                 if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) {
-                    Log.d(TAG, "Fetching markers from Firebase")
+                    Timber.d("Fetching markers from Firebase")
                     fetchFirebase(countryName, Config.period)
                 } else {
-                    Log.d(TAG, "Add markers from a cache")
+                    Timber.d("Add markers from a cache")
                     addClusterItems(markers)
                 }
             }
@@ -85,7 +84,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
             object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val markers = dataSnapshot.getValue<List<ClusterMarker>>()
-                    Log.v(TAG, "fetch Firebase markers: onDataChange")
+                    Timber.v("fetch Firebase markers: onDataChange")
 
                     if (markers.isNullOrEmpty()) {
                         // Add cached markers if Firebase doesn't work well and returns empty list.
@@ -97,7 +96,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 }
 
                 override fun onCancelled(databaseError: DatabaseError) {
-                    Log.w(TAG, "fetch Firebase markers: onCancelled", databaseError.toException())
+                    Timber.w("fetch Firebase markers: onCancelled ${databaseError.toException()}")
                     addClusterItems(allMarkers[countryName])
                 }
             })
@@ -109,7 +108,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveMarkers(countryName: String, markers: List<ClusterMarker>) {
-        Log.i(TAG, "Saving markers into DB")
+        Timber.i("Saving markers into DB")
         insertMarkers(markers)
         insertCountry(CountryData(countryName))
     }
@@ -147,9 +146,9 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 if (page < listResult.page_count.toInt())
                     fetchEventsInternal(lat, lng, queryOptions, page.inc())
                 else
-                    Log.i(TAG, "All events downloaded")
+                    Timber.i("All events downloaded")
             } catch (e: Exception) {
-                Log.e(TAG, "Error loading events", e)
+                Timber.e("Error loading events $e")
                 _clusterStatus.postValue(LoadingStatus.ERROR)
             }
         }

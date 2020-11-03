@@ -1,13 +1,18 @@
 package com.psvoid.whappens
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.MenuRes
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
+import com.google.android.material.snackbar.Snackbar
 
 open class BaseFragment : Fragment() {
     companion object Permissions {
@@ -54,7 +59,7 @@ open class BaseFragment : Fragment() {
                 try {
                     exception.startResolutionForResult(this@BaseActivity, REQUEST_TURN_DEVICE_LOCATION_ON)
                 } catch (sendEx: IntentSender.SendIntentException) {
-                    Log.d("BaseActivity", "Error getting location settings resolution: " + sendEx.message)
+                    Timber.d("BaseActivity", "Error getting location settings resolution: " + sendEx.message)
                 }
             } else {
 //                Snackbar.make(this.view, R.string.location_required_error, Snackbar.LENGTH_INDEFINITE)
@@ -75,4 +80,22 @@ open class BaseFragment : Fragment() {
             checkDeviceLocationSettingsAndStartGeofence(false)
         }
     }*/
+
+    @SuppressLint("RestrictedApi")
+    fun showMenu(v: View, @MenuRes menuRes: Int) {
+        PopupMenu(requireContext(), v).apply {
+            // Inflating the Popup using xml file
+            menuInflater.inflate(menuRes, menu)
+            (menu as MenuBuilder).setOptionalIconsVisible(true)
+
+            setOnMenuItemClickListener { menuItem: MenuItem ->
+                Snackbar
+                    .make(requireActivity().findViewById(android.R.id.content), menuItem.title, Snackbar.LENGTH_LONG)
+                    .show()
+                true
+            }
+
+            show()
+        }
+    }
 }

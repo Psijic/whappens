@@ -7,6 +7,7 @@ buildscript {
         room_version = '2.2.5'
         lifecycle_version = '2.2.0'
         fragment_version = '1.2.5'
+        timber_version = '4.7.1'
     }
     repositories {
         google()

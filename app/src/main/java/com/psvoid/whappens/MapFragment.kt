@@ -1,21 +1,16 @@
 package com.psvoid.whappens
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -27,6 +22,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
@@ -37,6 +33,7 @@ import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
 import com.psvoid.whappens.views.ClusterMarkerRendererPhoto
+import timber.log.Timber
 import kotlin.math.pow
 
 
@@ -48,14 +45,11 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
     private lateinit var binding: FragmentMapBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
         binding = FragmentMapBinding.inflate(inflater, container, false)
-//        binding = DataBindingUtil.setContentView(this, R.layout.fragment_top_menu)
-//        binding.bottomSheetState = viewModel.bottomSheetState
 
         isRestore = savedInstanceState != null
         setupMap()
-//        setupTopAppBar()
+        setupTopAppBar()
         return binding.root
     }
 
@@ -160,7 +154,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
     /** Set map styling and theming. */
     private fun setMapStyle(map: GoogleMap, style: Int) {
         val success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, style))
-        if (!success) Log.e("MapActivity", "Setting map style failed.")
+        if (!success) Timber.e("Setting map style failed.")
     }
 
     private fun setupMapLayers() {
@@ -196,7 +190,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
 
     /** Handle event when map camera stops moving. */
     private fun onCameraIdleListener() {
-        Log.i("MapActivity", "onCameraIdle ${map.cameraPosition.zoom}")
+        Timber.i("onCameraIdle ${map.cameraPosition.zoom}")
         clusterManager.onCameraIdle()
 
         //TODO: Check if the position hasn't changed but only zoom increased - there is no need to update. Zoom cap
@@ -255,7 +249,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
     }
 
     private fun onMapClickListener() {
-        Log.v("MapActivity", "onMapClickListener")
+        Timber.v("onMapClickListener")
 
         //remove marker selected status
         if (viewModel.selectedEvent.value != null) clusterManager.cluster() //clusterManager.updateItem(viewModel.selectedEvent.value)
@@ -263,45 +257,35 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
         viewModel.isHideUI.postValue(viewModel.isHideUI.value?.not())
     }
 
-    // --- menu
-/*    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.top_app_bar, menu)
-        return true
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
-
+    /** Menu */
     private fun setupTopAppBar() {
-//        private lateinit var appBarConfiguration: AppBarConfiguration
-//        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-//        val navView: NavigationView = findViewById(R.id.nav_view)
-//        val navController = findNavController(R.id.nav_host_fragment)
-//        // Passing each menu ID as a set of Ids because each
-//        // menu should be considered as top level destinations.
-//        val appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_slideshow), drawerLayout)
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
-
-        val topAppBar = binding.topA
-
-        topAppBar.setNavigationOnClickListener {
+        binding.topAppBar.setNavigationOnClickListener {
             // Handle navigation icon press
-            Log.d("MapActivity", "TopAppBar Navigation Clicked")
+            showMenu(it, R.menu.main_menu)
+            Timber.d("TopAppBar Navigation Clicked")
         }
 
-        topAppBar.setOnMenuItemClickListener { menuItem ->
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.countries -> {
+                R.id.category -> {
                     true
                 }
-                R.id.options -> {
+                R.id.date_range -> {
+                    true
+                }
+                R.id.search -> {
+                    true
+                }
+                R.id.list -> {
                     true
                 }
                 else -> false
             }
         }
-    }*/
+    }
+
+    private fun showSnackbar(view: View, text: CharSequence) {
+        Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show()
+    }
 
 }
