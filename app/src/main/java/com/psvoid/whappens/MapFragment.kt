@@ -32,7 +32,7 @@ import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListe
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.LoadingStatus
-import com.psvoid.whappens.databinding.FragmentMainBinding
+import com.psvoid.whappens.databinding.FragmentMapBinding
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
@@ -45,11 +45,11 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
-    private lateinit var binding: FragmentMainBinding
+    private lateinit var binding: FragmentMapBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        binding = FragmentMainBinding.inflate(inflater, container, false)
+        binding = FragmentMapBinding.inflate(inflater, container, false)
 //        binding = DataBindingUtil.setContentView(this, R.layout.fragment_top_menu)
 //        binding.bottomSheetState = viewModel.bottomSheetState
 
