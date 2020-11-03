@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 
-open class BaseActivity : FragmentActivity() {
+open class BaseFragment : Fragment() {
     companion object Permissions {
         const val LOCATION_PERMISSIONS = 1
         const val FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION
@@ -18,12 +18,12 @@ open class BaseActivity : FragmentActivity() {
 
     /**  Check if a user gave a permission. */
     protected fun isPermissionGranted(permission: String) =
-        ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
 
     /** Checks if a user gave location and sets location enabled if so. */
     protected fun enableLocation() {
         if (isPermissionGranted(FINE_LOCATION)) setupLocation()
-        else ActivityCompat.requestPermissions(this, arrayOf(FINE_LOCATION), LOCATION_PERMISSIONS)
+        else ActivityCompat.requestPermissions(requireActivity(), arrayOf(FINE_LOCATION), LOCATION_PERMISSIONS)
     }
 
     /**  Callback for the result from requesting permissions. */
@@ -32,7 +32,7 @@ open class BaseActivity : FragmentActivity() {
         if (requestCode == LOCATION_PERMISSIONS && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
             setupLocation()
         else
-            Toast.makeText(this, R.string.need_location_permission, Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), R.string.need_location_permission, Toast.LENGTH_LONG).show()
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }

@@ -57,6 +57,9 @@ dependencies {
 
     implementation 'com.android.support:multidex:1.0.3'
 
+    // data binding
+    kapt "com.android.databinding:compiler:3.2.0"
+
     // Material
     implementation 'com.google.android.material:material:1.1.0'
 

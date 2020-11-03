@@ -41,8 +41,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MapActivity" />
-        <activity android:name=".BaseActivity" />
+        <activity android:name=".MapFragment" />
+        <activity android:name=".BaseFragment" />
     </application>
 
 </manifest>

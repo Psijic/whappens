@@ -9,19 +9,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.Menu
-import androidx.activity.viewModels
-import androidx.appcompat.widget.Toolbar
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -31,40 +27,40 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.navigation.NavigationView
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.LoadingStatus
-import com.psvoid.whappens.databinding.ActivityMapsBinding
+import com.psvoid.whappens.databinding.FragmentMainBinding
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel
 import com.psvoid.whappens.views.ClusterMarkerRenderer
 import com.psvoid.whappens.views.ClusterMarkerRendererPhoto
-import kotlinx.android.synthetic.main.activity_maps.*
 import kotlin.math.pow
 
 
-open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickListener<ClusterMarker> {
+class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListener<ClusterMarker> {
     private val viewModel: MapViewModel by viewModels()
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
     private var isRestore = false
-    private lateinit var binding: ActivityMapsBinding
+    private lateinit var binding: FragmentMainBinding
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_maps)
+        binding = FragmentMainBinding.inflate(inflater, container, false)
+//        binding = DataBindingUtil.setContentView(this, R.layout.fragment_top_menu)
 //        binding.bottomSheetState = viewModel.bottomSheetState
 
         isRestore = savedInstanceState != null
         setupMap()
+//        setupTopAppBar()
+        return binding.root
     }
 
     private fun setupMap() {
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
 
@@ -129,8 +125,8 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
     @SuppressLint("MissingPermission")
     private fun getMyLocation(): Location? {
         if (isPermissionGranted(FINE_LOCATION)) {
-//            ContextCompat.getSystemService(this, LocationManager::class.java) as LocationManager
-            val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//            val locationManager = getSystemService(requireContext(), Context.LOCATION_SERVICE) as LocationManager
+            val locationManager = getSystemService(requireContext(), LocationManager::class.java) as LocationManager
             val provider = locationManager.getBestProvider(Criteria(), false)
             return locationManager.getLastKnownLocation(provider ?: LocationManager.NETWORK_PROVIDER)
         }
@@ -163,7 +159,7 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
     /** Set map styling and theming. */
     private fun setMapStyle(map: GoogleMap, style: Int) {
-        val success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, style))
+        val success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, style))
         if (!success) Log.e("MapActivity", "Setting map style failed.")
     }
 
@@ -182,14 +178,14 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
 
     private fun addClusters(markerManager: MarkerManager) {
         val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metrics)
+        requireActivity().windowManager.defaultDisplay.getMetrics(metrics)
         viewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
-        clusterManager = ClusterManager(this, map, markerManager)
+        clusterManager = ClusterManager(context, map, markerManager)
         clusterManager.setAlgorithm(viewModel.algorithm)
         clusterManager.renderer = if (Config.showMarkerImages)
-            ClusterMarkerRendererPhoto(this, map, clusterManager, resources)
+            ClusterMarkerRendererPhoto(requireContext(), map, clusterManager, resources)
         else
-            ClusterMarkerRenderer(this, map, clusterManager, viewModel)
+            ClusterMarkerRenderer(requireContext(), map, clusterManager, viewModel)
 
 
 //        clusterManager.renderer.setOnClusterItemClickListener {  }
@@ -266,5 +262,46 @@ open class MapActivity : BaseActivity(), OnMapReadyCallback, OnClusterItemClickL
         viewModel.selectedEvent.postValue(null)
         viewModel.isHideUI.postValue(viewModel.isHideUI.value?.not())
     }
+
+    // --- menu
+/*    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.top_app_bar, menu)
+        return true
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+    }
+
+    private fun setupTopAppBar() {
+//        private lateinit var appBarConfiguration: AppBarConfiguration
+//        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+//        val navView: NavigationView = findViewById(R.id.nav_view)
+//        val navController = findNavController(R.id.nav_host_fragment)
+//        // Passing each menu ID as a set of Ids because each
+//        // menu should be considered as top level destinations.
+//        val appBarConfiguration = AppBarConfiguration(setOf(R.id.nav_home, R.id.nav_slideshow), drawerLayout)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
+//        navView.setupWithNavController(navController)
+
+        val topAppBar = binding.topA
+
+        topAppBar.setNavigationOnClickListener {
+            // Handle navigation icon press
+            Log.d("MapActivity", "TopAppBar Navigation Clicked")
+        }
+
+        topAppBar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.countries -> {
+                    true
+                }
+                R.id.options -> {
+                    true
+                }
+                else -> false
+            }
+        }
+    }*/
 
 }
