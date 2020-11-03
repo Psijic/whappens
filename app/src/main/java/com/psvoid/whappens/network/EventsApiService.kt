@@ -4,8 +4,8 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.psvoid.whappens.data.StreetEvent
 import com.psvoid.whappens.adapters.Eve
 import kotlinx.coroutines.Deferred
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+//import kotlinx.serialization.json.Json
+//import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -30,14 +30,14 @@ interface EventsApiService {
 object EventsApi {
     private const val BASE_URL = "https://api.eventful.com/json/events/"
     private val contentType: MediaType = "application/json".toMediaType()
-    private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
+//    private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
     private val logLevel = if (Config.logs) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
     private val logging: Interceptor = HttpLoggingInterceptor().setLevel(logLevel)
     private val httpClient = OkHttpClient.Builder().addInterceptor(logging).build()
 
     /** Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter. */
     private val retrofit = Retrofit.Builder()
-        .addConverterFactory(json.asConverterFactory(contentType))
+//        .addConverterFactory(json.asConverterFactory(contentType))
         .baseUrl(BASE_URL)
         .client(httpClient)
         .build()

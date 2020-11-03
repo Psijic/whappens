@@ -39,9 +39,10 @@ import kotlin.math.pow
 
 class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListener<ClusterMarker> {
     private val viewModel: MapViewModel by viewModels()
+    private var isRestore = false
+
     private lateinit var map: GoogleMap
     private lateinit var clusterManager: ClusterManager<ClusterMarker>
-    private var isRestore = false
     private lateinit var binding: FragmentMapBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
