@@ -61,8 +61,8 @@ data class ClusterMarker(
     fun getFullAddress(): String = listOfNotNull(address, place).joinToString("; ")
 
 
-    fun getCategoryColor() = Categories.getCategory(this).color
-    fun getCategoryName() = Categories.getCategory(this).name
+    fun getCategoryColor() = Categories.getCategory(categories).color
+    fun getCategoryName() = Categories.getCategory(categories).name
 
     /**Convert date like this: "2020-05-20 20:30:00" to "17:00 - 19:00, 04 Dec" */
     fun getTimePeriod(): String {
@@ -121,7 +121,12 @@ object Categories {
         categories["attractions"] = Category("Museums, Attractions", BitmapDescriptorFactory.HUE_VIOLET)
         categories["conference"] = Category("Conferences, Tradeshows", BitmapDescriptorFactory.HUE_ORANGE)
         categories["community"] = Category("Neighborhood", BitmapDescriptorFactory.HUE_YELLOW)
+        categories["religion_spirituality"] = Category("Religion, spirituality", BitmapDescriptorFactory.HUE_YELLOW)
     }
 
-    fun getCategory(item: ClusterMarker): Category = Categories.categories.getValue(item.categories.firstOrNull() ?: "other")
+    fun getCategory(value: List<String>): Category {
+        val category = value.first()
+        val key = if (categories.containsKey(category)) category else "other"
+        return categories.getValue(key)
+    }
 }

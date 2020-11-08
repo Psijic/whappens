@@ -19,10 +19,6 @@ import timber.log.Timber
 import kotlin.collections.set
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
-    private companion object {
-        const val TAG = "MapViewModel"
-    }
-
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
     val selectedEvent = MutableLiveData<ClusterMarker>()

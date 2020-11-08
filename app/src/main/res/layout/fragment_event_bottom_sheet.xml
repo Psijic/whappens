@@ -154,9 +154,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/default_half_padding"
                 android:drawablePadding="@dimen/default_padding"
-                app:renderHtml="@{event.description}"
                 android:textColor="@color/secondaryTextColor"
                 app:isGone="@{event.description == null}"
+                app:renderHtml="@{event.description}"
                 tools:text="@string/mock_description" />
         </androidx.core.widget.NestedScrollView>
     </LinearLayout>
