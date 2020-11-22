@@ -173,7 +173,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
 
     private fun addClusters(markerManager: MarkerManager) {
         val metrics = DisplayMetrics()
-        requireActivity().windowManager.defaultDisplay.getMetrics(metrics)
+        context?.display?.getRealMetrics(metrics)
         viewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
         clusterManager = ClusterManager(context, map, markerManager)
         clusterManager.setAlgorithm(viewModel.algorithm)

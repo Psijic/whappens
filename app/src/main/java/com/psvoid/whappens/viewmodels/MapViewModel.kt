@@ -2,13 +2,6 @@ package com.psvoid.whappens.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.ktx.database
-import com.google.firebase.database.ktx.getValue
-import com.google.firebase.ktx.Firebase
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.R
 import com.psvoid.whappens.data.*
@@ -17,6 +10,8 @@ import com.psvoid.whappens.network.EventsApi
 import kotlinx.coroutines.*
 import timber.log.Timber
 import kotlin.collections.set
+
+typealias MarkersMap = MutableMap<String, List<ClusterMarker>>
 
 class MapViewModel(application: Application) : AndroidViewModel(application) {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
@@ -36,36 +31,41 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     /** Coroutine runs using the IO dispatcher */
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
 
-    private val firebaseDb: DatabaseReference
     private val markerRepo: MarkerRepository
     private val countriesRepo: CountriesRepository
-    private val allMarkers: MutableMap<String, List<ClusterMarker>> = mutableMapOf()
+
+    //    private val allMarkers = MutableLiveData<MutableMap<String, List<ClusterMarker>>>()
+    private val allMarkers: MarkersMap = mutableMapOf()
 
     private val mApplication: Application = application
 //    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
-    init {
-//        Firebase.database.setPersistenceEnabled(true) // TODO: Move
-        firebaseDb = Firebase.database.reference
+    // Events period
+    private val period = Config.period
 
+    init {
         val markerDao = AppDatabase.getInstance(application).markerDao
         markerRepo = MarkerRepository(markerDao)
         val countriesDao = AppDatabase.getInstance(application).countriesDao
         countriesRepo = CountriesRepository(countriesDao)
 
-        // Check if Android database have actual markers for current countries. If not, fetch them.
+        updateMarkers()
+    }
+
+    /** Check if Android database have actual markers for current countries. If not, fetch them. */
+    private fun updateMarkers() {
         viewModelScope.launch(Dispatchers.IO) {
             for (countryName in Config.countries) {
                 val markers = markerRepo.getMarkersByCountry(countryName)
                 allMarkers[countryName] = markers
-                val countryTimestamp = countriesRepo.getByCountry(countryName)
-                val timestamp = countryTimestamp?.timestamp ?: 0
-
+                val countryData = countriesRepo.getByCountry(countryName)
+                val timestamp = countryData?.timestamp ?: 0
                 // Check if the database data is cleared/broken or outdated
-                Timber.i("Getting database data, timestamp: $timestamp")
+                Timber.i("Getting database data, country: $countryName, timestamp: $timestamp")
                 if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) {
                     Timber.d("Fetching markers from Firebase")
-                    fetchFirebase(countryName, Config.period)
+                    fetchMarkers(countryName, period)
+                    //                    markers = markerRepo.fetchFirebase(countryName, period)
                 } else {
                     Timber.d("Add markers from a cache")
                     addClusterItems(markers)
@@ -74,28 +74,18 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun fetchFirebase(countryName: String, period: String) {
+    private suspend fun fetchMarkers(countryName: String, period: String) {
         _clusterStatus.postValue(LoadingStatus.LOADING)
-        firebaseDb.child("events").child(countryName).addListenerForSingleValueEvent(
-            object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val markers = dataSnapshot.getValue<List<ClusterMarker>>()
-                    Timber.v("fetch Firebase markers: onDataChange")
 
-                    if (markers.isNullOrEmpty()) {
-                        // Add cached markers if Firebase doesn't work well and returns empty list.
-                        addClusterItems(allMarkers[countryName])
-                    } else {
-                        addClusterItems(markers)
-                        saveMarkers(countryName, markers)
-                    }
-                }
-
-                override fun onCancelled(databaseError: DatabaseError) {
-                    Timber.w("fetch Firebase markers: onCancelled ${databaseError.toException()}")
-                    addClusterItems(allMarkers[countryName])
-                }
-            })
+        val markers = markerRepo.fetchFirebase(countryName, period)
+        if (markers.isNullOrEmpty()) {
+            // Add cached markers if Firebase doesn't work well and returns empty list.
+            addClusterItems(allMarkers[countryName])
+        } else {
+            allMarkers[countryName] = markers
+            addClusterItems(markers)
+            saveMarkers(countryName, markers)
+        }
     }
 
     /** Add specific settings like event types selected */
