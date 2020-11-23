@@ -6,10 +6,10 @@ import androidx.room.*
 @Dao
 interface CountriesDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(country: CountryData)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(countries: List<CountryData>)
 
     @Update

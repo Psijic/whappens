@@ -17,3 +17,4 @@
 app/src/debug/res/values/google_maps_api.xml
 
 app/google-services.json
+/app/passwords.gradle

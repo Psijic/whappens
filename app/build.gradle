@@ -7,6 +7,8 @@ plugins {
     id 'kotlin-kapt'
 }
 
+apply from: 'passwords.gradle'
+
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.2'
@@ -25,6 +27,9 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        manifestPlaceholders = [google_maps_key: "$google_maps_key"]
+        buildConfigField "String", "EVENTFUL_KEY", "\"$eventful_key\""
     }
 
     buildTypes {
