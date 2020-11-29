@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -60,14 +59,14 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
     }
 
     private fun setupBinds() {
-        viewModel.clusterStatus.observe(this, Observer {
+        viewModel.clusterStatus.observe(this, {
             if (LoadingStatus.DONE == it) {
                 clusterManager.cluster()
             }
         })
 
         // bottomSheet
-        viewModel.selectedEvent.observe(this, Observer {
+        viewModel.selectedEvent.observe(this, {
             binding.event = it
             val behavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
             binding.bottomSheetState = when {
@@ -78,7 +77,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
         })
 
         // topBar UI
-        viewModel.isHideUI.observe(this, Observer {
+        viewModel.isHideUI.observe(this, {
             binding.isHideUI = it
         })
     }
