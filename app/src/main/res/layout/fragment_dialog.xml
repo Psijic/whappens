@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_range"
+            style="@style/ButtonLight"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height_big"
+            android:text="@string/select_range"
+            android:textSize="@dimen/font_big"
+            app:icon="@drawable/ic_date_range_white_24dp"
+            app:iconSize="@dimen/icon_medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_future"
+            style="@style/ButtonLight"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_big"
+            android:text="@string/future"
+            android:textSize="@dimen/font_big"
+            app:icon="@drawable/ic_date_range_white_24dp"
+            app:iconSize="@dimen/icon_medium"
+            app:layout_constraintEnd_toStartOf="@+id/button_today"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_range" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_today"
+            style="@style/ButtonLight"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_big"
+            android:text="@string/today"
+            android:textSize="@dimen/font_big"
+            app:icon="@drawable/ic_today_white_24dp"
+            app:iconSize="@dimen/icon_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_future"
+            app:layout_constraintTop_toBottomOf="@+id/button_range" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_week"
+            style="@style/ButtonLight"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_big"
+            android:text="@string/week"
+            android:textSize="@dimen/font_big"
+            app:icon="@drawable/ic_date_range_white_24dp"
+            app:iconSize="@dimen/icon_medium"
+            app:layout_constraintEnd_toStartOf="@+id/button_today"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_future" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_month"
+            style="@style/ButtonLight"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height_big"
+            android:text="@string/month"
+            android:textSize="@dimen/font_big"
+            app:icon="@drawable/ic_date_range_white_24dp"
+            app:iconSize="@dimen/icon_medium"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button_future"
+            app:layout_constraintTop_toBottomOf="@+id/button_today" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

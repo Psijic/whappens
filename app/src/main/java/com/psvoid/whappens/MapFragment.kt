@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
@@ -261,7 +262,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
     private fun setupTopAppBar() {
         binding.topAppBar.setNavigationOnClickListener {
             // Handle navigation icon press
-            showMenu(it, R.menu.main_menu)
+            showMenu(it, R.menu.menu_main)
             Timber.d("TopAppBar Navigation Clicked")
         }
 
@@ -271,6 +272,9 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
                     true
                 }
                 R.id.date_range -> {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setView(R.layout.fragment_dialog)
+                        .show()
                     true
                 }
                 R.id.search -> {

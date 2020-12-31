@@ -83,10 +83,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/default_text_field"
                     android:layout_marginTop="6dp"
-                    android:drawableStart="@drawable/ic_domain_white_24dp"
                     android:drawablePadding="@dimen/default_half_padding"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textColor="@color/secondaryTextColor"
+                    app:drawableStartCompat="@drawable/ic_domain_white_24dp"
                     app:text="@{event.getCategoryName()}"
                     tools:text="conference, science" />
 
@@ -98,7 +98,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/favorite_button"
-                        style="@style/ButtonIcon"
+                        style="@style/ButtonLight"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="40dp"
@@ -109,7 +109,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/calendar_button"
-                        style="@style/ButtonIcon"
+                        style="@style/RegularButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="40dp"
@@ -120,7 +120,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/star_button"
-                        style="@style/ButtonIcon"
+                        style="@style/RegularButton"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:visibility="visible"
@@ -138,10 +138,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_half_padding"
-            android:drawableStart="@drawable/ic_location_city_white_24dp"
             android:drawablePadding="@dimen/default_half_padding"
             android:text="@{event.fullAddress != null ? event.fullAddress : @string/no_address}"
             android:textColor="@color/secondaryTextColor"
+            app:drawableStartCompat="@drawable/ic_location_city_white_24dp"
             tools:text="@string/no_address" />
 
         <androidx.core.widget.NestedScrollView

@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:isGone="@{isHideUI}"
-                    app:menu="@menu/top_app_bar"
+                    app:menu="@menu/menu_top_app_bar"
                     app:navigationIcon="@drawable/ic_menu_white_24dp" />
 
             </com.google.android.material.appbar.AppBarLayout>
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:menu="@menu/main_menu" />
+            app:menu="@menu/menu_main" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

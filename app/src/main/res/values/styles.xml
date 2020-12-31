@@ -8,22 +8,29 @@
         <item name="colorAccent">@color/secondaryColor</item>
     </style>
 
-    <style name="BaseBottomSheetDialog" parent="@style/Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="BaseBottomSheetDialog" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:background">@color/primaryDarkColor</item>
     </style>
 
-    <style name="ButtonIcon" parent="@style/Widget.MaterialComponents.Button">
+    <style name="RegularButton" parent="Widget.MaterialComponents.Button">
         <item name="iconTint">@color/primaryTextColor</item>
         <item name="iconGravity">textStart</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
     </style>
 
-    <style name="TopAppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
+    <style name="TopAppBar" parent="Widget.MaterialComponents.Toolbar.Primary">
         <item name="android:background">@color/primaryDarkColor</item>
     </style>
 
-
+    <style name="ButtonLight" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="iconTint">@color/primaryTextColor</item>
+        <item name="iconGravity">textStart</item>
+        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="textAllCaps">false</item>
+        <item name="strokeWidth">0dp</item> <!-- to resolve a bug in the designer -->
+    </style>
 
 </resources>
