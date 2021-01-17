@@ -1,11 +1,8 @@
 package com.psvoid.whappens.network
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.psvoid.whappens.data.StreetEvent
 import com.psvoid.whappens.adapters.Eve
+import com.psvoid.whappens.data.StreetEvent
 import kotlinx.coroutines.Deferred
-//import kotlinx.serialization.json.Json
-//import kotlinx.serialization.json.JsonConfiguration
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
@@ -30,7 +27,8 @@ interface EventsApiService {
 object EventsApi {
     private const val BASE_URL = "https://api.eventful.com/json/events/"
     private val contentType: MediaType = "application/json".toMediaType()
-//    private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
+
+    //    private val json = Json(JsonConfiguration.Stable.copy(ignoreUnknownKeys = true, isLenient = true))
     private val logLevel = if (Config.logs) HttpLoggingInterceptor.Level.BASIC else HttpLoggingInterceptor.Level.NONE
     private val logging: Interceptor = HttpLoggingInterceptor().setLevel(logLevel)
     private val httpClient = OkHttpClient.Builder().addInterceptor(logging).build()

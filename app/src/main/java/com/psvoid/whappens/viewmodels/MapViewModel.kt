@@ -6,6 +6,7 @@ import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.collections.set
@@ -30,11 +31,14 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     //    private val allMarkers = MutableLiveData<MutableMap<String, List<ClusterMarker>>>()
     private val allMarkers: MarkersMap = mutableMapOf()
 
-    private val mApplication: Application = application
 //    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
 
     // Events period
-    private val period = Config.period
+    private val _period = MutableLiveData(Config.period)
+    val period: LiveData<EventFilter.Period>
+        get() = _period
+
+//    private var period = Config.period
 
     init {
         val markerDao = AppDatabase.getInstance(application).markerDao
@@ -43,6 +47,10 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         countriesRepo = CountriesRepository(countriesDao)
 
         updateMarkers()
+    }
+
+    fun setPeriod(value: EventFilter.Period){
+        _period.value = value
     }
 
     /** Check if Android database have actual markers for current countries. If not, fetch them. */
@@ -57,7 +65,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 Timber.i("Getting database data, country: $countryName, timestamp: $timestamp")
                 if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) { //1606071352684
                     Timber.d("Fetching markers from Firebase")
-                    fetchMarkers(countryName, period)
+                    period.value?.let { fetchMarkers(countryName, it) }
                     //                    markers = markerRepo.fetchFirebase(countryName, period)
                 } else {
                     Timber.d("Add markers from a cache")
@@ -67,7 +75,8 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private suspend fun fetchMarkers(countryName: String, period: String) {
+    @ExperimentalCoroutinesApi
+    private suspend fun fetchMarkers(countryName: String, period: EventFilter.Period) {
         _clusterStatus.postValue(LoadingStatus.LOADING)
 
         val markers = markerRepo.fetchFirebase(countryName, period)
@@ -115,9 +124,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     /** When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the Retrofit service to stop. */
     override fun onCleared() {
         super.onCleared()
-//        viewModelJob.cancel()
-//        allMarkers.removeObserver(markersObserver)
+        markerRepo.dispose()
     }
-
 
 }

@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
 }
 
 private class CrashReportingTree : Timber.Tree() {

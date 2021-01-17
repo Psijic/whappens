@@ -10,6 +10,8 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,12 +23,15 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
+import com.psvoid.whappens.data.EventFilter
 import com.psvoid.whappens.data.LoadingStatus
 import com.psvoid.whappens.databinding.FragmentMapBinding
 import com.psvoid.whappens.network.Config
@@ -272,9 +277,19 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
                     true
                 }
                 R.id.date_range -> {
-                    MaterialAlertDialogBuilder(requireContext())
+                    val dialog = MaterialAlertDialogBuilder(requireContext())
                         .setView(R.layout.fragment_dialog)
+//                        .create()
                         .show()
+                    dialog.findViewById<MaterialButton>(R.id.button_range)?.setOnClickListener {
+                        dialog.dismiss()
+                        showDatePicker()
+                    }
+                    setDialogAction(dialog, R.id.button_future, EventFilter.Period.FUTURE)
+                    setDialogAction(dialog, R.id.button_today, EventFilter.Period.TODAY)
+                    setDialogAction(dialog, R.id.button_week, EventFilter.Period.WEEK)
+                    setDialogAction(dialog, R.id.button_month, EventFilter.Period.MONTH)
+
                     true
                 }
                 R.id.search -> {
@@ -287,6 +302,21 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
             }
         }
     }
+
+    private fun setDialogAction(dialog: AlertDialog, @IdRes id: Int, period: EventFilter.Period) =
+        dialog.findViewById<MaterialButton>(id)?.setOnClickListener {
+            dialog.dismiss()
+            viewModel.setPeriod(period)
+        }
+
+    private fun showDatePicker() {
+        val picker = MaterialDatePicker.Builder.dateRangePicker().build()
+        picker.addOnPositiveButtonClickListener {
+            Timber.d("DatePicker: ${it.first} to ${it.second}")
+        }
+        picker.show(parentFragmentManager, picker.toString())
+    }
+
 
     private fun showSnackbar(view: View, text: CharSequence) {
         Snackbar.make(view, text, Snackbar.LENGTH_SHORT).show()

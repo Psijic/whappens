@@ -8,7 +8,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 import com.psvoid.whappens.BuildConfig
-import com.psvoid.whappens.R
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.network.EventsApi
 import kotlinx.coroutines.*
@@ -42,27 +41,28 @@ class EventsRepository(private val markerDao: MarkerDao) {
     suspend fun insert(markers: List<ClusterMarker>) = markerDao.insert(markers)
 
     @ExperimentalCoroutinesApi
-    suspend fun fetchFirebase(countryName: String, period: String): List<ClusterMarker>? = suspendCancellableCoroutine {
-        val listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Timber.v("fetch Firebase markers: onDataChange")
-                val data = dataSnapshot.getValue<List<ClusterMarker>>()
-                it.resume(data) {}
+    suspend fun fetchFirebase(countryName: String, period: EventFilter.Period): List<ClusterMarker>? =
+        suspendCancellableCoroutine {
+            val listener = object : ValueEventListener {
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    Timber.v("fetch Firebase markers: onDataChange")
+                    val data = dataSnapshot.getValue<List<ClusterMarker>>()
+                    it.resume(data) {}
+                }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Timber.w("fetch Firebase markers: onCancelled ${databaseError.toException()}")
+                    it.cancel()
+                }
             }
 
-            override fun onCancelled(databaseError: DatabaseError) {
-                Timber.w("fetch Firebase markers: onCancelled ${databaseError.toException()}")
-                it.cancel()
-            }
+            val db = firebaseDb.child("events").child(countryName)
+            db.addListenerForSingleValueEvent(listener)
+            it.invokeOnCancellation { db.removeEventListener(listener) }
         }
 
-        val db = firebaseDb.child("events").child(countryName)
-        db.addListenerForSingleValueEvent(listener)
-        it.invokeOnCancellation { db.removeEventListener(listener) }
-    }
-
     @ExperimentalCoroutinesApi
-    fun fetchFirebaseFlow(countryName: String, period: String): Flow<List<ClusterMarker>?> = callbackFlow {
+    fun fetchFirebaseFlow(countryName: String, period: EventFilter.Period): Flow<List<ClusterMarker>?> = callbackFlow {
         val listener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 Timber.v("fetch Firebase markers: onDataChange")
@@ -113,16 +113,20 @@ class EventsRepository(private val markerDao: MarkerDao) {
     }
 
     /** Adding query params. */
-    private fun getEventfulQueryOptions(lat: Double, lng: Double, radius: Float, period: String): MutableMap<String, String> {
+    private fun getEventfulQueryOptions(lat: Double, lng: Double, radius: Float, period: EventFilter.Period): MutableMap<String, String> {
         val options = mutableMapOf<String, String>()
         options["app_key"] = BuildConfig.EVENTFUL_KEY
         options["where"] = "$lat,$lng"
         options["within"] = radius.toString()
-        options["date"] = period
+        options["date"] = period.name // Need to check actual names
         options["page_size"] = Config.pageSize.toString()
 //        options["include"] = "categories,popularity,price" //subcategories
         options["image_sizes"] = "thumb,block250"
         return options
+    }
+
+    fun dispose() {
+        viewModelJob.cancel()
     }
 
 }
