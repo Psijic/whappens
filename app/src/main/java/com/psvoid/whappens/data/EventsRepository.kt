@@ -23,10 +23,10 @@ class EventsRepository(private val markerDao: MarkerDao) {
     private val firebaseDb: DatabaseReference = Firebase.database.reference
 
     /** Create a Coroutine scope using a job to be able to cancel when needed */
-    private val viewModelJob = Job()
+    private val job = Job()
 
     /** Coroutine runs using the IO dispatcher */
-    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.IO)
+    private val coroutineScope = CoroutineScope(job + Dispatchers.IO)
 
     init {
 //        Firebase.database.setPersistenceEnabled(true) // TODO: Move
@@ -82,7 +82,7 @@ class EventsRepository(private val markerDao: MarkerDao) {
     }
 
     fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
-        viewModelJob.cancelChildren(CancellationException("Updated"))
+        job.cancelChildren(CancellationException("Updated"))
         val queryOptions = getEventfulQueryOptions(lat, lng, radius, Config.period)
         fetchEventsInternal(lat, lng, queryOptions, 1)
     }
@@ -126,7 +126,7 @@ class EventsRepository(private val markerDao: MarkerDao) {
     }
 
     fun dispose() {
-        viewModelJob.cancel()
+        job.cancel() // Cancel our coroutine [job], which tells the Retrofit service to stop.
     }
 
 }

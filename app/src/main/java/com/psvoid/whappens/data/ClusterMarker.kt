@@ -8,6 +8,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.IgnoreExtraProperties
 import com.google.maps.android.clustering.ClusterItem
+import com.psvoid.whappens.utils.DateUtils
 import com.psvoid.whappens.utils.DateUtils.getMonthName
 import kotlinx.serialization.Serializable
 
@@ -25,8 +26,8 @@ data class ClusterMarker(
 //    @TypeConverters(ImagesConverter::class)
     val image: String? = null, // 250*250 or 4*3 ratio
 //    @SerialName("start_time") @PropertyName("start_time") @ColumnInfo(name = "start_time")
-    val start_time: String = "",
-    val stop_time: String? = null,
+    val start_time: Long = 0L,
+    val stop_time: Long? = null,
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val description: String? = null,
@@ -66,14 +67,19 @@ data class ClusterMarker(
 
     /**Convert date like this: "2020-05-20 20:30:00" to "17:00 - 19:00, 04 Dec" */
     fun getTimePeriod(): String {
-        //TODO: Add conditions for multiple days
-        val sTime = start_time.substring(11, 16)
-        val month = getMonthName(start_time.substring(5, 7).toInt())
-        val sDate = "${start_time.substring(8, 10)} $month"
+        if (start_time == 0L) return ""
 
-        if (!stop_time.isNullOrEmpty()) {
-            sTime.plus(" - ${stop_time.substring(11, 16)}")
-            val dateEnd = stop_time.substring(5, 10)
+        val startTimeStr = DateUtils.getDateString(start_time)
+        val stopTimeStr = DateUtils.getDateString(start_time)
+
+        //TODO: Add conditions for multiple days
+        val sTime = startTimeStr.substring(11, 16)
+        val month = getMonthName(startTimeStr.substring(5, 7).toInt())
+        val sDate = "${startTimeStr.substring(8, 10)} $month"
+
+        if (stopTimeStr.isNotEmpty()) {
+            sTime.plus(" - ${stopTimeStr.substring(11, 16)}")
+            val dateEnd = stopTimeStr.substring(5, 10)
 //            if (sDate != dateEnd) sDate.plus(" - $dateEnd")
         }
 

@@ -6,6 +6,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.viewModels
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -28,7 +28,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
-import com.google.maps.android.clustering.ClusterManager.OnClusterItemClickListener
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.EventFilter
@@ -42,7 +41,7 @@ import timber.log.Timber
 import kotlin.math.pow
 
 
-class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListener<ClusterMarker> {
+class MapFragment : BaseFragment() {
     private val viewModel: MapViewModel by viewModels()
     private var isRestore = false
 
@@ -61,18 +60,29 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
 
     private fun setupMap() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        mapFragment.getMapAsync { map ->
+            this.map = map
+
+            setupMapLayers()
+            setupBinds()
+            if (Config.mapStyle > 0) setMapStyle(map, Config.mapStyle)
+            enableLocation()
+            setupMapButtons()
+            setupRestore()
+            setupActions()
+            start()
+        }
     }
 
     private fun setupBinds() {
-        viewModel.clusterStatus.observe(this, {
+        viewModel.clusterStatus.observe(viewLifecycleOwner, {
             if (LoadingStatus.DONE == it) {
                 clusterManager.cluster()
             }
         })
 
         // bottomSheet
-        viewModel.selectedEvent.observe(this, {
+        viewModel.selectedEvent.observe(viewLifecycleOwner, {
             binding.event = it
             val behavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
             binding.bottomSheetState = when {
@@ -83,7 +93,7 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
         })
 
         // topBar UI
-        viewModel.isHideUI.observe(this, {
+        viewModel.isHideUI.observe(viewLifecycleOwner, {
             binding.isHideUI = it
         })
     }
@@ -93,8 +103,8 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
         if (!isRestore) {
             // set camera start point
             val location = getMyLocation()
-            var latitude = 32.746782
-            var longitude = -117.162841
+            var latitude = 33.753746
+            var longitude = -84.386330
 
             location?.let {
                 latitude = location.latitude
@@ -107,19 +117,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
         } else {
             // pass
         }
-    }
-
-    override fun onMapReady(map: GoogleMap) {
-        this.map = map
-
-        setupMapLayers()
-        setupBinds()
-        if (Config.mapStyle > 0) setMapStyle(map, Config.mapStyle)
-        enableLocation()
-        setupMapButtons()
-        setupRestore()
-        setupActions()
-        start()
     }
 
     @SuppressLint("MissingPermission")
@@ -227,18 +224,18 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
             )
 
             viewModel.fetchEvents(latLng.latitude, latLng.longitude, radius())
-            Handler().postDelayed({ marker.remove() }, 800)
+            Handler(Looper.getMainLooper()).postDelayed({ marker.remove() }, 800)
         }
 
         // Click
-        clusterManager.setOnClusterItemClickListener(this)
+        clusterManager.setOnClusterItemClickListener(::onClusterItemClick)
         map.setOnMapClickListener { onMapClickListener() }
 
 //        map.setOnMarkerClickListener(clusterManager)
     }
 
     /** Called when the user clicks a ClusterMarker.  */
-    override fun onClusterItemClick(item: ClusterMarker): Boolean {
+    private fun onClusterItemClick(item: ClusterMarker): Boolean {
         viewModel.selectedEvent.postValue(item)
         binding.event = item
 
@@ -279,7 +276,6 @@ class MapFragment : BaseFragment(), OnMapReadyCallback, OnClusterItemClickListen
                 R.id.date_range -> {
                     val dialog = MaterialAlertDialogBuilder(requireContext())
                         .setView(R.layout.fragment_dialog)
-//                        .create()
                         .show()
                     dialog.findViewById<MaterialButton>(R.id.button_range)?.setOnClickListener {
                         dialog.dismiss()

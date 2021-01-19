@@ -1,7 +1,10 @@
 package com.psvoid.whappens.viewmodels
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
@@ -9,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import kotlin.collections.set
 
 typealias MarkersMap = MutableMap<String, List<ClusterMarker>>
@@ -17,7 +21,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     val algorithm = NonHierarchicalViewBasedAlgorithm<ClusterMarker>(0, 0)
 
     val selectedEvent = MutableLiveData<ClusterMarker>()
-    var isHideUI: MutableLiveData<Boolean> = MutableLiveData<Boolean>().apply { value = false }
+    var isHideUI = MutableLiveData(false)
 //    var bottomSheetState = BottomSheetBehavior.STATE_HIDDEN // TODO: save height expanded?
 
     /** The internal MutableLiveData that stores the status of the most recent request */
@@ -49,8 +53,32 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         updateMarkers()
     }
 
-    fun setPeriod(value: EventFilter.Period){
+    /** Here we set the period of shown cached markers */
+    fun setPeriod(value: EventFilter.Period) {
         _period.value = value
+
+//        val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+
+        algorithm.clearItems()
+        _clusterStatus.value = LoadingStatus.DONE
+
+        allMarkers.forEach {
+            // Pass events if they in the needed date range
+            val countryEvents = it.value.filter { event ->
+//                val ts = DateFormat.getDateTimeInstance().parse(event.start_time)
+                val startTime = Date(event.start_time * 1000)
+                val currentTime = Date(Config.launchTime)
+                when (period.value) {
+                    EventFilter.Period.FUTURE -> startTime.after(currentTime)
+                    EventFilter.Period.TODAY -> event.start_time in (Config.launchTime..Config.launchTime - 86400000)
+                    else -> true
+                }
+//                event.start_time.isNotEmpty()
+            }
+
+            addClusterItems(countryEvents)
+        }
+
     }
 
     /** Check if Android database have actual markers for current countries. If not, fetch them. */
@@ -63,7 +91,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
                 val timestamp = countryData?.timestamp ?: 0
                 // Check if the database data is cleared/broken or outdated
                 Timber.i("Getting database data, country: $countryName, timestamp: $timestamp")
-                if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) { //1606071352684
+                if (markers.isNullOrEmpty() || timestamp < Config.launchTime - Config.cacheRefreshTime) {
                     Timber.d("Fetching markers from Firebase")
                     period.value?.let { fetchMarkers(countryName, it) }
                     //                    markers = markerRepo.fetchFirebase(countryName, period)
@@ -121,7 +149,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    /** When the [ViewModel] is finished, we cancel our coroutine [viewModelJob], which tells the Retrofit service to stop. */
     override fun onCleared() {
         super.onCleared()
         markerRepo.dispose()
