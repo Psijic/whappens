@@ -1,4 +1,4 @@
-package com.psvoid.whappens.data
+package com.psvoid.whappens.utils
 
 enum class Country {
     ALA, ALB, AND, ARM, AUT, BLR, BEL, BIH, BGR, HRV, CZE, DNK,
@@ -10,5 +10,5 @@ enum class Country {
 
 enum class LoadingStatus { LOADING, ERROR, DONE }
 
-enum class Month { Jan, Feb, MAr, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec }
+
 

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.data.*
 import com.psvoid.whappens.network.Config
+import com.psvoid.whappens.utils.LoadingStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -32,7 +33,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val markerRepo: EventsRepository
     private val countriesRepo: CountriesRepository
 
-    //    private val allMarkers = MutableLiveData<MutableMap<String, List<ClusterMarker>>>()
     private val allMarkers: MarkersMap = mutableMapOf()
 
 //    private val markersObserver = { markers: List<ClusterMarker> -> getMarkers(markers) }
@@ -41,8 +41,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val _period = MutableLiveData(Config.period)
     val period: LiveData<EventFilter.Period>
         get() = _period
-
-//    private var period = Config.period
 
     init {
         val markerDao = AppDatabase.getInstance(application).markerDao
@@ -119,9 +117,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     /** Add specific settings like event types selected */
-    fun fetchEvents(lat: Double, lng: Double, radius: Float) {
-
-    }
+    fun fetchEvents(lat: Double, lng: Double, radius: Float) {}
 
     private fun saveMarkers(countryName: String, markers: List<ClusterMarker>) {
         Timber.i("Saving $countryName markers into DB")
@@ -139,7 +135,6 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private fun insertCountry(country: CountryData) =
         viewModelScope.launch(Dispatchers.IO) { countriesRepo.insert(country) }
 
-
     private fun addClusterItems(items: List<ClusterMarker>?) {
         if (items.isNullOrEmpty()) {
             _clusterStatus.postValue(LoadingStatus.ERROR)
@@ -148,10 +143,4 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
             _clusterStatus.postValue(LoadingStatus.DONE)
         }
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        markerRepo.dispose()
-    }
-
 }

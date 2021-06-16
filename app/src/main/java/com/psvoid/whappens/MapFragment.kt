@@ -31,7 +31,7 @@ import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.EventFilter
-import com.psvoid.whappens.data.LoadingStatus
+import com.psvoid.whappens.utils.LoadingStatus
 import com.psvoid.whappens.databinding.FragmentMapBinding
 import com.psvoid.whappens.network.Config
 import com.psvoid.whappens.viewmodels.MapViewModel

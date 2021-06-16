@@ -7,29 +7,25 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import com.psvoid.whappens.BuildConfig
-import com.psvoid.whappens.network.Config
-import com.psvoid.whappens.network.EventsApi
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 
-
-// Declares the DAO as a private property in the constructor. Pass in the DAO
-// instead of the whole database, because you only need access to the DAO
 class EventsRepository(private val markerDao: MarkerDao) {
     private val firebaseDb: DatabaseReference = Firebase.database.reference
 
     /** Create a Coroutine scope using a job to be able to cancel when needed */
-    private val job = Job()
+//    private val job = Job()
 
     /** Coroutine runs using the IO dispatcher */
-    private val coroutineScope = CoroutineScope(job + Dispatchers.IO)
+//    private val coroutineScope = CoroutineScope(job + Dispatchers.IO)
 
     init {
-//        Firebase.database.setPersistenceEnabled(true) // TODO: Move
+//        Firebase.database.setPersistenceEnabled(true)
     }
 
     // Room executes all queries on a separate thread.
@@ -80,53 +76,4 @@ class EventsRepository(private val markerDao: MarkerDao) {
         ref.addListenerForSingleValueEvent(listener)
         awaitClose { ref.removeEventListener(listener) }
     }
-
-    fun fetchEventsByHttp(lat: Double, lng: Double, radius: Float) {
-        job.cancelChildren(CancellationException("Updated"))
-        val queryOptions = getEventfulQueryOptions(lat, lng, radius, Config.period)
-        fetchEventsInternal(lat, lng, queryOptions, 1)
-    }
-
-    /**
-     * The Retrofit service returns a coroutine, which we await to get the result of the transaction.
-     * @param filter the [EventsApiFilter] that is sent as part of the web server request
-     * @param page the events list page within the response, usually started from 1
-     */
-    private fun fetchEventsInternal(lat: Double, lng: Double, queryOptions: MutableMap<String, String>, page: Int = 1) {
-        coroutineScope.launch {
-            // Get the object for Retrofit request
-//            _clusterStatus.postValue(LoadingStatus.LOADING)
-            try {
-                queryOptions["page_number"] = page.toString()
-                val listResult = EventsApi.retrofitService.getEventsAsync(queryOptions)
-                val markers = listResult.events.event
-//                addClusterItems(markers) // TODO: return markers
-                if (page < listResult.page_count.toInt())
-                    fetchEventsInternal(lat, lng, queryOptions, page.inc())
-                else
-                    Timber.i("All events downloaded")
-            } catch (e: Exception) {
-                Timber.e("Error loading events $e")
-//                _clusterStatus.postValue(LoadingStatus.ERROR)
-            }
-        }
-    }
-
-    /** Adding query params. */
-    private fun getEventfulQueryOptions(lat: Double, lng: Double, radius: Float, period: EventFilter.Period): MutableMap<String, String> {
-        val options = mutableMapOf<String, String>()
-        options["app_key"] = BuildConfig.EVENTFUL_KEY
-        options["where"] = "$lat,$lng"
-        options["within"] = radius.toString()
-        options["date"] = period.name // Need to check actual names
-        options["page_size"] = Config.pageSize.toString()
-//        options["include"] = "categories,popularity,price" //subcategories
-        options["image_sizes"] = "thumb,block250"
-        return options
-    }
-
-    fun dispose() {
-        job.cancel() // Cancel our coroutine [job], which tells the Retrofit service to stop.
-    }
-
 }
