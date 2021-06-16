@@ -1,21 +1,16 @@
 package com.psvoid.whappens
 
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.app.Application
 import timber.log.Timber
-import timber.log.Timber.DebugTree
 
+class App : Application() {
+    override fun onCreate() {
+        super.onCreate()
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        Timber.plant(if (BuildConfig.DEBUG) DebugTree() else CrashReportingTree())
+        Timber.plant(if (BuildConfig.DEBUG) Timber.DebugTree() else CrashReportingTree())
         //        FirebaseApp.initializeApp(this)
 
     }
-
 }
 
 private class CrashReportingTree : Timber.Tree() {
