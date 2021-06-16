@@ -14,6 +14,6 @@ object Config {
     val period = EventFilter.Period.FUTURE
     const val pageSize = 30
     const val cacheRefreshTime = 86400000 // 24 hours
-    var countries = listOf("USA", "LVA")
+    var countries = listOf("US", "UK")
     val launchTime = System.currentTimeMillis()
 }
