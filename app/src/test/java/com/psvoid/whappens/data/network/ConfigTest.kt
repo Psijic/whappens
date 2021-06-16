@@ -1,7 +1,6 @@
-package com.psvoid.whappens.network
+package com.psvoid.whappens.data.network
 
 import com.psvoid.whappens.data.CountryData
-import org.junit.Assert
 import org.junit.Test
 
 import org.junit.Assert.*

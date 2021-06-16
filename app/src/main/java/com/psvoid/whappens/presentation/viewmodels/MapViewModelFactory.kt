@@ -1,4 +1,4 @@
-package com.psvoid.whappens.viewmodels
+package com.psvoid.whappens.presentation.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

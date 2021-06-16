@@ -1,4 +1,4 @@
-package com.psvoid.whappens.views
+package com.psvoid.whappens.presentation.views
 
 import android.content.Context
 import android.content.res.Resources

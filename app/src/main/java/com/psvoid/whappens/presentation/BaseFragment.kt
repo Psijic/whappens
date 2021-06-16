@@ -1,4 +1,4 @@
-package com.psvoid.whappens
+package com.psvoid.whappens.presentation
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.psvoid.whappens.R
 
 open class BaseFragment : Fragment() {
     companion object Permissions {

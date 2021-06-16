@@ -1,4 +1,4 @@
-package com.psvoid.whappens
+package com.psvoid.whappens.presentation
 
 import android.annotation.SuppressLint
 import android.location.Criteria
@@ -29,14 +29,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.collections.MarkerManager
+import com.psvoid.whappens.R
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.EventFilter
 import com.psvoid.whappens.utils.LoadingStatus
 import com.psvoid.whappens.databinding.FragmentMapBinding
-import com.psvoid.whappens.network.Config
-import com.psvoid.whappens.viewmodels.MapViewModel
-import com.psvoid.whappens.views.ClusterMarkerRenderer
-import com.psvoid.whappens.views.ClusterMarkerRendererPhoto
+import com.psvoid.whappens.data.network.Config
+import com.psvoid.whappens.presentation.views.ClusterMarkerRenderer
+import com.psvoid.whappens.presentation.views.ClusterMarkerRendererPhoto
+import com.psvoid.whappens.presentation.viewmodels.MapViewModel
 import timber.log.Timber
 import kotlin.math.pow
 

@@ -1,4 +1,4 @@
-package com.psvoid.whappens.network
+package com.psvoid.whappens.data.network
 
 import com.psvoid.whappens.data.EventFilter
 

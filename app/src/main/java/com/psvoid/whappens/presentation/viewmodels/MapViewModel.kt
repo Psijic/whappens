@@ -1,4 +1,4 @@
-package com.psvoid.whappens.viewmodels
+package com.psvoid.whappens.presentation.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm
 import com.psvoid.whappens.data.*
-import com.psvoid.whappens.network.Config
+import com.psvoid.whappens.data.network.Config
 import com.psvoid.whappens.utils.LoadingStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

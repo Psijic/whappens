@@ -1,6 +1,6 @@
-package com.psvoid.whappens.network
+package com.psvoid.whappens.data.network
 
-import com.psvoid.whappens.adapters.Eve
+import com.psvoid.whappens.data.adapters.Eve
 import com.psvoid.whappens.data.StreetEvent
 import kotlinx.coroutines.Deferred
 import okhttp3.Interceptor

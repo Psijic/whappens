@@ -1,4 +1,4 @@
-package com.psvoid.whappens.adapters
+package com.psvoid.whappens.data.adapters
 
 import com.psvoid.whappens.data.ClusterMarker
 import kotlinx.serialization.Serializable

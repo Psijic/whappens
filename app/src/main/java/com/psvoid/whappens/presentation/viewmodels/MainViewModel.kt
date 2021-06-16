@@ -1,11 +1,10 @@
-package com.psvoid.whappens.viewmodels
+package com.psvoid.whappens.presentation.viewmodels
 
 import android.app.Application
 import android.content.Context
 import android.telephony.TelephonyManager
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import com.psvoid.whappens.network.Config
+import com.psvoid.whappens.data.network.Config
 import timber.log.Timber
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {

@@ -1,4 +1,4 @@
-package com.psvoid.whappens.adapters
+package com.psvoid.whappens.presentation.adapters
 
 import android.text.method.LinkMovementMethod
 import android.view.View
