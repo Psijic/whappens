@@ -117,8 +117,6 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-config:19.1.4'
 //    implementation 'com.firebaseui:firebase-ui-auth:6.2.1'
 
-    // Retrofit Coroutines Support
-//    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
     implementation ("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
 //    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.1"
 

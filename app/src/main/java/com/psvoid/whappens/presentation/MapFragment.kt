@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.location.Criteria
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -32,12 +33,12 @@ import com.google.maps.android.collections.MarkerManager
 import com.psvoid.whappens.R
 import com.psvoid.whappens.data.ClusterMarker
 import com.psvoid.whappens.data.EventFilter
-import com.psvoid.whappens.utils.LoadingStatus
-import com.psvoid.whappens.databinding.FragmentMapBinding
 import com.psvoid.whappens.data.network.Config
+import com.psvoid.whappens.databinding.FragmentMapBinding
+import com.psvoid.whappens.presentation.viewmodels.MapViewModel
 import com.psvoid.whappens.presentation.views.ClusterMarkerRenderer
 import com.psvoid.whappens.presentation.views.ClusterMarkerRendererPhoto
-import com.psvoid.whappens.presentation.viewmodels.MapViewModel
+import com.psvoid.whappens.utils.LoadingStatus
 import timber.log.Timber
 import kotlin.math.pow
 
@@ -115,8 +116,6 @@ class MapFragment : BaseFragment() {
 
             // get events near needed point
 //            viewModel.getEventsAsync(EventsApiFilter.ALL, latitude, longitude, map.cameraPosition.zoom)
-        } else {
-            // pass
         }
     }
 
@@ -176,7 +175,9 @@ class MapFragment : BaseFragment() {
 
     private fun addClusters(markerManager: MarkerManager) {
         val metrics = DisplayMetrics()
-        context?.display?.getRealMetrics(metrics)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) context?.display?.getRealMetrics(metrics)
+        else requireActivity().windowManager.defaultDisplay.getMetrics(metrics)
+
         viewModel.algorithm.updateViewSize(metrics.widthPixels, metrics.heightPixels)
         clusterManager = ClusterManager(context, map, markerManager)
         clusterManager.setAlgorithm(viewModel.algorithm)
@@ -225,7 +226,7 @@ class MapFragment : BaseFragment() {
             )
 
             viewModel.fetchEvents(latLng.latitude, latLng.longitude, radius())
-            Handler(Looper.getMainLooper()).postDelayed({ marker.remove() }, 800)
+            Handler(Looper.getMainLooper()).postDelayed({ marker?.remove() }, 800)
         }
 
         // Click
