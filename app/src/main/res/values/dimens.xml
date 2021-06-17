@@ -3,4 +3,13 @@
     <dimen name="font_big">20sp</dimen>
     <dimen name="icon_medium">48dp</dimen>
     <dimen name="button_height_big">120dp</dimen>
+
+    <dimen name="custom_profile_image">50dp</dimen>
+    <dimen name="default_image_width">150dp</dimen>
+    <dimen name="default_image_height">150dp</dimen>
+    <dimen name="custom_profile_padding">2dp</dimen>
+
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="default_half_padding">8dp</dimen>
+    <dimen name="default_text_field">24dp</dimen>
 </resources>

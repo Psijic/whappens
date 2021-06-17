@@ -5,9 +5,9 @@ import kotlinx.serialization.Serializable
 
 class Eve {
 
-    companion object {
-        val serializer = Events.serializer()
-    }
+//    companion object {
+//        val serializer = Events.serializer()
+//    }
 
     @Serializable
     data class Events(
